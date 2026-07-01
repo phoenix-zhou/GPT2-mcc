@@ -1,4 +1,62 @@
 
+# 🏥 GPT-2 Medical Consultation Chatbot
+This project aims to build an intelligent medical consultation chatbot using the GPT-2 pre-trained model. The system is designed to simulate a doctor's natural language communication style, understand users' descriptions of their conditions or medical inquiries, and provide accurate, efficient, and professional medical advice.
+## ✨ Project Overview
+As an intelligent dialogue system based on Natural Language Processing (NLP) technology, chatbots are playing a significant role in various fields. While they are commonly used for online customer service and personal assistants, their application in the medical field demands higher professionalism and rigor.
+The core objectives of this project are:
+- **Intelligent Interaction**: To provide a friendly and natural conversational experience, moving beyond mechanical keyword matching.
+- **Professional Knowledge Base**: To be fine-tuned on real doctor-patient consultation corpora, ensuring the medical relevance of its responses.
+- **End-to-End Implementation**: To cover the complete development lifecycle, from data crawling, preprocessing, and model training to evaluation and web deployment.
+## 🛠️ Architecture
+The technical implementation of this project follows the process outlined below (refer to the project architecture diagram):
+1.  **Raw Data**: Doctor-patient consultation corpora are acquired via web crawlers.
+2.**Data Processing**: The data undergoes format conversion and vectorization (Tokenization/Vectorization).
+3. **Model Construction**: Based on the GPT-2 model architecture, hyperparameters are set, and Gradient Clipping is used to optimize training stability.
+4. **Evaluation**: Evaluation metrics are established, and the model's performance is verified through a combination of automated metrics and human assessment.
+5. **Interaction**: The model is deployed online with a user interface developed using web technologies.
+## 📂 Project Structure
+```
+├── config/                 # Configuration directory
+│   └── config.json         # Model and training configuration
+├── data/                   # Dataset directory
+│   ├── medical_train.pkl   # Training set (serialized object)
+│   ├── medical_train.txt   # Training set (text)
+│   ├── medical_valid.pkl   # Validation set (serialized object)
+│   └── medical_valid.txt   # Validation set (text)
+├── data_preprocess/        # Data preprocessing module
+│   ├── dataloader.py       # Data loader
+│   ├── dataset.py          # Dataset definition
+│   └── preprocess.py       # Preprocessing logic
+├── sample/                 # Sample examples
+├── save_model/             # Model save directory
+│   └── epoch97/            # Model weights saved at epoch 97
+│       ├── config.json
+│       └── pytorch_model.bin
+├── templates/              # Web frontend templates (HTML, etc.)
+├── vocab/                  # Vocabulary files
+│   ├── vocab.txt
+│   └── vocab2.txt
+├── app.py                  # Web application entry point (Flask/Streamlit, etc.)
+├── flask_predict.py        # Flask prediction interface logic
+├── functions_tools.py      # General utility functions
+├── interact.py             # Interactive dialogue script (for command-line testing)
+├── parameter_config.py     # Parameter configuration script
+├── pytorch_tools.py        # PyTorch-related utilities
+├── train.py                # Main model training script
+└── test_model.py           # Model testing script
+```
+## 🔗 Links
+### Download Link for pytorch_model.bin in save_model/epoch97/:
+```
+https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv (Extraction Code: 2mrv)
+```
+### Corresponding Project Blog Post:
+```
+https://blog.csdn.net/zhoupenghui168/article/details/162314485
+```
+
+---------------------------------------------------------------------
+
 # 🏥 GPT-2 Medical Consultation Chatbot (基于GPT-2的智能医疗问答系统)
 
 本项目旨在利用 **GPT-2** 预训练模型，构建一个智能医疗问诊聊天机器人。该系统能够模拟医生的自然语言交流方式，理解用户的病情描述或咨询问题，并给出准确、高效、专业的医疗建议。
@@ -23,7 +81,7 @@
 5.  **人机交互 (Interaction)**: 通过 Web 开发技术将模型上线，提供用户界面。
 
 ## 📂 项目结构 (Project Structure)
-
+```
 ├── config/                 # 配置文件目录
 │   └── config.json         # 模型与训练配置
 ├── data/                   # 数据集目录
@@ -52,6 +110,10 @@
 ├── pytorch_tools.py        # PyTorch相关工具
 ├── train.py                # 模型训练主脚本
 └── test_model.py           # 模型测试脚本
+```
+
 #### save_model.epoch97下面的pytorch_model.bin下载链接: https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv 提取码: 2mrv
-#### 项目对应的博客: https://blog.csdn.net/zhoupenghui168/article/details/162314485
+#### 项目对应的博客: 
+```
+https://blog.csdn.net/zhoupenghui168/article/details/162314485
 ```
