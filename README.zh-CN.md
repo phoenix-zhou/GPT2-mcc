@@ -44,7 +44,7 @@ source .venv/bin/activate
 python -m pip install -e '.[inference]'
 
 export GPT2_MCC_MODEL_PROVIDER="qwen-local"
-export GPT2_MCC_QWEN_MODEL="Qwen/Qwen3-4B-Instruct-2507"
+export GPT2_MCC_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
 
 flask --app app run
 ```
@@ -74,6 +74,7 @@ OpenAI 请求设置 `store=False`。这不等同于完整的零数据保留承�
 ```bash
 export GPT2_MCC_MODEL_PROVIDER="legacy-gpt2"
 export GPT2_MCC_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
+python -m pip install -e '.[legacy-inference]'
 flask --app app run
 ```
 
