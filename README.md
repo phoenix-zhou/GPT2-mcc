@@ -28,6 +28,35 @@ For development and tests:
 python -m pip install -e '.[dev]'
 pytest
 ```
+
+## Model providers
+
+The web application uses an interchangeable model provider. OpenAI is the
+default and reads its API key from the environment:
+
+```bash
+python -m pip install -e '.[openai]'
+export OPENAI_API_KEY="your_api_key"
+export GPT2_MCC_MODEL_PROVIDER="openai"
+export GPT2_MCC_OPENAI_MODEL="gpt-5.6-luna"
+flask --app app run
+```
+
+API requests set `store=False`. Do not submit real patient identifiers or
+other sensitive medical information to this research demo.
+
+To run Qwen locally without per-token API charges:
+
+```bash
+python -m pip install -e '.[inference]'
+export GPT2_MCC_MODEL_PROVIDER="qwen-local"
+export GPT2_MCC_QWEN_MODEL="Qwen/Qwen3-4B-Instruct-2507"
+flask --app app run
+```
+
+The first local run downloads the selected model and requires enough memory
+for its weights. The original implementation remains available with
+`GPT2_MCC_MODEL_PROVIDER=legacy-gpt2`.
 This project aims to build an intelligent medical consultation chatbot using the GPT-2 pre-trained model. The system is designed to simulate a doctor's natural language communication style, understand users' descriptions of their conditions or medical inquiries, and provide accurate, efficient, and professional medical advice.
 ## ✨ Project Overview
 As an intelligent dialogue system based on Natural Language Processing (NLP) technology, chatbots are playing a significant role in various fields. While they are commonly used for online customer service and personal assistants, their application in the medical field demands higher professionalism and rigor.
