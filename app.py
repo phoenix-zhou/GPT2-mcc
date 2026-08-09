@@ -5,9 +5,33 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 
+import bleach
+import markdown
 from flask import Flask, current_app, render_template, request
+from markupsafe import Markup, escape
 
 Predictor = Callable[[str], str]
+
+ALLOWED_MARKDOWN_TAGS = {
+    "a", "blockquote", "br", "code", "em", "h2", "h3", "hr", "li",
+    "ol", "p", "pre", "strong", "ul",
+}
+
+
+def render_markdown(text: str) -> Markup:
+    """Render model Markdown while removing unsafe HTML and URL schemes."""
+    rendered = markdown.markdown(
+        str(escape(text)),
+        extensions=["sane_lists", "nl2br"],
+    )
+    cleaned = bleach.clean(
+        rendered,
+        tags=ALLOWED_MARKDOWN_TAGS,
+        attributes={"a": ["href", "title"]},
+        protocols={"http", "https"},
+        strip=True,
+    )
+    return Markup(cleaned)
 
 
 def _default_predictor(text: str) -> str:
@@ -51,6 +75,7 @@ def create_app(
         CLOUD_ENHANCEMENT_ENABLED=False,
     )
     app.config.from_prefixed_env(prefix="GPT2_MCC")
+    app.jinja_env.filters["render_markdown"] = render_markdown
     app.extensions["predictor"] = predictor or _default_predictor
     app.extensions["cloud_predictor"] = (
         cloud_predictor or _default_cloud_predictor

@@ -1,4 +1,4 @@
-from app import create_app
+from app import create_app, render_markdown
 from knowledge import KnowledgeDocument
 
 
@@ -9,6 +9,34 @@ def test_health_endpoint():
 
     assert response.status_code == 200
     assert response.get_json() == {"status": "ok"}
+
+
+def test_homepage_uses_professional_brand_and_assets():
+    response = create_app(lambda text: text).test_client().get("/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "<title>澄心健康信息助手</title>" in html
+    assert "ClearCare Health Information" in html
+    assert "/static/styles.css" in html
+    assert "/static/app.js" in html
+    assert "黑马" not in html
+    assert "小李子" not in html
+
+
+def test_markdown_renderer_formats_and_sanitizes_model_output():
+    rendered = str(
+        render_markdown(
+            "### 初步判断\n\n**重点**\n\n- 第一项\n- 第二项\n\n"
+            "<script>alert(1)</script>[危险](javascript:alert(1))"
+        )
+    )
+
+    assert "<h3>初步判断</h3>" in rendered
+    assert "<strong>重点</strong>" in rendered
+    assert "<li>第一项</li>" in rendered
+    assert "<script>" not in rendered
+    assert "javascript:" not in rendered
 
 
 def test_ask_uses_injected_predictor():

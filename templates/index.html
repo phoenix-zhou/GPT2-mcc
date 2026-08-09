@@ -3,46 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黑马大健康咨询</title>
+    <meta name="description" content="澄心健康信息助手提供本地优先、注重隐私的健康科普信息。">
+    <title>澄心健康信息助手</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>小李子健康咨询</h1>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="{{ url_for('index') }}" aria-label="澄心健康信息助手首页">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" role="img"><path d="M20 6v28M6 20h28"/></svg>
+                </span>
+                <span>
+                    <strong>澄心健康信息助手</strong>
+                    <small>ClearCare Health Information</small>
+                </span>
+            </a>
+            <span class="privacy-badge"><span aria-hidden="true">●</span> 本地 Qwen 优先</span>
+        </div>
+    </header>
 
-    <p role="note">本项目仅用于技术演示，不能替代医生诊断。紧急情况请立即联系当地急救服务。</p>
+    <main class="container page-shell">
+        <section class="hero" aria-labelledby="page-title">
+            <div>
+                <p class="eyebrow">PRIVATE · LOCAL-FIRST · EVIDENCE-AWARE</p>
+                <h1 id="page-title">更清晰地理解健康问题</h1>
+                <p class="hero-copy">描述你的症状或健康疑问，获取结构化的科普信息、需要关注的信号和下一步建议。</p>
+            </div>
+            <div class="safety-note" role="note">
+                <span class="safety-icon" aria-hidden="true">!</span>
+                <p><strong>非诊断服务</strong><br>本工具不能替代医生。若出现危及生命的情况，请立即联系当地急救服务。</p>
+            </div>
+        </section>
 
-    <form action="/ask" method="post">
-        <label for="user_input">输入问题：</label>
-        <input type="text" id="user_input" name="user_input" maxlength="1000" required>
-        {% if config.CLOUD_ENHANCEMENT_ENABLED %}
-            <label>
-                <input type="checkbox" name="use_cloud">
-                本次使用 OpenAI 云端增强（可能产生 Token 费用，请勿输入身份信息）
-            </label>
+        <section class="consultation-card" aria-label="健康问题输入">
+            <form id="consultation-form" action="{{ url_for('ask') }}" method="post">
+                <label class="field-label" for="user_input">请描述你的情况</label>
+                <p id="input-help" class="field-help">可以包括发生时间、持续多久、严重程度和伴随症状。请勿输入姓名、证件号等身份信息。</p>
+                <textarea id="user_input" name="user_input" rows="5" maxlength="1000" aria-describedby="input-help" placeholder="例如：晚饭后开始恶心并呕吐一次，没有发热，应该注意什么？" required>{{ user_input or '' }}</textarea>
+
+                <div class="form-footer">
+                    {% if config.CLOUD_ENHANCEMENT_ENABLED %}
+                        <label class="cloud-option">
+                            <input type="checkbox" name="use_cloud">
+                            <span>本次使用 OpenAI 云端增强 <small>可能产生 Token 费用</small></span>
+                        </label>
+                    {% else %}
+                        <span class="local-note">问题默认仅由本地模型处理</span>
+                    {% endif %}
+                    <button id="submit-button" type="submit">
+                        <span class="button-label">获取健康信息</span>
+                        <span class="spinner" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        {% if error %}
+            <section class="message error-message" role="alert">
+                <strong>暂时无法处理</strong>
+                <p>{{ error }}</p>
+            </section>
         {% endif %}
-        <button type="submit">提交</button>
-    </form>
 
-    {% if error %}
-        <p role="alert">{{ error }}</p>
-    {% endif %}
+        {% if user_input and answer %}
+            <section class="result-grid" aria-label="回答结果">
+                <aside class="question-card">
+                    <p class="section-kicker">你的问题</p>
+                    <p>{{ user_input }}</p>
+                </aside>
 
-    {% if user_input %}
-        <h2>用户输入：</h2>
-        <p>{{ user_input }}</p>
+                <article class="answer-card{% if is_emergency %} emergency-answer{% endif %}">
+                    <div class="answer-header">
+                        <div>
+                            <p class="section-kicker">健康信息建议</p>
+                            <h2>回答与下一步</h2>
+                        </div>
+                        {% if provider_name %}<span class="provider-badge">{{ provider_name }}</span>{% endif %}
+                    </div>
 
-        {% if answer %}
-            <h2>模型回答：</h2>
-            {% if provider_name %}<p>回答模型：{{ provider_name }}</p>{% endif %}
-            <p{% if is_emergency %} role="alert"{% endif %}>{{ answer }}</p>
-            {% if sources %}
-                <h3>参考资料</h3>
-                <ul>
-                    {% for source in sources %}
-                        <li><a href="{{ source.source_url }}" rel="noopener noreferrer">{{ source.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+                    <div class="markdown-body{% if is_emergency %} alert-content{% endif %}"{% if is_emergency %} role="alert"{% endif %}>
+                        {{ answer | render_markdown }}
+                    </div>
+
+                    {% if sources %}
+                        <div class="sources">
+                            <h3>参考资料</h3>
+                            <ul>
+                                {% for source in sources %}
+                                    <li><a href="{{ source.source_url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} <span aria-hidden="true">↗</span></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </article>
+            </section>
         {% endif %}
-    {% endif %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>澄心健康信息助手 · 研究与教育用途</p>
+            <p>不要依据本工具延误或停止专业医疗服务。</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </body>
 </html>
