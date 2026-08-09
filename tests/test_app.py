@@ -172,6 +172,15 @@ def test_explicit_cloud_request_uses_cloud_provider():
     assert "OpenAI GPT" in response.get_data(as_text=True)
 
 
+def test_cloud_option_discloses_that_recent_context_is_sent():
+    app = create_app(lambda text: "local")
+    app.config["CLOUD_ENHANCEMENT_ENABLED"] = True
+
+    html = app.test_client().get("/").get_data(as_text=True)
+
+    assert "本轮内容及最近对话将发送至 OpenAI" in html
+
+
 def test_emergency_bypasses_all_model_providers():
     local_calls = []
     cloud_calls = []
