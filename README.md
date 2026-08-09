@@ -1,177 +1,127 @@
+# 🏥 Local-first Medical Chatbot
 
-# 🏥 GPT-2 Medical Consultation Chatbot
+基于 Flask 的医疗健康信息聊天机器人研究项目。当前版本默认在本地运行
+Qwen 指令模型，可由用户为单次请求显式启用 OpenAI 云端增强，并保留原始
+GPT‑2 实现作为教学和效果对照基线。
 
 > [!WARNING]
-> This repository is a research and education demo. Its output is not medical
-> advice and must not replace diagnosis or treatment by qualified clinicians.
+> 本项目仅用于研究与教学，不提供医疗诊断、处方或治疗建议，不能替代有资质
+> 的医疗专业人员。不要输入真实患者姓名、证件号码、联系方式或其他敏感信息。
 
-## Quick start
+## 当前能力
 
-Python 3.10 or newer is required.
+- 本地 Qwen 为默认模型，不产生按 Token 计费的 API 调用。
+- OpenAI 云端增强默认关闭，必须由服务器启用且由用户逐次勾选。
+- 原 GPT‑2 推理入口继续保留，用作兼容与对照基线。
+- 明显急症信号先经过确定性规则分流，不调用任何生成模型。
+- 非急症问题可检索仓库内版本化的医学资料，并在页面单独展示来源。
+- Flask 应用工厂、延迟模型加载、健康检查、输入校验和受控错误页面。
+- Pytest 自动化测试与 GitHub Actions CI。
+
+## 请求流程
+
+```text
+浏览器问题
+  → 输入校验
+  → 急症风险分流
+      ├─ 高风险：固定急救提示，不调用模型
+      └─ 非急症：本地知识检索
+          → 本地 Qwen（默认）
+          → OpenAI GPT（服务器允许且用户单次选择）
+  → 回答与参考资料
+```
+
+## 快速启动：本地 Qwen
+
+需要 Python 3.10 或更新版本。首次运行会从模型仓库下载权重，并需要足够的
+内存或显存。
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[inference]'
+
+export GPT2_MCC_MODEL_PROVIDER="qwen-local"
+export GPT2_MCC_QWEN_MODEL="Qwen/Qwen3-4B-Instruct-2507"
+
 flask --app app run
 ```
 
-The original model weights are not included in this repository. Place a
-Transformers-compatible checkpoint in `save_model/epoch97`, or set
-`GPT2_MCC_INFERENCE_MODEL_PATH` to a checkpoint directory. Until a checkpoint
-is configured, the web application will return a clear service-unavailable
-message instead of failing during startup.
+启动后访问 <http://127.0.0.1:5000>。
 
-For development and tests:
+## 可选：OpenAI 云端增强
+
+OpenAI API 与 ChatGPT 订阅分开计费。密钥只通过环境变量读取，不应写入代码、
+`.env` 或 Git 历史。
+
+```bash
+python -m pip install -e '.[openai]'
+
+export OPENAI_API_KEY="your_api_key"
+export GPT2_MCC_OPENAI_MODEL="gpt-5.6-luna"
+export GPT2_MCC_CLOUD_ENHANCEMENT_ENABLED=true
+
+flask --app app run
+```
+
+OpenAI 请求设置 `store=False`。这不等同于完整的零数据保留承诺；生产部署前
+仍需审查账户数据控制、地区法规和医疗数据处理要求。
+
+## 原始 GPT‑2 基线
+
+```bash
+export GPT2_MCC_MODEL_PROVIDER="legacy-gpt2"
+export GPT2_MCC_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
+flask --app app run
+```
+
+原仓库没有直接提交大型 `pytorch_model.bin` 权重文件。原作者提供的下载链接：
+
+- 模型权重：[百度网盘](https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv)，提取码 `2mrv`
+- 原项目博客：[CSDN](https://blog.csdn.net/zhoupenghui168/article/details/162314485)
+
+## 安全分流与本地检索
+
+`safety.py` 对严重呼吸困难、卒中征象、无法控制的出血、意识丧失和立即自伤
+风险等强信号进行保守分流。这套规则不是诊断模型，可能漏报或误报，不能作为
+医疗器械使用。
+
+`knowledge/medical_guidance.json` 是一个小型、可审查的本地资料库。当前示例
+资料来自 CDC、NHS 和 WHO。`knowledge.py` 使用无外部依赖的关键词检索，后续
+可在保持接口不变的情况下升级为向量检索。
+
+## 开发与测试
 
 ```bash
 python -m pip install -e '.[dev]'
 pytest
 ```
 
-## Model providers
+测试使用模拟 Provider，不会下载 Qwen，也不会调用付费 API。
 
-The web application uses an interchangeable model provider. Local Qwen is the
-default, so ordinary requests do not incur per-token API charges:
+## 主要文件
 
-```bash
-python -m pip install -e '.[inference]'
-export GPT2_MCC_MODEL_PROVIDER="qwen-local"
-export GPT2_MCC_QWEN_MODEL="Qwen/Qwen3-4B-Instruct-2507"
-flask --app app run
+```text
+app.py                         Flask Web 应用与请求编排
+chat_models.py                 Qwen、OpenAI 和 GPT‑2 Provider
+safety.py                      急症风险分流
+knowledge.py                   本地资料检索与上下文构造
+knowledge/medical_guidance.json 版本化资料与来源
+templates/index.html           Web 页面
+data_preprocess/               原 GPT‑2 数据处理代码
+train.py                       原 GPT‑2 训练入口
+tests/                         自动化测试
 ```
 
-OpenAI is an explicit, server-controlled enhancement. It is disabled by
-default to prevent accidental charges. Enable it only after configuring a key:
+## 路线图
 
-```bash
-python -m pip install -e '.[openai]'
-export OPENAI_API_KEY="your_api_key"
-export GPT2_MCC_OPENAI_MODEL="gpt-5.6-luna"
-export GPT2_MCC_CLOUD_ENHANCEMENT_ENABLED=true
-flask --app app run
-```
+- 扩充并由专业人员审核医学资料库。
+- 使用中文向量嵌入和重排模型升级 RAG。
+- 增加多轮会话、流式输出和结构化回答。
+- 建立安全性、事实性、引用准确率和模型成本评测。
+- 增加容器化、生产 WSGI 服务、监控和部署文档。
 
-API requests set `store=False`. Do not submit real patient identifiers or
-other sensitive medical information to this research demo.
+## 许可证
 
-The first local run downloads the selected model and requires enough memory
-for its weights. The original implementation remains available with
-`GPT2_MCC_MODEL_PROVIDER=legacy-gpt2`.
-This project aims to build an intelligent medical consultation chatbot using the GPT-2 pre-trained model. The system is designed to simulate a doctor's natural language communication style, understand users' descriptions of their conditions or medical inquiries, and provide accurate, efficient, and professional medical advice.
-## ✨ Project Overview
-As an intelligent dialogue system based on Natural Language Processing (NLP) technology, chatbots are playing a significant role in various fields. While they are commonly used for online customer service and personal assistants, their application in the medical field demands higher professionalism and rigor.
-The core objectives of this project are:
-- **Intelligent Interaction**: To provide a friendly and natural conversational experience, moving beyond mechanical keyword matching.
-- **Professional Knowledge Base**: To be fine-tuned on real doctor-patient consultation corpora, ensuring the medical relevance of its responses.
-- **End-to-End Implementation**: To cover the complete development lifecycle, from data crawling, preprocessing, and model training to evaluation and web deployment.
-## 🛠️ Architecture
-The technical implementation of this project follows the process outlined below (refer to the project architecture diagram):
-1.  **Raw Data**: Doctor-patient consultation corpora are acquired via web crawlers.
-2.**Data Processing**: The data undergoes format conversion and vectorization (Tokenization/Vectorization).
-3. **Model Construction**: Based on the GPT-2 model architecture, hyperparameters are set, and Gradient Clipping is used to optimize training stability.
-4. **Evaluation**: Evaluation metrics are established, and the model's performance is verified through a combination of automated metrics and human assessment.
-5. **Interaction**: The model is deployed online with a user interface developed using web technologies.
-## 📂 Project Structure
-```
-├── config/                 # Configuration directory
-│   └── config.json         # Model and training configuration
-├── data/                   # Dataset directory
-│   ├── medical_train.pkl   # Training set (serialized object)
-│   ├── medical_train.txt   # Training set (text)
-│   ├── medical_valid.pkl   # Validation set (serialized object)
-│   └── medical_valid.txt   # Validation set (text)
-├── data_preprocess/        # Data preprocessing module
-│   ├── dataloader.py       # Data loader
-│   ├── dataset.py          # Dataset definition
-│   └── preprocess.py       # Preprocessing logic
-├── sample/                 # Sample examples
-├── save_model/             # Model save directory
-│   └── epoch97/            # Model weights saved at epoch 97
-│       ├── config.json
-│       └── pytorch_model.bin
-├── templates/              # Web frontend templates (HTML, etc.)
-├── vocab/                  # Vocabulary files
-│   ├── vocab.txt
-│   └── vocab2.txt
-├── app.py                  # Web application entry point (Flask/Streamlit, etc.)
-├── flask_predict.py        # Flask prediction interface logic
-├── functions_tools.py      # General utility functions
-├── interact.py             # Interactive dialogue script (for command-line testing)
-├── parameter_config.py     # Parameter configuration script
-├── pytorch_tools.py        # PyTorch-related utilities
-├── train.py                # Main model training script
-└── test_model.py           # Model testing script
-```
-## 🔗 Links
-### Download Link for pytorch_model.bin in save_model/epoch97/:
-```
-https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv (Extraction Code: 2mrv)
-```
-### Corresponding Project Blog Post:
-```
-https://blog.csdn.net/zhoupenghui168/article/details/162314485
-```
-
----------------------------------------------------------------------
-
-# 🏥 GPT-2 Medical Consultation Chatbot (基于GPT-2的智能医疗问答系统)
-
-本项目旨在利用 **GPT-2** 预训练模型，构建一个智能医疗问诊聊天机器人。该系统能够模拟医生的自然语言交流方式，理解用户的病情描述或咨询问题，并给出准确、高效、专业的医疗建议。
-
-## ✨ 项目简介 (Project Overview)
-
-聊天机器人作为一种基于自然语言处理（NLP）技术的智能对话系统，正在多个领域发挥重要作用。虽然它们常用于在线客服和个人助手，但在医疗领域的应用具有更高的专业性和严谨性要求。
-
-本项目的核心目标是：
-- **智能化交互**：提供友好、自然的对话体验，而非机械的关键词匹配。
-- **专业知识库**：基于真实的医患问诊语料进行微调，确保回答的医学相关性。
-- **全流程实现**：涵盖了从数据爬取、预处理、模型训练、评估到 Web 部署的完整开发流程。
-
-## 🛠️ 技术架构 (Architecture)
-
-本项目的技术实现遵循以下流程（参考项目架构图）：
-
-1.  **原始数据 (Raw Data)**: 通过网络爬虫获取医患问诊语料。
-2.  **数据处理 (Data Processing)**: 进行格式转换与向量化表示 (Tokenization/Vectorization)。
-3.  **模型构建 (Model Construction)**: 基于 GPT-2 模型架构，设置超参数，并使用梯度裁剪 (Gradient Clipping) 优化训练稳定性。
-4.  **模型评估 (Evaluation)**: 制定评估指标，结合人工评估与自动指标验证模型效果。
-5.  **人机交互 (Interaction)**: 通过 Web 开发技术将模型上线，提供用户界面。
-
-## 📂 项目结构 (Project Structure)
-```
-├── config/                 # 配置文件目录
-│   └── config.json         # 模型与训练配置
-├── data/                   # 数据集目录
-│   ├── medical_train.pkl   # 训练集 (序列化对象)
-│   ├── medical_train.txt   # 训练集 (文本)
-│   ├── medical_valid.pkl   # 验证集 (序列化对象)
-│   └── medical_valid.txt   # 验证集 (文本)
-├── data_preprocess/        # 数据预处理模块
-│   ├── dataloader.py       # 数据加载器
-│   ├── dataset.py          # 数据集定义
-│   └── preprocess.py       # 预处理逻辑
-├── sample/                 # 样本示例
-├── save_model/             # 模型保存目录
-│   └── epoch97/            # 第97轮保存的模型权重
-│       ├── config.json
-│       └── pytorch_model.bin
-├── templates/              # Web前端模板 (HTML等)
-├── vocab/                  # 词表文件
-│   ├── vocab.txt
-│   └── vocab2.txt
-├── app.py                  # Web应用入口 (Flask/Streamlit等)
-├── flask_predict.py        # Flask预测接口逻辑
-├── functions_tools.py      # 通用工具函数
-├── interact.py             # 交互式对话脚本 (命令行测试用)
-├── parameter_config.py     # 参数配置脚本
-├── pytorch_tools.py        # PyTorch相关工具
-├── train.py                # 模型训练主脚本
-└── test_model.py           # 模型测试脚本
-```
-
-#### save_model.epoch97下面的pytorch_model.bin下载链接: https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv 提取码: 2mrv
-#### 项目对应的博客: 
-```
-https://blog.csdn.net/zhoupenghui168/article/details/162314485
-```
+上游项目当前没有声明开源许可证。在获得作者明确许可前，请勿假设代码或数据
+可以用于再分发或商业用途。

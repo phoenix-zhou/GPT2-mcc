@@ -1,4 +1,5 @@
 from app import create_app
+from knowledge import KnowledgeDocument
 
 
 def test_health_endpoint():
@@ -72,3 +73,53 @@ def test_explicit_cloud_request_uses_cloud_provider():
     assert local_calls == []
     assert cloud_calls == ["复杂问题"]
     assert "OpenAI GPT" in response.get_data(as_text=True)
+
+
+def test_emergency_bypasses_all_model_providers():
+    local_calls = []
+    cloud_calls = []
+    app = create_app(
+        lambda text: local_calls.append(text) or "local",
+        cloud_predictor=lambda text: cloud_calls.append(text) or "cloud",
+    )
+    app.config["CLOUD_ENHANCEMENT_ENABLED"] = True
+
+    response = app.test_client().post(
+        "/ask",
+        data={"user_input": "突然说话不清而且一侧肢体无力", "use_cloud": "on"},
+    )
+
+    assert response.status_code == 200
+    assert local_calls == []
+    assert cloud_calls == []
+    assert "立即联系当地急救服务" in response.get_data(as_text=True)
+    assert "未调用生成模型" in response.get_data(as_text=True)
+
+
+def test_retrieved_context_reaches_model_and_source_is_rendered():
+    document = KnowledgeDocument(
+        title="可信资料",
+        content="经过审核的内容",
+        source_url="https://example.test/guidance",
+        keywords=("测试",),
+    )
+
+    class FakeKnowledgeBase:
+        def search(self, query):
+            assert query == "一般测试问题"
+            return [document]
+
+    model_inputs = []
+    app = create_app(
+        lambda text: model_inputs.append(text) or "回答",
+        knowledge_base=FakeKnowledgeBase(),
+    )
+
+    response = app.test_client().post(
+        "/ask", data={"user_input": "一般测试问题"}
+    )
+
+    assert response.status_code == 200
+    assert "经过审核的内容" in model_inputs[0]
+    assert "可信资料" in response.get_data(as_text=True)
+    assert "https://example.test/guidance" in response.get_data(as_text=True)

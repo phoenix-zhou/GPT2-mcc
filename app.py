@@ -35,6 +35,8 @@ def _default_cloud_predictor(text: str) -> str:
 def create_app(
     predictor: Predictor | None = None,
     cloud_predictor: Predictor | None = None,
+    safety_router=None,
+    knowledge_base=None,
 ) -> Flask:
     """Create the web application, optionally injecting a test predictor."""
     app = Flask(__name__)
@@ -47,6 +49,16 @@ def create_app(
     app.extensions["cloud_predictor"] = (
         cloud_predictor or _default_cloud_predictor
     )
+    if safety_router is None:
+        from safety import EmergencyRiskRouter
+
+        safety_router = EmergencyRiskRouter()
+    if knowledge_base is None:
+        from knowledge import LocalKnowledgeBase
+
+        knowledge_base = LocalKnowledgeBase()
+    app.extensions["safety_router"] = safety_router
+    app.extensions["knowledge_base"] = knowledge_base
 
     @app.get("/")
     def index():
@@ -67,6 +79,18 @@ def create_app(
             ), 400
 
         use_cloud = request.form.get("use_cloud") == "on"
+        assessment = current_app.extensions["safety_router"].assess(user_input)
+        if assessment.is_emergency:
+            from safety import EMERGENCY_MESSAGE
+
+            return render_template(
+                "index.html",
+                user_input=user_input,
+                answer=EMERGENCY_MESSAGE,
+                provider_name="紧急风险分流（未调用生成模型）",
+                is_emergency=True,
+            )
+
         if use_cloud and not current_app.config["CLOUD_ENHANCEMENT_ENABLED"]:
             return render_template(
                 "index.html",
@@ -74,6 +98,10 @@ def create_app(
                 error="云端增强未启用，因此没有发送数据或产生 API 费用。",
             ), 403
 
+        from knowledge import augment_with_context
+
+        documents = current_app.extensions["knowledge_base"].search(user_input)
+        model_input = augment_with_context(user_input, documents)
         provider_name = "OpenAI GPT" if use_cloud else "本地 Qwen"
         selected_predictor = (
             current_app.extensions["cloud_predictor"]
@@ -82,7 +110,7 @@ def create_app(
         )
 
         try:
-            answer = selected_predictor(user_input)
+            answer = selected_predictor(model_input)
         except (FileNotFoundError, OSError, RuntimeError):
             current_app.logger.exception("Model prediction failed")
             return render_template(
@@ -96,6 +124,7 @@ def create_app(
             user_input=user_input,
             answer=answer,
             provider_name=provider_name,
+            sources=documents,
         )
 
     @app.get("/health")

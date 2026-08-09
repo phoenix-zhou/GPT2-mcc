@@ -36,4 +36,6 @@ py-modules = [
     "parameter_config",
     "pytorch_tools",
     "chat_models",
+    "knowledge",
+    "safety",
 ]
