@@ -3,11 +3,22 @@
 from __future__ import annotations
 
 import logging
+import os
+import secrets
+import uuid
 from collections.abc import Callable
 
 import bleach
 import markdown
-from flask import Flask, current_app, render_template, request
+from flask import (
+    Flask,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from markupsafe import Markup, escape
 
 Predictor = Callable[[str], str]
@@ -67,12 +78,16 @@ def create_app(
     cloud_predictor: Predictor | None = None,
     safety_router=None,
     knowledge_base=None,
+    conversation_store=None,
 ) -> Flask:
     """Create the web application, optionally injecting a test predictor."""
     app = Flask(__name__)
     app.config.from_mapping(
+        SECRET_KEY=os.getenv("GPT2_MCC_SECRET_KEY") or secrets.token_hex(32),
         MAX_INPUT_LENGTH=1000,
         CLOUD_ENHANCEMENT_ENABLED=False,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
     )
     app.config.from_prefixed_env(prefix="GPT2_MCC")
     app.jinja_env.filters["render_markdown"] = render_markdown
@@ -96,23 +111,61 @@ def create_app(
         knowledge_base = LocalKnowledgeBase()
     app.extensions["safety_router"] = safety_router
     app.extensions["knowledge_base"] = knowledge_base
+    if conversation_store is None:
+        try:
+            from .conversation import InMemoryConversationStore
+        except ImportError:
+            from conversation import InMemoryConversationStore
+
+        conversation_store = InMemoryConversationStore()
+    app.extensions["conversation_store"] = conversation_store
+
+    def get_conversation_id() -> str:
+        conversation_id = session.get("conversation_id")
+        if not conversation_id:
+            conversation_id = uuid.uuid4().hex
+            session["conversation_id"] = conversation_id
+        return conversation_id
+
+    def page_context(**extra):
+        conversation_id = get_conversation_id()
+        return {
+            "conversation": current_app.extensions["conversation_store"].get(
+                conversation_id
+            ),
+            **extra,
+        }
 
     @app.get("/")
     def index():
-        return render_template("index.html")
+        return render_template("index.html", **page_context())
+
+    @app.post("/conversation/reset")
+    def reset_conversation():
+        conversation_id = get_conversation_id()
+        current_app.extensions["conversation_store"].clear(conversation_id)
+        session["conversation_id"] = uuid.uuid4().hex
+        return redirect(url_for("index"))
 
     @app.post("/ask")
     def ask():
+        conversation_id = get_conversation_id()
+        conversation_store = current_app.extensions["conversation_store"]
+        history = conversation_store.get(conversation_id)
         user_input = request.form.get("user_input", "").strip()
         if not user_input:
-            return render_template("index.html", error="请输入咨询内容。"), 400
+            return render_template(
+                "index.html", **page_context(error="请输入咨询内容。")
+            ), 400
 
         max_length = int(current_app.config["MAX_INPUT_LENGTH"])
         if len(user_input) > max_length:
             return render_template(
                 "index.html",
-                user_input=user_input,
-                error=f"输入内容不能超过 {max_length} 个字符。",
+                **page_context(
+                    user_input=user_input,
+                    error=f"输入内容不能超过 {max_length} 个字符。",
+                ),
             ), 400
 
         use_cloud = request.form.get("use_cloud") == "on"
@@ -123,19 +176,29 @@ def create_app(
             except ImportError:
                 from safety import EMERGENCY_MESSAGE
 
-            return render_template(
-                "index.html",
-                user_input=user_input,
-                answer=EMERGENCY_MESSAGE,
-                provider_name="紧急风险分流（未调用生成模型）",
-                is_emergency=True,
+            try:
+                from .conversation import ConversationTurn
+            except ImportError:
+                from conversation import ConversationTurn
+
+            conversation_store.append(
+                conversation_id,
+                ConversationTurn(
+                    user=user_input,
+                    assistant=EMERGENCY_MESSAGE,
+                    provider_name="紧急风险分流（未调用生成模型）",
+                    is_emergency=True,
+                ),
             )
+            return render_template("index.html", **page_context())
 
         if use_cloud and not current_app.config["CLOUD_ENHANCEMENT_ENABLED"]:
             return render_template(
                 "index.html",
-                user_input=user_input,
-                error="云端增强未启用，因此没有发送数据或产生 API 费用。",
+                **page_context(
+                    user_input=user_input,
+                    error="云端增强未启用，因此没有发送数据或产生 API 费用。",
+                ),
             ), 403
 
         try:
@@ -143,8 +206,17 @@ def create_app(
         except ImportError:
             from knowledge import augment_with_context
 
-        documents = current_app.extensions["knowledge_base"].search(user_input)
-        model_input = augment_with_context(user_input, documents)
+        retrieval_query = "\n".join(
+            [turn.user for turn in history[-2:]] + [user_input]
+        )
+        documents = current_app.extensions["knowledge_base"].search(retrieval_query)
+        try:
+            from .conversation import ConversationTurn, build_conversation_prompt
+        except ImportError:
+            from conversation import ConversationTurn, build_conversation_prompt
+
+        current_with_references = augment_with_context(user_input, documents)
+        model_input = build_conversation_prompt(history, current_with_references)
         provider_name = "OpenAI GPT" if use_cloud else "本地 Qwen"
         selected_predictor = (
             current_app.extensions["cloud_predictor"]
@@ -158,17 +230,22 @@ def create_app(
             current_app.logger.exception("Model prediction failed")
             return render_template(
                 "index.html",
-                user_input=user_input,
-                error="模型当前不可用，请确认模型权重和运行环境已正确配置。",
+                **page_context(
+                    user_input=user_input,
+                    error="模型当前不可用，请确认模型权重和运行环境已正确配置。",
+                ),
             ), 503
 
-        return render_template(
-            "index.html",
-            user_input=user_input,
-            answer=answer,
-            provider_name=provider_name,
-            sources=documents,
+        conversation_store.append(
+            conversation_id,
+            ConversationTurn(
+                user=user_input,
+                assistant=answer,
+                provider_name=provider_name,
+                sources=tuple(documents),
+            ),
         )
+        return render_template("index.html", **page_context())
 
     @app.get("/health")
     def health():
