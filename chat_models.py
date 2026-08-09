@@ -54,28 +54,17 @@ class OpenAIChatModel:
 
 
 class QwenLocalChatModel:
-    """Locally hosted Qwen instruction model."""
+    """Locally hosted, MLX-quantized Qwen model for Apple Silicon."""
 
-    def __init__(self, model_name: str = "Qwen/Qwen3-4B-Instruct-2507") -> None:
-        import torch
-        from transformers import AutoModelForCausalLM, AutoTokenizer
+    def __init__(
+        self,
+        model_name: str = "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    ) -> None:
+        from mlx_lm import generate, load
 
-        self.torch = torch
-        self.device = self._select_device(torch)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype="auto",
-        ).to(self.device)
-        self.model.eval()
-
-    @staticmethod
-    def _select_device(torch: Any) -> str:
-        if torch.cuda.is_available():
-            return "cuda"
-        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-            return "mps"
-        return "cpu"
+        self.model_name = model_name
+        self.model, self.tokenizer = load(model_name)
+        self._generate = generate
 
     def generate(self, user_input: str) -> str:
         messages = [
@@ -87,17 +76,13 @@ class QwenLocalChatModel:
             tokenize=False,
             add_generation_prompt=True,
         )
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
-        with self.torch.inference_mode():
-            output_ids = self.model.generate(
-                **inputs,
-                max_new_tokens=int(os.getenv("GPT2_MCC_MAX_NEW_TOKENS", "512")),
-                do_sample=True,
-                temperature=0.7,
-                top_p=0.9,
-            )
-        generated_ids = output_ids[0][inputs.input_ids.shape[1] :]
-        answer = self.tokenizer.decode(generated_ids, skip_special_tokens=True)
+        answer = self._generate(
+            self.model,
+            self.tokenizer,
+            prompt=prompt,
+            max_tokens=int(os.getenv("GPT2_MCC_MAX_NEW_TOKENS", "512")),
+            verbose=False,
+        )
         if not answer.strip():
             raise RuntimeError("The model returned an empty response")
         return answer.strip()
@@ -125,7 +110,8 @@ def create_chat_model(provider: str | None = None) -> ChatModel:
     if provider_name in {"qwen", "qwen-local"}:
         return QwenLocalChatModel(
             model_name=os.getenv(
-                "GPT2_MCC_QWEN_MODEL", "Qwen/Qwen3-4B-Instruct-2507"
+                "GPT2_MCC_QWEN_MODEL",
+                "mlx-community/Qwen3-4B-Instruct-2507-4bit",
             )
         )
     if provider_name in {"gpt2", "legacy-gpt2"}:

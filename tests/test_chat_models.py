@@ -1,8 +1,9 @@
+import sys
 from types import SimpleNamespace
 
 import pytest
 
-from chat_models import OpenAIChatModel, create_chat_model
+from chat_models import OpenAIChatModel, QwenLocalChatModel, create_chat_model
 
 
 class FakeResponses:
@@ -51,4 +52,36 @@ def test_local_qwen_is_the_default(monkeypatch):
 
     provider = create_chat_model()
 
-    assert provider.model_name == "Qwen/Qwen3-4B-Instruct-2507"
+    assert provider.model_name == "mlx-community/Qwen3-4B-Instruct-2507-4bit"
+
+
+def test_mlx_qwen_provider_applies_chat_template(monkeypatch):
+    calls = {}
+
+    class FakeTokenizer:
+        def apply_chat_template(self, messages, **kwargs):
+            calls["messages"] = messages
+            calls["template_kwargs"] = kwargs
+            return "rendered prompt"
+
+    def fake_load(model_name):
+        calls["model_name"] = model_name
+        return "model", FakeTokenizer()
+
+    def fake_generate(model, tokenizer, **kwargs):
+        calls["generate_kwargs"] = kwargs
+        return " 本地回答 "
+
+    monkeypatch.setitem(
+        sys.modules,
+        "mlx_lm",
+        SimpleNamespace(load=fake_load, generate=fake_generate),
+    )
+    provider = QwenLocalChatModel("local-test-model")
+
+    assert provider.generate("你好") == "本地回答"
+    assert calls["model_name"] == "local-test-model"
+    assert calls["messages"][0]["role"] == "system"
+    assert calls["messages"][1] == {"role": "user", "content": "你好"}
+    assert calls["template_kwargs"]["tokenize"] is False
+    assert calls["generate_kwargs"]["prompt"] == "rendered prompt"

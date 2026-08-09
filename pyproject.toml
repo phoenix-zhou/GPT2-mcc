@@ -11,6 +11,9 @@ dependencies = ["Flask>=3.0,<4"]
 
 [project.optional-dependencies]
 inference = [
+    "mlx-lm>=0.31,<0.32",
+]
+legacy-inference = [
     "torch>=2.2,<3",
     "transformers>=4.40,<5",
 ]
