@@ -13,7 +13,10 @@ Predictor = Callable[[str], str]
 def _default_predictor(text: str) -> str:
     """Load the configured model provider on the first prediction request."""
     try:
-        from chat_models import get_default_chat_model
+        try:
+            from .chat_models import get_default_chat_model
+        except ImportError:
+            from chat_models import get_default_chat_model
 
         return get_default_chat_model().generate(text)
     except Exception as exc:
@@ -25,7 +28,10 @@ def _default_predictor(text: str) -> str:
 def _default_cloud_predictor(text: str) -> str:
     """Use OpenAI only for an explicitly approved cloud-enhanced request."""
     try:
-        from chat_models import get_chat_model
+        try:
+            from .chat_models import get_chat_model
+        except ImportError:
+            from chat_models import get_chat_model
 
         return get_chat_model("openai").generate(text)
     except Exception as exc:
@@ -50,11 +56,17 @@ def create_app(
         cloud_predictor or _default_cloud_predictor
     )
     if safety_router is None:
-        from safety import EmergencyRiskRouter
+        try:
+            from .safety import EmergencyRiskRouter
+        except ImportError:
+            from safety import EmergencyRiskRouter
 
         safety_router = EmergencyRiskRouter()
     if knowledge_base is None:
-        from knowledge import LocalKnowledgeBase
+        try:
+            from .knowledge import LocalKnowledgeBase
+        except ImportError:
+            from knowledge import LocalKnowledgeBase
 
         knowledge_base = LocalKnowledgeBase()
     app.extensions["safety_router"] = safety_router
@@ -81,7 +93,10 @@ def create_app(
         use_cloud = request.form.get("use_cloud") == "on"
         assessment = current_app.extensions["safety_router"].assess(user_input)
         if assessment.is_emergency:
-            from safety import EMERGENCY_MESSAGE
+            try:
+                from .safety import EMERGENCY_MESSAGE
+            except ImportError:
+                from safety import EMERGENCY_MESSAGE
 
             return render_template(
                 "index.html",
@@ -98,7 +113,10 @@ def create_app(
                 error="云端增强未启用，因此没有发送数据或产生 API 费用。",
             ), 403
 
-        from knowledge import augment_with_context
+        try:
+            from .knowledge import augment_with_context
+        except ImportError:
+            from knowledge import augment_with_context
 
         documents = current_app.extensions["knowledge_base"].search(user_input)
         model_input = augment_with_context(user_input, documents)
