@@ -3,7 +3,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from chat_models import OpenAIChatModel, QwenLocalChatModel, create_chat_model
+from chat_models import (
+    MEDICAL_SYSTEM_PROMPT,
+    OpenAIChatModel,
+    QwenLocalChatModel,
+    create_chat_model,
+)
 
 
 class FakeResponses:
@@ -85,3 +90,11 @@ def test_mlx_qwen_provider_applies_chat_template(monkeypatch):
     assert calls["messages"][1] == {"role": "user", "content": "你好"}
     assert calls["template_kwargs"]["tokenize"] is False
     assert calls["generate_kwargs"]["prompt"] == "rendered prompt"
+    assert calls["generate_kwargs"]["max_tokens"] == 1024
+
+
+def test_medical_prompt_requires_concise_complete_answer():
+    assert "不要展示内部推理过程" in MEDICAL_SYSTEM_PROMPT
+    assert "700 个汉字以内" in MEDICAL_SYSTEM_PROMPT
+    assert "以完整句子结束" in MEDICAL_SYSTEM_PROMPT
+    assert "以上信息仅供健康科普参考" in MEDICAL_SYSTEM_PROMPT
