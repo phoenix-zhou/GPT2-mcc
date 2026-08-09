@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+dist/
+build/
+*.egg-info/
+sample/
+save_model/*/pytorch_model.bin
+save_model/*/model.safetensors

@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
-# import sys
 import torch.nn.utils.rnn as rnn_utils  # 导入rnn_utils模块，用于处理可变长度序列的填充和排序
-from torch.utils.data import Dataset, DataLoader  # 导入Dataset和DataLoader模块，用于加载和处理数据集
-import torch  # 导入torch模块，用于处理张量和构建神经网络
+from torch.utils.data import DataLoader  # 导入Dataset和DataLoader模块，用于加载和处理数据集
 import pickle  # 导入pickle模块，用于序列化和反序列化Python对象
-from dataset import *  # 导入自定义的数据集类
+from data_preprocess.dataset import MyDataset
 
 # 获取当前文件的父目录（即项目根目录），并加入系统路径
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
