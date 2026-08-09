@@ -33,7 +33,15 @@
         {% if answer %}
             <h2>模型回答：</h2>
             {% if provider_name %}<p>回答模型：{{ provider_name }}</p>{% endif %}
-            <p>{{ answer }}</p>
+            <p{% if is_emergency %} role="alert"{% endif %}>{{ answer }}</p>
+            {% if sources %}
+                <h3>参考资料</h3>
+                <ul>
+                    {% for source in sources %}
+                        <li><a href="{{ source.source_url }}" rel="noopener noreferrer">{{ source.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         {% endif %}
     {% endif %}
 </body>

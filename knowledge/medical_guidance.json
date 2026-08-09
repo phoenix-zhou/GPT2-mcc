@@ -1,0 +1,20 @@
+[
+  {
+    "title": "CDC：识别卒中征象",
+    "content": "突然出现单侧面部、手臂或腿部麻木或无力，突然说话或理解困难，突然视力、行走或平衡异常，以及原因不明的突发剧烈头痛，都可能是卒中征象。卒中需要立即联系急救服务。",
+    "source_url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
+    "keywords": ["卒中", "中风", "面部下垂", "肢体无力", "说话不清", "平衡", "突发头痛"]
+  },
+  {
+    "title": "NHS：心脏病发作的常见表现",
+    "content": "心脏病发作可能表现为胸部压榨或紧缩样疼痛，疼痛可放射至手臂、颈部或下颌，也可能伴随呼吸短促、恶心、出汗或肤色异常。疑似情况需要紧急医疗处理。",
+    "source_url": "https://www.nhs.uk/conditions/heart-attack/",
+    "keywords": ["心脏病", "心梗", "胸痛", "胸闷", "呼吸短促", "出汗", "恶心"]
+  },
+  {
+    "title": "WHO：自杀与自伤危机求助",
+    "content": "自杀或自伤想法是严重情绪痛苦的信号。若存在立即伤害自己的危险，应联系急救服务或危机热线；不要让处于立即危险中的人独处，并寻求可信任的人和专业人员协助。",
+    "source_url": "https://www.who.int/news-room/questions-and-answers/item/suicide",
+    "keywords": ["自杀", "自伤", "轻生", "活不下去", "绝望", "危机热线"]
+  }
+]
