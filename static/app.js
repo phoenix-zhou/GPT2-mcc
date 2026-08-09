@@ -9,3 +9,8 @@ if (form && submitButton) {
         if (label) label.textContent = "正在生成，请稍候…";
     });
 }
+
+const latestTurn = document.querySelector(".latest-turn");
+if (latestTurn) {
+    latestTurn.scrollIntoView({ behavior: "smooth", block: "start" });
+}

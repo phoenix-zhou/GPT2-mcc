@@ -28,7 +28,7 @@
             <div>
                 <p class="eyebrow">PRIVATE · LOCAL-FIRST · EVIDENCE-AWARE</p>
                 <h1 id="page-title">更清晰地理解健康问题</h1>
-                <p class="hero-copy">描述你的症状或健康疑问，获取结构化的科普信息、需要关注的信号和下一步建议。</p>
+                <p class="hero-copy">描述你的症状或健康疑问，并像聊天一样继续补充信息。助手会结合本次咨询的最近对话给出下一步建议。</p>
             </div>
             <div class="safety-note" role="note">
                 <span class="safety-icon" aria-hidden="true">!</span>
@@ -36,11 +36,60 @@
             </div>
         </section>
 
-        <section class="consultation-card" aria-label="健康问题输入">
+        {% if conversation %}
+            <section class="conversation-section" aria-labelledby="conversation-title">
+                <div class="conversation-heading">
+                    <div>
+                        <p class="section-kicker">CURRENT CONSULTATION</p>
+                        <h2 id="conversation-title">本次咨询</h2>
+                        <p class="retention-note">最近 6 轮暂存在当前服务内存中；重启服务或开始新咨询后清除。</p>
+                    </div>
+                    <form action="{{ url_for('reset_conversation') }}" method="post">
+                        <button class="secondary-button" type="submit">开始新咨询</button>
+                    </form>
+                </div>
+
+                <div class="conversation-list">
+                    {% for turn in conversation %}
+                        <article class="conversation-turn{% if loop.last %} latest-turn{% endif %}">
+                            <div class="user-message">
+                                <span class="message-label">你</span>
+                                <p>{{ turn.user }}</p>
+                            </div>
+                            <div class="assistant-message{% if turn.is_emergency %} emergency-answer{% endif %}">
+                                <div class="assistant-meta">
+                                    <span class="message-label assistant-label">澄心助手</span>
+                                    <span class="provider-badge">{{ turn.provider_name }}</span>
+                                </div>
+                                <div class="markdown-body{% if turn.is_emergency %} alert-content{% endif %}"{% if turn.is_emergency %} role="alert"{% endif %}>
+                                    {{ turn.assistant | render_markdown }}
+                                </div>
+                                {% if turn.sources %}
+                                    <div class="sources">
+                                        <h3>参考资料</h3>
+                                        <ul>
+                                            {% for source in turn.sources %}
+                                                <li><a href="{{ source.source_url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} <span aria-hidden="true">↗</span></a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="consultation-card{% if conversation %} follow-up-card{% endif %}" aria-label="健康问题输入">
             <form id="consultation-form" action="{{ url_for('ask') }}" method="post">
-                <label class="field-label" for="user_input">请描述你的情况</label>
-                <p id="input-help" class="field-help">可以包括发生时间、持续多久、严重程度和伴随症状。请勿输入姓名、证件号等身份信息。</p>
-                <textarea id="user_input" name="user_input" rows="5" maxlength="1000" aria-describedby="input-help" placeholder="例如：晚饭后开始恶心并呕吐一次，没有发热，应该注意什么？" required>{{ user_input or '' }}</textarea>
+                <label class="field-label" for="user_input">{{ '继续补充或提问' if conversation else '请描述你的情况' }}</label>
+                {% if conversation %}
+                    <p id="input-help" class="field-help memory-help"><span aria-hidden="true">✓</span> 无需删除或重复前面的内容。直接补充新的症状、时间或回答助手的问题即可。</p>
+                {% else %}
+                    <p id="input-help" class="field-help">可以包括发生时间、持续多久、严重程度和伴随症状。请勿输入姓名、证件号等身份信息。</p>
+                {% endif %}
+                <textarea id="user_input" name="user_input" rows="5" maxlength="1000" aria-describedby="input-help" placeholder="{{ '例如：已经持续两天，每天大约五次，没有发热。' if conversation else '例如：晚饭后开始恶心并呕吐一次，没有发热，应该注意什么？' }}" required>{{ user_input or '' }}</textarea>
 
                 <div class="form-footer">
                     {% if config.CLOUD_ENHANCEMENT_ENABLED %}
@@ -52,7 +101,7 @@
                         <span class="local-note">问题默认仅由本地模型处理</span>
                     {% endif %}
                     <button id="submit-button" type="submit">
-                        <span class="button-label">获取健康信息</span>
+                        <span class="button-label">{{ '发送补充信息' if conversation else '获取健康信息' }}</span>
                         <span class="spinner" aria-hidden="true"></span>
                     </button>
                 </div>
@@ -66,39 +115,6 @@
             </section>
         {% endif %}
 
-        {% if user_input and answer %}
-            <section class="result-grid" aria-label="回答结果">
-                <aside class="question-card">
-                    <p class="section-kicker">你的问题</p>
-                    <p>{{ user_input }}</p>
-                </aside>
-
-                <article class="answer-card{% if is_emergency %} emergency-answer{% endif %}">
-                    <div class="answer-header">
-                        <div>
-                            <p class="section-kicker">健康信息建议</p>
-                            <h2>回答与下一步</h2>
-                        </div>
-                        {% if provider_name %}<span class="provider-badge">{{ provider_name }}</span>{% endif %}
-                    </div>
-
-                    <div class="markdown-body{% if is_emergency %} alert-content{% endif %}"{% if is_emergency %} role="alert"{% endif %}>
-                        {{ answer | render_markdown }}
-                    </div>
-
-                    {% if sources %}
-                        <div class="sources">
-                            <h3>参考资料</h3>
-                            <ul>
-                                {% for source in sources %}
-                                    <li><a href="{{ source.source_url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} <span aria-hidden="true">↗</span></a></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
-                </article>
-            </section>
-        {% endif %}
     </main>
 
     <footer class="site-footer">

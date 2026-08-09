@@ -48,6 +48,75 @@ def test_ask_uses_injected_predictor():
     assert "回答：你好" in response.get_data(as_text=True)
 
 
+def test_follow_up_includes_recent_conversation_context():
+    model_inputs = []
+    app = create_app(
+        lambda text: model_inputs.append(text) or f"第 {len(model_inputs)} 次回答"
+    )
+    client = app.test_client()
+
+    first = client.post("/ask", data={"user_input": "我有拉肚子"})
+    second = client.post(
+        "/ask", data={"user_input": "已经两天了，每天五次，没有发烧"}
+    )
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert model_inputs[0] == "我有拉肚子"
+    assert "我有拉肚子" in model_inputs[1]
+    assert "第 1 次回答" in model_inputs[1]
+    assert "已经两天了，每天五次，没有发烧" in model_inputs[1]
+    html = second.get_data(as_text=True)
+    assert "无需删除或重复前面的内容" in html
+    assert "开始新咨询" in html
+    assert html.count('class="conversation-turn') == 2
+
+
+def test_follow_up_knowledge_search_includes_recent_user_context():
+    queries = []
+
+    class RecordingKnowledgeBase:
+        def search(self, query):
+            queries.append(query)
+            return []
+
+    app = create_app(
+        lambda text: "回答",
+        knowledge_base=RecordingKnowledgeBase(),
+    )
+    client = app.test_client()
+    client.post("/ask", data={"user_input": "我有拉肚子"})
+    client.post("/ask", data={"user_input": "每天大约五次"})
+
+    assert queries == ["我有拉肚子", "我有拉肚子\n每天大约五次"]
+
+
+def test_new_consultation_clears_history_and_model_context():
+    model_inputs = []
+    app = create_app(lambda text: model_inputs.append(text) or "回答")
+    client = app.test_client()
+    client.post("/ask", data={"user_input": "旧问题"})
+
+    reset = client.post("/conversation/reset")
+    homepage = client.get("/")
+    client.post("/ask", data={"user_input": "新问题"})
+
+    assert reset.status_code == 302
+    assert "旧问题" not in homepage.get_data(as_text=True)
+    assert model_inputs[-1] == "新问题"
+
+
+def test_conversations_are_isolated_between_browser_sessions():
+    app = create_app(lambda text: "回答")
+    first_client = app.test_client()
+    second_client = app.test_client()
+
+    first_client.post("/ask", data={"user_input": "第一个人的问题"})
+    second_home = second_client.get("/")
+
+    assert "第一个人的问题" not in second_home.get_data(as_text=True)
+
+
 def test_ask_rejects_empty_input():
     client = create_app(lambda text: text).test_client()
 

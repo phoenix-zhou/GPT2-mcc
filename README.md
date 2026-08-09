@@ -22,6 +22,8 @@ implementation as a legacy baseline for education and comparison.
 - Strong emergency signals are routed before any generative model is called.
 - Non-emergency questions can retrieve versioned local medical references,
   with source links rendered separately from model output.
+- Follow-up messages automatically include the latest four dialogue turns;
+  the interface keeps up to six turns in bounded server memory.
 - Flask application factory, lazy model loading, health endpoint, input
   validation, controlled error handling, Pytest tests, and GitHub Actions CI.
 
@@ -33,6 +35,7 @@ Browser request
   → Emergency-risk routing
       ├─ High risk: fixed emergency guidance; no model call
       └─ Non-emergency: local knowledge retrieval
+          → Recent conversation context (up to four turns)
           → Local Qwen (default)
           → OpenAI GPT (server-enabled and selected per request)
   → Answer and reference links
@@ -55,6 +58,19 @@ flask --app app run
 ```
 
 Open <http://127.0.0.1:5000>.
+
+## Follow-up conversations and memory
+
+After the first answer, enter only the new information—for example, “It has
+lasted two days, about five times a day, without fever.” You do not need to
+delete, copy, or repeat the earlier question. The model receives up to the
+latest four turns as context, while the page displays up to six turns.
+
+Conversation content is held only in the running Flask process. It is not
+written to the repository or a database, and it disappears when the server
+restarts or when **Start a new consultation** is selected. This simple design
+is suitable for the local demo; production deployment should use an encrypted,
+access-controlled server-side session store with an explicit retention policy.
 
 ## Optional OpenAI enhancement
 
@@ -117,6 +133,7 @@ Tests use fake providers. They do not download Qwen or make paid API calls.
 ```text
 app.py                          Flask app and request orchestration
 chat_models.py                  Qwen, OpenAI, and GPT-2 providers
+conversation.py                 Bounded in-memory multi-turn context
 safety.py                       Emergency-risk routing
 knowledge.py                    Local retrieval and context construction
 knowledge/medical_guidance.json Versioned guidance with provenance
@@ -130,7 +147,7 @@ tests/                          Automated tests
 
 - Expand the knowledge base with professional content review.
 - Upgrade RAG with Chinese embeddings and a reranker.
-- Add multi-turn sessions, streaming output, and structured answers.
+- Add streaming output and structured answers.
 - Build safety, factuality, citation-accuracy, latency, and cost evaluations.
 - Add containers, a production WSGI server, observability, and deployment docs.
 
