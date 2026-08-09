@@ -38,3 +38,17 @@ def test_openai_provider_rejects_empty_output():
 def test_unknown_provider_has_actionable_error():
     with pytest.raises(ValueError, match="Supported providers"):
         create_chat_model("unknown")
+
+
+def test_local_qwen_is_the_default(monkeypatch):
+    monkeypatch.delenv("GPT2_MCC_MODEL_PROVIDER", raising=False)
+
+    class FakeQwen:
+        def __init__(self, model_name):
+            self.model_name = model_name
+
+    monkeypatch.setattr("chat_models.QwenLocalChatModel", FakeQwen)
+
+    provider = create_chat_model()
+
+    assert provider.model_name == "Qwen/Qwen3-4B-Instruct-2507"

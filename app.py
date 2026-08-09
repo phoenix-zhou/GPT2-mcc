@@ -22,12 +22,31 @@ def _default_predictor(text: str) -> str:
         raise RuntimeError("Model provider request failed") from exc
 
 
-def create_app(predictor: Predictor | None = None) -> Flask:
+def _default_cloud_predictor(text: str) -> str:
+    """Use OpenAI only for an explicitly approved cloud-enhanced request."""
+    try:
+        from chat_models import get_chat_model
+
+        return get_chat_model("openai").generate(text)
+    except Exception as exc:
+        raise RuntimeError("Cloud model provider request failed") from exc
+
+
+def create_app(
+    predictor: Predictor | None = None,
+    cloud_predictor: Predictor | None = None,
+) -> Flask:
     """Create the web application, optionally injecting a test predictor."""
     app = Flask(__name__)
-    app.config.from_mapping(MAX_INPUT_LENGTH=1000)
+    app.config.from_mapping(
+        MAX_INPUT_LENGTH=1000,
+        CLOUD_ENHANCEMENT_ENABLED=False,
+    )
     app.config.from_prefixed_env(prefix="GPT2_MCC")
     app.extensions["predictor"] = predictor or _default_predictor
+    app.extensions["cloud_predictor"] = (
+        cloud_predictor or _default_cloud_predictor
+    )
 
     @app.get("/")
     def index():
@@ -47,8 +66,23 @@ def create_app(predictor: Predictor | None = None) -> Flask:
                 error=f"输入内容不能超过 {max_length} 个字符。",
             ), 400
 
+        use_cloud = request.form.get("use_cloud") == "on"
+        if use_cloud and not current_app.config["CLOUD_ENHANCEMENT_ENABLED"]:
+            return render_template(
+                "index.html",
+                user_input=user_input,
+                error="云端增强未启用，因此没有发送数据或产生 API 费用。",
+            ), 403
+
+        provider_name = "OpenAI GPT" if use_cloud else "本地 Qwen"
+        selected_predictor = (
+            current_app.extensions["cloud_predictor"]
+            if use_cloud
+            else current_app.extensions["predictor"]
+        )
+
         try:
-            answer = current_app.extensions["predictor"](user_input)
+            answer = selected_predictor(user_input)
         except (FileNotFoundError, OSError, RuntimeError):
             current_app.logger.exception("Model prediction failed")
             return render_template(
@@ -58,7 +92,10 @@ def create_app(predictor: Predictor | None = None) -> Flask:
             ), 503
 
         return render_template(
-            "index.html", user_input=user_input, answer=answer
+            "index.html",
+            user_input=user_input,
+            answer=answer,
+            provider_name=provider_name,
         )
 
     @app.get("/health")
