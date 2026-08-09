@@ -1,40 +1,47 @@
 # 🏥 Local-first Medical Chatbot
 
-基于 Flask 的医疗健康信息聊天机器人研究项目。当前版本默认在本地运行
-Qwen 指令模型，可由用户为单次请求显式启用 OpenAI 云端增强，并保留原始
-GPT‑2 实现作为教学和效果对照基线。
+[English](README.md) | [简体中文](README.zh-CN.md)
+
+A Flask-based medical information chatbot research project. The current
+version runs a Qwen instruction model locally by default, supports explicit
+per-request OpenAI enhancement, and preserves the original GPT-2
+implementation as a legacy baseline for education and comparison.
 
 > [!WARNING]
-> 本项目仅用于研究与教学，不提供医疗诊断、处方或治疗建议，不能替代有资质
-> 的医疗专业人员。不要输入真实患者姓名、证件号码、联系方式或其他敏感信息。
+> This project is for research and education only. It does not provide medical
+> diagnosis, prescriptions, or treatment advice and must not replace qualified
+> clinicians. Do not enter real patient names, identifiers, contact details, or
+> other sensitive information.
 
-## 当前能力
+## Highlights
 
-- 本地 Qwen 为默认模型，不产生按 Token 计费的 API 调用。
-- OpenAI 云端增强默认关闭，必须由服务器启用且由用户逐次勾选。
-- 原 GPT‑2 推理入口继续保留，用作兼容与对照基线。
-- 明显急症信号先经过确定性规则分流，不调用任何生成模型。
-- 非急症问题可检索仓库内版本化的医学资料，并在页面单独展示来源。
-- Flask 应用工厂、延迟模型加载、健康检查、输入校验和受控错误页面。
-- Pytest 自动化测试与 GitHub Actions CI。
+- Local Qwen is the default provider, with no per-token API charge.
+- OpenAI enhancement is disabled by default and requires both server approval
+  and explicit selection by the user for each request.
+- The original GPT-2 path remains available as a compatibility baseline.
+- Strong emergency signals are routed before any generative model is called.
+- Non-emergency questions can retrieve versioned local medical references,
+  with source links rendered separately from model output.
+- Flask application factory, lazy model loading, health endpoint, input
+  validation, controlled error handling, Pytest tests, and GitHub Actions CI.
 
-## 请求流程
+## Request flow
 
 ```text
-浏览器问题
-  → 输入校验
-  → 急症风险分流
-      ├─ 高风险：固定急救提示，不调用模型
-      └─ 非急症：本地知识检索
-          → 本地 Qwen（默认）
-          → OpenAI GPT（服务器允许且用户单次选择）
-  → 回答与参考资料
+Browser request
+  → Input validation
+  → Emergency-risk routing
+      ├─ High risk: fixed emergency guidance; no model call
+      └─ Non-emergency: local knowledge retrieval
+          → Local Qwen (default)
+          → OpenAI GPT (server-enabled and selected per request)
+  → Answer and reference links
 ```
 
-## 快速启动：本地 Qwen
+## Quick start with local Qwen
 
-需要 Python 3.10 或更新版本。首次运行会从模型仓库下载权重，并需要足够的
-内存或显存。
+Python 3.10 or newer is required. The first run downloads the selected model
+and requires enough RAM or VRAM for its weights.
 
 ```bash
 python -m venv .venv
@@ -47,12 +54,13 @@ export GPT2_MCC_QWEN_MODEL="Qwen/Qwen3-4B-Instruct-2507"
 flask --app app run
 ```
 
-启动后访问 <http://127.0.0.1:5000>。
+Open <http://127.0.0.1:5000>.
 
-## 可选：OpenAI 云端增强
+## Optional OpenAI enhancement
 
-OpenAI API 与 ChatGPT 订阅分开计费。密钥只通过环境变量读取，不应写入代码、
-`.env` 或 Git 历史。
+OpenAI API usage is billed separately from ChatGPT subscriptions. The API key
+is read only from the environment and must never be committed to source code,
+`.env` files, or Git history.
 
 ```bash
 python -m pip install -e '.[openai]'
@@ -64,10 +72,11 @@ export GPT2_MCC_CLOUD_ENHANCEMENT_ENABLED=true
 flask --app app run
 ```
 
-OpenAI 请求设置 `store=False`。这不等同于完整的零数据保留承诺；生产部署前
-仍需审查账户数据控制、地区法规和医疗数据处理要求。
+OpenAI requests set `store=False`. This alone is not a complete zero-data-
+retention guarantee. Review account data controls, applicable regulations, and
+medical-data requirements before any production deployment.
 
-## 原始 GPT‑2 基线
+## Legacy GPT-2 baseline
 
 ```bash
 export GPT2_MCC_MODEL_PROVIDER="legacy-gpt2"
@@ -75,53 +84,57 @@ export GPT2_MCC_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
 flask --app app run
 ```
 
-原仓库没有直接提交大型 `pytorch_model.bin` 权重文件。原作者提供的下载链接：
+The upstream repository does not commit the large `pytorch_model.bin` file.
+Resources published by the original author:
 
-- 模型权重：[百度网盘](https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv)，提取码 `2mrv`
-- 原项目博客：[CSDN](https://blog.csdn.net/zhoupenghui168/article/details/162314485)
+- [Model checkpoint on Baidu Netdisk](https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv), extraction code `2mrv`
+- [Original CSDN project article](https://blog.csdn.net/zhoupenghui168/article/details/162314485)
 
-## 安全分流与本地检索
+## Safety routing and local retrieval
 
-`safety.py` 对严重呼吸困难、卒中征象、无法控制的出血、意识丧失和立即自伤
-风险等强信号进行保守分流。这套规则不是诊断模型，可能漏报或误报，不能作为
-医疗器械使用。
+`safety.py` conservatively routes strong signals such as severe breathing
+difficulty, stroke signs, uncontrolled bleeding, unconsciousness, and
+immediate self-harm risk. It is not a diagnostic model, can produce false
+positives or false negatives, and must not be treated as a medical device.
 
-`knowledge/medical_guidance.json` 是一个小型、可审查的本地资料库。当前示例
-资料来自 CDC、NHS 和 WHO。`knowledge.py` 使用无外部依赖的关键词检索，后续
-可在保持接口不变的情况下升级为向量检索。
+`knowledge/medical_guidance.json` is a small, reviewable local knowledge base.
+The starter documents cite CDC, NHS, and WHO guidance. `knowledge.py` currently
+uses dependency-free keyword retrieval and can later be replaced by vector
+retrieval without changing the web-layer interface.
 
-## 开发与测试
+## Development and tests
 
 ```bash
 python -m pip install -e '.[dev]'
 pytest
 ```
 
-测试使用模拟 Provider，不会下载 Qwen，也不会调用付费 API。
+Tests use fake providers. They do not download Qwen or make paid API calls.
 
-## 主要文件
+## Project layout
 
 ```text
-app.py                         Flask Web 应用与请求编排
-chat_models.py                 Qwen、OpenAI 和 GPT‑2 Provider
-safety.py                      急症风险分流
-knowledge.py                   本地资料检索与上下文构造
-knowledge/medical_guidance.json 版本化资料与来源
-templates/index.html           Web 页面
-data_preprocess/               原 GPT‑2 数据处理代码
-train.py                       原 GPT‑2 训练入口
-tests/                         自动化测试
+app.py                          Flask app and request orchestration
+chat_models.py                  Qwen, OpenAI, and GPT-2 providers
+safety.py                       Emergency-risk routing
+knowledge.py                    Local retrieval and context construction
+knowledge/medical_guidance.json Versioned guidance with provenance
+templates/index.html            Web interface
+data_preprocess/                Original GPT-2 preprocessing code
+train.py                        Original GPT-2 training entry point
+tests/                          Automated tests
 ```
 
-## 路线图
+## Roadmap
 
-- 扩充并由专业人员审核医学资料库。
-- 使用中文向量嵌入和重排模型升级 RAG。
-- 增加多轮会话、流式输出和结构化回答。
-- 建立安全性、事实性、引用准确率和模型成本评测。
-- 增加容器化、生产 WSGI 服务、监控和部署文档。
+- Expand the knowledge base with professional content review.
+- Upgrade RAG with Chinese embeddings and a reranker.
+- Add multi-turn sessions, streaming output, and structured answers.
+- Build safety, factuality, citation-accuracy, latency, and cost evaluations.
+- Add containers, a production WSGI server, observability, and deployment docs.
 
-## 许可证
+## License
 
-上游项目当前没有声明开源许可证。在获得作者明确许可前，请勿假设代码或数据
-可以用于再分发或商业用途。
+The upstream project currently does not declare an open-source license. Do not
+assume the code or data may be redistributed or used commercially without
+explicit permission from the original author.
