@@ -14,6 +14,7 @@ inference = [
     "torch>=2.2,<3",
     "transformers>=4.40,<5",
 ]
+openai = ["openai>=1.66,<3"]
 training = [
     "numpy>=1.26",
     "torch>=2.2,<3",
@@ -34,4 +35,5 @@ py-modules = [
     "functions_tools",
     "parameter_config",
     "pytorch_tools",
+    "chat_models",
 ]

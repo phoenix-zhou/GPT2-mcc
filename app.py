@@ -11,10 +11,15 @@ Predictor = Callable[[str], str]
 
 
 def _default_predictor(text: str) -> str:
-    """Load the ML module only when the first prediction is requested."""
-    from flask_predict import model_predict
+    """Load the configured model provider on the first prediction request."""
+    try:
+        from chat_models import get_default_chat_model
 
-    return model_predict(text)
+        return get_default_chat_model().generate(text)
+    except Exception as exc:
+        # Provider SDKs expose different exception hierarchies. Normalize them
+        # at this boundary so the web layer can return a controlled 503 page.
+        raise RuntimeError("Model provider request failed") from exc
 
 
 def create_app(predictor: Predictor | None = None) -> Flask:
