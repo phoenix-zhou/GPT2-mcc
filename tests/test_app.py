@@ -37,3 +37,38 @@ def test_ask_reports_unavailable_model():
 
     assert response.status_code == 503
     assert "模型当前不可用" in response.get_data(as_text=True)
+
+
+def test_cloud_request_is_blocked_by_default():
+    cloud_calls = []
+    app = create_app(
+        lambda text: "local",
+        cloud_predictor=lambda text: cloud_calls.append(text) or "cloud",
+    )
+
+    response = app.test_client().post(
+        "/ask", data={"user_input": "测试", "use_cloud": "on"}
+    )
+
+    assert response.status_code == 403
+    assert cloud_calls == []
+    assert "没有发送数据或产生 API 费用" in response.get_data(as_text=True)
+
+
+def test_explicit_cloud_request_uses_cloud_provider():
+    local_calls = []
+    cloud_calls = []
+    app = create_app(
+        lambda text: local_calls.append(text) or "local",
+        cloud_predictor=lambda text: cloud_calls.append(text) or "cloud answer",
+    )
+    app.config["CLOUD_ENHANCEMENT_ENABLED"] = True
+
+    response = app.test_client().post(
+        "/ask", data={"user_input": "复杂问题", "use_cloud": "on"}
+    )
+
+    assert response.status_code == 200
+    assert local_calls == []
+    assert cloud_calls == ["复杂问题"]
+    assert "OpenAI GPT" in response.get_data(as_text=True)

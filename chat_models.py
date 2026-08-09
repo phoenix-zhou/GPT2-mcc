@@ -115,7 +115,7 @@ class LegacyGPT2ChatModel:
 def create_chat_model(provider: str | None = None) -> ChatModel:
     """Create a provider from explicit input or environment configuration."""
     provider_name = (
-        provider or os.getenv("GPT2_MCC_MODEL_PROVIDER", "openai")
+        provider or os.getenv("GPT2_MCC_MODEL_PROVIDER", "qwen-local")
     ).strip().lower()
 
     if provider_name == "openai":
@@ -135,6 +135,12 @@ def create_chat_model(provider: str | None = None) -> ChatModel:
     raise ValueError(
         f"Unknown model provider {provider_name!r}. Supported providers: {supported}"
     )
+
+
+@lru_cache(maxsize=4)
+def get_chat_model(provider: str) -> ChatModel:
+    """Reuse an explicitly selected provider across requests."""
+    return create_chat_model(provider)
 
 
 @lru_cache(maxsize=1)

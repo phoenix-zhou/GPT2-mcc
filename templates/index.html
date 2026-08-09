@@ -13,6 +13,12 @@
     <form action="/ask" method="post">
         <label for="user_input">输入问题：</label>
         <input type="text" id="user_input" name="user_input" maxlength="1000" required>
+        {% if config.CLOUD_ENHANCEMENT_ENABLED %}
+            <label>
+                <input type="checkbox" name="use_cloud">
+                本次使用 OpenAI 云端增强（可能产生 Token 费用，请勿输入身份信息）
+            </label>
+        {% endif %}
         <button type="submit">提交</button>
     </form>
 
@@ -26,6 +32,7 @@
 
         {% if answer %}
             <h2>模型回答：</h2>
+            {% if provider_name %}<p>回答模型：{{ provider_name }}</p>{% endif %}
             <p>{{ answer }}</p>
         {% endif %}
     {% endif %}
