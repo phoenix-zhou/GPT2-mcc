@@ -1,5 +1,33 @@
 
 # 🏥 GPT-2 Medical Consultation Chatbot
+
+> [!WARNING]
+> This repository is a research and education demo. Its output is not medical
+> advice and must not replace diagnosis or treatment by qualified clinicians.
+
+## Quick start
+
+Python 3.10 or newer is required.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[inference]'
+flask --app app run
+```
+
+The original model weights are not included in this repository. Place a
+Transformers-compatible checkpoint in `save_model/epoch97`, or set
+`GPT2_MCC_INFERENCE_MODEL_PATH` to a checkpoint directory. Until a checkpoint
+is configured, the web application will return a clear service-unavailable
+message instead of failing during startup.
+
+For development and tests:
+
+```bash
+python -m pip install -e '.[dev]'
+pytest
+```
 This project aims to build an intelligent medical consultation chatbot using the GPT-2 pre-trained model. The system is designed to simulate a doctor's natural language communication style, understand users' descriptions of their conditions or medical inquiries, and provide accurate, efficient, and professional medical advice.
 ## ✨ Project Overview
 As an intelligent dialogue system based on Natural Language Processing (NLP) technology, chatbots are playing a significant role in various fields. While they are commonly used for online customer service and personal assistants, their application in the medical field demands higher professionalism and rigor.

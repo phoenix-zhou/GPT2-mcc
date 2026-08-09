@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +8,17 @@
 <body>
     <h1>小李子健康咨询</h1>
 
+    <p role="note">本项目仅用于技术演示，不能替代医生诊断。紧急情况请立即联系当地急救服务。</p>
+
     <form action="/ask" method="post">
         <label for="user_input">输入问题：</label>
-        <input type="text" id="user_input" name="user_input" required>
+        <input type="text" id="user_input" name="user_input" maxlength="1000" required>
         <button type="submit">提交</button>
     </form>
+
+    {% if error %}
+        <p role="alert">{{ error }}</p>
+    {% endif %}
 
     {% if user_input %}
         <h2>用户输入：</h2>

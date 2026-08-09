@@ -191,7 +191,7 @@ def train(model, train_dataloader, validate_dataloader, args):
 
     # eps，为了增加数值计算的稳定性而加到分母里的项，其为了防止在实现中除以零
     # 优化器：使用 AdamW，这是 Transformer 模型的标准优化器
-    optimizer = transformers.AdamW(model.parameters(), lr=args.lr, eps=args.eps)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, eps=args.eps)
     '''
     这里对于模型的参数，分别进行权重参数的衰减优化：防止过拟合，以及学习率预热处理优化：
         预热：在训练初期，学习率从 0 线性增加到预设的 args.lr。

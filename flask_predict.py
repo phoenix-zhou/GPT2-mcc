@@ -1,9 +1,9 @@
 import os
-from datetime import datetime
 from transformers import GPT2LMHeadModel
 from transformers import BertTokenizer
+import torch
 import torch.nn.functional as F
-from parameter_config import *
+from parameter_config import ParameterConfig
 
 PAD = '[PAD]'
 pad_id = 0
@@ -12,12 +12,11 @@ pconf = ParameterConfig()
 # 当用户使用GPU,并且GPU可用时
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print('using device:{}'.format(device))
-os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 tokenizer = BertTokenizer(vocab_file=pconf.vocab_path,
                               sep_token="[SEP]",
                               pad_token="[PAD]",
                               cls_token="[CLS]")
-model = GPT2LMHeadModel.from_pretrained('./save_model/epoch97')
+model = GPT2LMHeadModel.from_pretrained(pconf.inference_model_path)
 model = model.to(device)
 model.eval()
 

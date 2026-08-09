@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpt2-mcc"
+version = "0.1.0"
+description = "Medical consultation chatbot research demo"
+requires-python = ">=3.10"
+dependencies = ["Flask>=3.0,<4"]
+
+[project.optional-dependencies]
+inference = [
+    "torch>=2.2,<3",
+    "transformers>=4.40,<5",
+]
+training = [
+    "numpy>=1.26",
+    "torch>=2.2,<3",
+    "tqdm>=4.66",
+    "transformers>=4.40,<5",
+]
+dev = [
+    "pytest>=8,<9",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools]
+py-modules = [
+    "app",
+    "flask_predict",
+    "functions_tools",
+    "parameter_config",
+    "pytorch_tools",
+]
