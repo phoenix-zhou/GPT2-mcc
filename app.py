@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import secrets
 import uuid
 from collections.abc import Callable
@@ -20,6 +19,11 @@ from flask import (
     url_for,
 )
 from markupsafe import Markup, escape
+
+try:
+    from .settings import get_setting
+except ImportError:
+    from settings import get_setting
 
 Predictor = Callable[[str], str]
 
@@ -83,13 +87,14 @@ def create_app(
     """Create the web application, optionally injecting a test predictor."""
     app = Flask(__name__)
     app.config.from_mapping(
-        SECRET_KEY=os.getenv("GPT2_MCC_SECRET_KEY") or secrets.token_hex(32),
+        SECRET_KEY=get_setting("SECRET_KEY") or secrets.token_hex(32),
         MAX_INPUT_LENGTH=1000,
         CLOUD_ENHANCEMENT_ENABLED=False,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
     )
     app.config.from_prefixed_env(prefix="GPT2_MCC")
+    app.config.from_prefixed_env(prefix="CLEARCARE")
     app.jinja_env.filters["render_markdown"] = render_markdown
     app.extensions["predictor"] = predictor or _default_predictor
     app.extensions["cloud_predictor"] = (
@@ -201,23 +206,16 @@ def create_app(
                 ),
             ), 403
 
-        try:
-            from .knowledge import augment_with_context
-        except ImportError:
-            from knowledge import augment_with_context
-
         retrieval_query = "\n".join(
             [turn.user for turn in history[-2:]] + [user_input]
         )
-        documents = current_app.extensions["knowledge_base"].search(retrieval_query)
         try:
             from .conversation import ConversationTurn, build_conversation_prompt
         except ImportError:
             from conversation import ConversationTurn, build_conversation_prompt
 
-        current_with_references = augment_with_context(user_input, documents)
-        model_input = build_conversation_prompt(history, current_with_references)
-        provider_name = "OpenAI GPT" if use_cloud else "本地 Qwen"
+        model_input = build_conversation_prompt(history, user_input)
+        provider_name = "OpenAI GPT · Agent" if use_cloud else "本地 Qwen · Agent"
         selected_predictor = (
             current_app.extensions["cloud_predictor"]
             if use_cloud
@@ -225,7 +223,16 @@ def create_app(
         )
 
         try:
-            answer = selected_predictor(model_input)
+            try:
+                from .agent_runtime import ClearCareEvidenceAgent
+            except ImportError:
+                from agent_runtime import ClearCareEvidenceAgent
+
+            agent = ClearCareEvidenceAgent(
+                model_call=selected_predictor,
+                knowledge_search=current_app.extensions["knowledge_base"].search,
+            )
+            result = agent.run(model_input, retrieval_query)
         except (FileNotFoundError, OSError, RuntimeError):
             current_app.logger.exception("Model prediction failed")
             return render_template(
@@ -240,9 +247,10 @@ def create_app(
             conversation_id,
             ConversationTurn(
                 user=user_input,
-                assistant=answer,
+                assistant=result.answer,
                 provider_name=provider_name,
-                sources=tuple(documents),
+                sources=result.sources,
+                agent_trace=result.trace,
             ),
         )
         return render_template("index.html", **page_context())

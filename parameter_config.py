@@ -1,15 +1,19 @@
 """Runtime and training configuration.
 
 Paths default to locations inside the repository and can be overridden with
-environment variables prefixed with ``GPT2_MCC_``.
+``CLEARCARE_*`` variables. The former prefix remains available during migration.
 """
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import torch
+
+try:
+    from .settings import get_setting
+except ImportError:
+    from settings import get_setting
 
 
 class ParameterConfig:
@@ -17,33 +21,33 @@ class ParameterConfig:
         project_root = Path(__file__).resolve().parent
 
         self.device = torch.device(
-            os.getenv(
-                "GPT2_MCC_DEVICE",
+            get_setting(
+                "DEVICE",
                 "cuda" if torch.cuda.is_available() else "cpu",
             )
         )
-        self.vocab_path = os.getenv(
-            "GPT2_MCC_VOCAB_PATH", str(project_root / "vocab" / "vocab.txt")
+        self.vocab_path = get_setting(
+            "VOCAB_PATH", str(project_root / "vocab" / "vocab.txt")
         )
-        self.train_path = os.getenv(
-            "GPT2_MCC_TRAIN_PATH", str(project_root / "data" / "medical_train.pkl")
+        self.train_path = get_setting(
+            "TRAIN_PATH", str(project_root / "data" / "medical_train.pkl")
         )
-        self.valid_path = os.getenv(
-            "GPT2_MCC_VALID_PATH", str(project_root / "data" / "medical_valid.pkl")
+        self.valid_path = get_setting(
+            "VALID_PATH", str(project_root / "data" / "medical_valid.pkl")
         )
-        self.config_json = os.getenv(
-            "GPT2_MCC_CONFIG_PATH", str(project_root / "config" / "config.json")
+        self.config_json = get_setting(
+            "CONFIG_PATH", str(project_root / "config" / "config.json")
         )
-        self.save_model_path = os.getenv(
-            "GPT2_MCC_MODEL_DIR", str(project_root / "save_model")
+        self.save_model_path = get_setting(
+            "MODEL_DIR", str(project_root / "save_model")
         )
-        self.inference_model_path = os.getenv(
-            "GPT2_MCC_INFERENCE_MODEL_PATH",
+        self.inference_model_path = get_setting(
+            "INFERENCE_MODEL_PATH",
             str(project_root / "save_model" / "epoch97"),
         )
-        self.pretrained_model = os.getenv("GPT2_MCC_PRETRAINED_MODEL", "")
-        self.save_samples_path = os.getenv(
-            "GPT2_MCC_SAMPLES_PATH", str(project_root / "sample")
+        self.pretrained_model = get_setting("PRETRAINED_MODEL", "")
+        self.save_samples_path = get_setting(
+            "SAMPLES_PATH", str(project_root / "sample")
         )
 
         self.ignore_index = -100

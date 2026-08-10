@@ -47,6 +47,7 @@ def test_unknown_provider_has_actionable_error():
 
 
 def test_local_qwen_is_the_default(monkeypatch):
+    monkeypatch.delenv("CLEARCARE_MODEL_PROVIDER", raising=False)
     monkeypatch.delenv("GPT2_MCC_MODEL_PROVIDER", raising=False)
 
     class FakeQwen:
@@ -58,6 +59,19 @@ def test_local_qwen_is_the_default(monkeypatch):
     provider = create_chat_model()
 
     assert provider.model_name == "mlx-community/Qwen3-4B-Instruct-2507-4bit"
+
+
+def test_clearcare_environment_name_takes_priority(monkeypatch):
+    monkeypatch.setenv("GPT2_MCC_MODEL_PROVIDER", "legacy-gpt2")
+    monkeypatch.setenv("CLEARCARE_MODEL_PROVIDER", "qwen-local")
+
+    class FakeQwen:
+        def __init__(self, model_name):
+            self.model_name = model_name
+
+    monkeypatch.setattr("chat_models.QwenLocalChatModel", FakeQwen)
+
+    assert isinstance(create_chat_model(), FakeQwen)
 
 
 def test_mlx_qwen_provider_applies_chat_template(monkeypatch):

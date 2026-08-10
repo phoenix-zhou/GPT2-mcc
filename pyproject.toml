@@ -3,9 +3,9 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gpt2-mcc"
+name = "clearcare-evidence-agent"
 version = "0.1.0"
-description = "Medical consultation chatbot research demo"
+description = "Local-first, evidence-grounded health AI agent research demo"
 requires-python = ">=3.10"
 dependencies = [
     "bleach>=6.2,<7",
@@ -38,11 +38,14 @@ testpaths = ["tests"]
 [tool.setuptools]
 py-modules = [
     "app",
+    "agent_runtime",
     "flask_predict",
     "functions_tools",
     "parameter_config",
     "pytorch_tools",
     "chat_models",
+    "conversation",
+    "settings",
     "knowledge",
     "safety",
 ]
