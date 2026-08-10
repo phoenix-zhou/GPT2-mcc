@@ -1,11 +1,12 @@
-# 🏥 Local-first Medical Chatbot
+# ClearCare Evidence Agent
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-A Flask-based medical information chatbot research project. The current
-version runs a Qwen instruction model locally by default, supports explicit
-per-request OpenAI enhancement, and preserves the original GPT-2
-implementation as a legacy baseline for education and comparison.
+A local-first, evidence-grounded health AI agent research project. ClearCare
+uses a bounded plan/tool/respond cycle, governed local sources, deterministic
+emergency routing, and multi-turn context. Qwen runs locally by default;
+OpenAI is an explicit per-request option. The inherited GPT-2 implementation
+is retained only as an archived educational baseline.
 
 > [!WARNING]
 > This project is for research and education only. It does not provide medical
@@ -18,7 +19,10 @@ implementation as a legacy baseline for education and comparison.
 - Local Qwen is the default provider, with no per-token API charge.
 - OpenAI enhancement is disabled by default and requires both server approval
   and explicit selection by the user for each request.
-- The original GPT-2 path remains available as a compatibility baseline.
+- A model planner selects an allow-listed action: retrieve evidence, request
+  clarification, or respond without a tool.
+- Agent execution is bounded to one read-only tool call and emits an
+  inspectable action trace without exposing chain-of-thought.
 - Strong emergency signals are routed before any generative model is called.
 - Non-emergency questions can retrieve versioned local medical references,
   with source links rendered separately from model output.
@@ -34,11 +38,14 @@ Browser request
   → Input validation
   → Emergency-risk routing
       ├─ High risk: fixed emergency guidance; no model call
-      └─ Non-emergency: local knowledge retrieval
-          → Recent conversation context (up to four turns)
-          → Local Qwen (default)
-          → OpenAI GPT (server-enabled and selected per request)
+      └─ Non-emergency: bounded agent plan
+          ├─ Ask for essential clarification
+          ├─ Search the governed evidence tool
+          └─ Respond without a tool
+              → Local Qwen (default)
+              → OpenAI GPT (server-enabled and selected per request)
   → Answer and reference links
+  → Inspectable action/tool trace
 ```
 
 ## Quick start with local Qwen
@@ -51,8 +58,8 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[inference]'
 
-export GPT2_MCC_MODEL_PROVIDER="qwen-local"
-export GPT2_MCC_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
+export CLEARCARE_MODEL_PROVIDER="qwen-local"
+export CLEARCARE_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
 
 flask --app app run
 ```
@@ -82,21 +89,23 @@ is read only from the environment and must never be committed to source code,
 python -m pip install -e '.[openai]'
 
 export OPENAI_API_KEY="your_api_key"
-export GPT2_MCC_OPENAI_MODEL="gpt-5.6-luna"
-export GPT2_MCC_CLOUD_ENHANCEMENT_ENABLED=true
+export CLEARCARE_OPENAI_MODEL="gpt-5.6-luna"
+export CLEARCARE_CLOUD_ENHANCEMENT_ENABLED=true
 
 flask --app app run
 ```
 
 OpenAI requests set `store=False`. This alone is not a complete zero-data-
 retention guarantee. Review account data controls, applicable regulations, and
-medical-data requirements before any production deployment.
+medical-data requirements before any production deployment. An agent turn can
+use one planning call and one answering call, so cloud usage may incur two
+model calls.
 
 ## Legacy GPT-2 baseline
 
 ```bash
-export GPT2_MCC_MODEL_PROVIDER="legacy-gpt2"
-export GPT2_MCC_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
+export CLEARCARE_MODEL_PROVIDER="legacy-gpt2"
+export CLEARCARE_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
 python -m pip install -e '.[legacy-inference]'
 flask --app app run
 ```
@@ -107,22 +116,36 @@ Resources published by the original author:
 - [Model checkpoint on Baidu Netdisk](https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv), extraction code `2mrv`
 - [Original CSDN project article](https://blog.csdn.net/zhoupenghui168/article/details/162314485)
 
-## Safety routing and local retrieval
+`GPT2_MCC_*` variables remain accepted temporarily for local migration, but new
+configuration should use `CLEARCARE_*`.
+
+## Agent safety and governed evidence
 
 `safety.py` conservatively routes strong signals such as severe breathing
 difficulty, stroke signs, uncontrolled bleeding, unconsciousness, and
 immediate self-harm risk. It is not a diagnostic model, can produce false
 positives or false negatives, and must not be treated as a medical device.
 
-`knowledge/medical_guidance.json` is a small, reviewable local knowledge base.
-The starter documents cite CDC, NHS, and WHO guidance. `knowledge.py` currently
-uses dependency-free keyword retrieval and can later be replaced by vector
-retrieval without changing the web-layer interface.
+`agent_runtime.py` implements the allow-listed plan/tool/respond cycle. Planner
+output is parsed as JSON; invalid or unregistered actions fall back to a single
+read-only evidence search. Tool traces contain action names and result counts,
+not hidden reasoning.
+
+`knowledge/medical_guidance.json` currently contains three project-authored
+Chinese summaries linked to CDC, NHS, and WHO pages. They are explicitly marked
+as not clinician-reviewed and must not be represented as validated clinical
+recommendations. Every record includes provenance, jurisdiction, review date,
+version, applicability, reuse status, and a SHA-256 content hash.
+`knowledge/source_manifest.json` defines the approved source registry and
+review policy. The application refuses missing metadata, unknown sources,
+non-HTTPS URLs, invalid dates, duplicate IDs, and changed content with a stale
+hash.
 
 ## Development and tests
 
 ```bash
 python -m pip install -e '.[dev]'
+python scripts/validate_knowledge.py
 pytest
 ```
 
@@ -132,11 +155,14 @@ Tests use fake providers. They do not download Qwen or make paid API calls.
 
 ```text
 app.py                          Flask app and request orchestration
+agent_runtime.py                Bounded planner/tool/responder runtime
 chat_models.py                  Qwen, OpenAI, and GPT-2 providers
 conversation.py                 Bounded in-memory multi-turn context
 safety.py                       Emergency-risk routing
 knowledge.py                    Local retrieval and context construction
 knowledge/medical_guidance.json Versioned guidance with provenance
+knowledge/source_manifest.json  Approved sources and review policy
+scripts/validate_knowledge.py    Standalone provenance/integrity check
 templates/index.html            Web interface
 data_preprocess/                Original GPT-2 preprocessing code
 train.py                        Original GPT-2 training entry point
@@ -145,7 +171,7 @@ tests/                          Automated tests
 
 ## Roadmap
 
-- Expand the knowledge base with professional content review.
+- Expand the knowledge base with clinician-reviewed content and update jobs.
 - Upgrade RAG with Chinese embeddings and a reranker.
 - Add streaming output and structured answers.
 - Build safety, factuality, citation-accuracy, latency, and cost evaluations.

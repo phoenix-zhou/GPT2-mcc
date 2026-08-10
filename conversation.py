@@ -15,6 +15,7 @@ class ConversationTurn:
     provider_name: str
     is_emergency: bool = False
     sources: tuple[Any, ...] = ()
+    agent_trace: tuple[Any, ...] = ()
 
 
 class InMemoryConversationStore:

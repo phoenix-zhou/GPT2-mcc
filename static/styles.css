@@ -178,6 +178,13 @@ button:disabled { cursor: wait; opacity: 0.76; transform: none; }
 .sources a { background: var(--teal-50); border-radius: 999px; color: var(--teal-700); display: inline-block; font-size: 12px; padding: 7px 11px; text-decoration: none; }
 .sources a:hover { text-decoration: underline; }
 
+.agent-trace { background: #f8fbfb; border: 1px solid var(--slate-200); border-radius: 12px; color: var(--slate-600); font-size: 12px; margin-top: 26px; padding: 12px 15px; }
+.agent-trace summary { color: var(--navy-700); cursor: pointer; font-weight: 700; }
+.agent-trace ol { display: grid; gap: 8px; margin: 13px 0 8px; padding-left: 22px; }
+.agent-trace li strong { color: var(--navy-950); display: inline-block; margin-right: 8px; }
+.agent-trace li span { color: var(--slate-600); }
+.agent-trace p { margin: 8px 0 0; }
+
 .site-footer { border-top: 1px solid var(--slate-200); color: var(--slate-600); font-size: 12px; padding-block: 24px; }
 .site-footer .container { display: flex; justify-content: space-between; gap: 24px; }
 .site-footer p { margin: 0; }

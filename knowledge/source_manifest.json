@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "review_policy": {
+    "purpose": "General health education and conservative risk guidance only",
+    "clinical_use": "Not approved for diagnosis, prescribing, or autonomous treatment decisions",
+    "review_interval_days": 180,
+    "required_review_status": "project_summary_unverified_by_clinician"
+  },
+  "sources": [
+    {
+      "source_id": "cdc",
+      "organization": "U.S. Centers for Disease Control and Prevention",
+      "homepage": "https://www.cdc.gov/",
+      "jurisdiction": "US",
+      "source_type": "official_public_health_guidance",
+      "update_method": "manual_review",
+      "reuse_status": "Link and project-authored summary; source terms apply"
+    },
+    {
+      "source_id": "nhs",
+      "organization": "National Health Service",
+      "homepage": "https://www.nhs.uk/",
+      "jurisdiction": "GB",
+      "source_type": "official_patient_guidance",
+      "update_method": "manual_review",
+      "reuse_status": "Link and project-authored summary; source terms apply"
+    },
+    {
+      "source_id": "who",
+      "organization": "World Health Organization",
+      "homepage": "https://www.who.int/",
+      "jurisdiction": "INTL",
+      "source_type": "official_public_health_guidance",
+      "update_method": "manual_review",
+      "reuse_status": "Link and project-authored summary; source terms apply"
+    }
+  ]
+}

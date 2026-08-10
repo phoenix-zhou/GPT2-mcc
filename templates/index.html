@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="澄心健康信息助手提供本地优先、注重隐私的健康科普信息。">
-    <title>澄心健康信息助手</title>
+    <meta name="description" content="澄心循证健康智能体提供本地优先、来源透明的健康科普信息。">
+    <title>澄心循证健康智能体</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <a class="brand" href="{{ url_for('index') }}" aria-label="澄心健康信息助手首页">
+            <a class="brand" href="{{ url_for('index') }}" aria-label="澄心循证健康智能体首页">
                 <span class="brand-mark" aria-hidden="true">
                     <svg viewBox="0 0 40 40" role="img"><path d="M20 6v28M6 20h28"/></svg>
                 </span>
                 <span>
-                    <strong>澄心健康信息助手</strong>
-                    <small>ClearCare Health Information</small>
+                    <strong>澄心循证健康智能体</strong>
+                    <small>ClearCare Evidence Agent</small>
                 </span>
             </a>
             <span class="privacy-badge"><span aria-hidden="true">●</span> 本地 Qwen 优先</span>
@@ -64,6 +64,17 @@
                                 <div class="markdown-body{% if turn.is_emergency %} alert-content{% endif %}"{% if turn.is_emergency %} role="alert"{% endif %}>
                                     {{ turn.assistant | render_markdown }}
                                 </div>
+                                {% if turn.agent_trace %}
+                                    <details class="agent-trace">
+                                        <summary>查看智能体执行记录</summary>
+                                        <ol>
+                                            {% for event in turn.agent_trace %}
+                                                <li><strong>{{ event.label }}</strong><span>{{ event.detail }}</span></li>
+                                            {% endfor %}
+                                        </ol>
+                                        <p>记录仅展示动作与工具结果，不包含模型内部思维过程。</p>
+                                    </details>
+                                {% endif %}
                                 {% if turn.sources %}
                                     <div class="sources">
                                         <h3>参考资料</h3>
@@ -95,7 +106,7 @@
                     {% if config.CLOUD_ENHANCEMENT_ENABLED %}
                         <label class="cloud-option">
                             <input type="checkbox" name="use_cloud">
-                            <span>本次使用 OpenAI 云端增强 <small>本轮内容及最近对话将发送至 OpenAI，并可能产生 Token 费用</small></span>
+                            <span>本次使用 OpenAI 云端增强 <small>本轮内容及最近对话将发送至 OpenAI；规划与回答可能产生两次模型调用和 Token 费用</small></span>
                         </label>
                     {% else %}
                         <span class="local-note">问题默认仅由本地模型处理</span>
@@ -119,7 +130,7 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>澄心健康信息助手 · 研究与教育用途</p>
+            <p>ClearCare Evidence Agent · Local-first agentic RAG · 研究与教育用途</p>
             <p>不要依据本工具延误或停止专业医疗服务。</p>
         </div>
     </footer>

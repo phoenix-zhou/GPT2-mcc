@@ -16,8 +16,8 @@ def test_homepage_uses_professional_brand_and_assets():
     html = response.get_data(as_text=True)
 
     assert response.status_code == 200
-    assert "<title>澄心健康信息助手</title>" in html
-    assert "ClearCare Health Information" in html
+    assert "<title>澄心循证健康智能体</title>" in html
+    assert "ClearCare Evidence Agent" in html
     assert "/static/styles.css" in html
     assert "/static/app.js" in html
     assert "黑马" not in html
@@ -46,6 +46,7 @@ def test_ask_uses_injected_predictor():
 
     assert response.status_code == 200
     assert "回答：你好" in response.get_data(as_text=True)
+    assert "查看智能体执行记录" in response.get_data(as_text=True)
 
 
 def test_follow_up_includes_recent_conversation_context():
@@ -62,10 +63,11 @@ def test_follow_up_includes_recent_conversation_context():
 
     assert first.status_code == 200
     assert second.status_code == 200
-    assert model_inputs[0] == "我有拉肚子"
-    assert "我有拉肚子" in model_inputs[1]
-    assert "第 1 次回答" in model_inputs[1]
-    assert "已经两天了，每天五次，没有发烧" in model_inputs[1]
+    answer_inputs = [text for text in model_inputs if not text.startswith("[AGENT_PLAN]")]
+    assert answer_inputs[0] == "我有拉肚子"
+    assert "我有拉肚子" in answer_inputs[1]
+    assert "第 2 次回答" in answer_inputs[1]
+    assert "已经两天了，每天五次，没有发烧" in answer_inputs[1]
     html = second.get_data(as_text=True)
     assert "无需删除或重复前面的内容" in html
     assert "开始新咨询" in html
@@ -168,7 +170,9 @@ def test_explicit_cloud_request_uses_cloud_provider():
 
     assert response.status_code == 200
     assert local_calls == []
-    assert cloud_calls == ["复杂问题"]
+    assert len(cloud_calls) == 2
+    assert cloud_calls[0].startswith("[AGENT_PLAN]")
+    assert cloud_calls[1] == "复杂问题"
     assert "OpenAI GPT" in response.get_data(as_text=True)
 
 
@@ -226,6 +230,6 @@ def test_retrieved_context_reaches_model_and_source_is_rendered():
     )
 
     assert response.status_code == 200
-    assert "经过审核的内容" in model_inputs[0]
+    assert any("经过审核的内容" in text for text in model_inputs)
     assert "可信资料" in response.get_data(as_text=True)
     assert "https://example.test/guidance" in response.get_data(as_text=True)
