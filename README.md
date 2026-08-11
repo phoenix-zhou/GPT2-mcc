@@ -141,6 +141,24 @@ review policy. The application refuses missing metadata, unknown sources,
 non-HTTPS URLs, invalid dates, duplicate IDs, and changed content with a stale
 hash.
 
+## Installable Codex skill
+
+The repository includes `curate-health-evidence`, a reusable Codex skill for
+adding governed records, auditing provenance and freshness, and generating
+corpus coverage reports. It is deliberately a developer workflow, not a
+patient-advice skill.
+
+Ask Codex to install:
+
+```text
+Install the Codex skill from
+https://github.com/yuanzou0/clearcare-health-agent/tree/main/skills/curate-health-evidence
+```
+
+On the next turn, invoke it with `$curate-health-evidence`. The source folder
+contains only `SKILL.md`, UI metadata, deterministic scripts, and references;
+the Flask application and model weights are not duplicated inside the skill.
+
 ## Development and tests
 
 ```bash
@@ -163,6 +181,7 @@ knowledge.py                    Local retrieval and context construction
 knowledge/medical_guidance.json Versioned guidance with provenance
 knowledge/source_manifest.json  Approved sources and review policy
 scripts/validate_knowledge.py    Standalone provenance/integrity check
+skills/curate-health-evidence/   Installable evidence-curation Codex skill
 templates/index.html            Web interface
 data_preprocess/                Original GPT-2 preprocessing code
 train.py                        Original GPT-2 training entry point

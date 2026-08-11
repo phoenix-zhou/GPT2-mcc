@@ -121,6 +121,22 @@ CDC、NHS 和 WHO 页面。它们明确标记为“尚未经临床人员审核�
 缺少元数据、未知来源、非 HTTPS 链接、错误日期、重复 ID 或哈希失配都会导致
 加载失败。
 
+## 可安装的 Codex Skill
+
+仓库包含 `curate-health-evidence`，用于添加受控资料、审计来源与时效性并生成
+知识库覆盖率报告。它是开发者维护工作流，不是面向患者的医疗建议 Skill。
+
+可以让 Codex 安装：
+
+```text
+请从以下 GitHub 地址安装 Codex Skill：
+https://github.com/yuanzou0/clearcare-health-agent/tree/main/skills/curate-health-evidence
+```
+
+安装后的下一轮可通过 `$curate-health-evidence` 调用。Skill 内只包含
+`SKILL.md`、界面元数据、确定性脚本和参考规范，不重复打包 Flask 应用或模型
+权重。
+
 ## 开发与测试
 
 ```bash
@@ -143,6 +159,7 @@ knowledge.py                    本地检索与上下文构造
 knowledge/medical_guidance.json 版本化资料与来源
 knowledge/source_manifest.json  获准来源与复核政策
 scripts/validate_knowledge.py    独立的来源与完整性检查
+skills/curate-health-evidence/   可安装的证据治理 Codex Skill
 templates/index.html            Web 页面
 data_preprocess/                原 GPT‑2 数据处理代码
 train.py                        原 GPT‑2 训练入口

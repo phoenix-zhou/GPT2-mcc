@@ -1,0 +1,4 @@
+interface:
+  display_name: "Curate Health Evidence"
+  short_description: "Curate and audit governed health evidence corpora"
+  default_prompt: "Use $curate-health-evidence to add and validate an official health guidance source."
