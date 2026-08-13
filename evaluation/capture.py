@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from agent_runtime import ClearCareEvidenceAgent
+from agent_runtime import GovernedEvidenceAgent
 from chat_models import MEDICAL_SYSTEM_PROMPT
 from safety import EMERGENCY_MESSAGE
 
@@ -84,7 +84,7 @@ def capture_case(
             predicted_route = "emergency"
             answer = EMERGENCY_MESSAGE
         else:
-            result = ClearCareEvidenceAgent(
+            result = GovernedEvidenceAgent(
                 model_call=model.generate,
                 knowledge_search=knowledge_base.search,
             ).run(case.user_input, case.user_input)

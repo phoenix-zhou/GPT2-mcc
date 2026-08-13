@@ -1,13 +1,14 @@
-# ClearCare Evidence Agent — Product Case Study
+# ClearCare Health — Governed Agent Lab Product Case Study
 
 Status: working case study; current repository behavior is distinguished from
 planned validation work.
 
 ## Executive summary
 
-ClearCare is a local-first, evidence-grounded health-information agent designed
-to explore a product question: **how can an LLM help a person organize a health
-question without presenting itself as a clinician?**
+ClearCare Health is the first Governed Agent Lab reference vertical: a
+local-first, evidence-grounded health-information agent designed to explore a
+product question: **how can an LLM help a person organize a health question
+without presenting itself as a clinician?**
 
 The product combines deterministic emergency routing, bounded agent autonomy,
 governed sources, visible citations, and multi-turn clarification. It does not
@@ -164,9 +165,9 @@ them.
 
 ## Current evidence and limitations
 
-As of 2026-08-11:
+As of 2026-08-12:
 
-- 48 automated code, evaluation, and Skill tests pass.
+- 59 automated code, evaluation, and Skill tests pass.
 - The corpus validator accepts 3 records from 3 approved sources.
 - All 3 records are project-authored Chinese summaries marked as not reviewed
   by a clinician.
@@ -176,8 +177,10 @@ As of 2026-08-11:
   safety routing and retrieval. It reports 1.000 emergency recall, 0.0909
   emergency false-positive rate, and 0.6250 Retrieval Recall@3 on this dataset.
   These are component-baseline results, not clinical performance claims.
-- Planner route accuracy, response groundedness, end-to-end task success, model
-  latency/cost, and dashboarding are not measured yet.
+- A complete 80-case local-Qwen run measures 81.25% planner-route accuracy,
+  72.5% deterministic task-success proxy, and 13.44-second P95 case latency
+  with zero provider errors and zero API cost.
+- Response groundedness, human usefulness, and dashboarding are not measured yet.
 - There has been no clinical validation, regulatory assessment, or production
   privacy/security review.
 

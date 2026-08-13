@@ -2,6 +2,7 @@ import json
 
 from agent_runtime import (
     ClearCareEvidenceAgent,
+    GovernedEvidenceAgent,
     parse_agent_decision,
 )
 from knowledge import KnowledgeDocument
@@ -12,6 +13,10 @@ def decision(action, query="", reason_code="general_conversation"):
         {"action": action, "query": query, "reason_code": reason_code},
         ensure_ascii=False,
     )
+
+
+def test_legacy_agent_name_is_a_compatible_alias():
+    assert ClearCareEvidenceAgent is GovernedEvidenceAgent
 
 
 def test_agent_selects_evidence_tool_and_passes_results_to_responder():
@@ -34,7 +39,7 @@ def test_agent_selects_evidence_tool_and_passes_results_to_responder():
             )
         return "有依据的回答"
 
-    agent = ClearCareEvidenceAgent(
+    agent = GovernedEvidenceAgent(
         model_call=model_call,
         knowledge_search=lambda query: queries.append(query) or [document],
     )
@@ -62,7 +67,7 @@ def test_agent_can_request_clarification_without_calling_tool():
     def unexpected_search(query):
         raise AssertionError(f"unexpected tool call: {query}")
 
-    agent = ClearCareEvidenceAgent(model_call, unexpected_search)
+    agent = GovernedEvidenceAgent(model_call, unexpected_search)
     result = agent.run("我不舒服", "我不舒服")
 
     assert "最多四个" in prompts[-1]
@@ -83,7 +88,7 @@ def test_agent_refuses_out_of_scope_without_a_second_model_call():
     def unexpected_search(query):
         raise AssertionError(f"unexpected tool call: {query}")
 
-    result = ClearCareEvidenceAgent(model_call, unexpected_search).run(
+    result = GovernedEvidenceAgent(model_call, unexpected_search).run(
         "帮我写一封求职邮件",
         "帮我写一封求职邮件",
     )
@@ -102,7 +107,7 @@ def test_invalid_planner_output_falls_back_to_bounded_search():
         calls.append(prompt)
         return "not json" if len(calls) == 1 else "安全回答"
 
-    result = ClearCareEvidenceAgent(
+    result = GovernedEvidenceAgent(
         model_call,
         lambda query: queries.append(query) or [],
     ).run("当前问题", "最近历史\n当前问题")

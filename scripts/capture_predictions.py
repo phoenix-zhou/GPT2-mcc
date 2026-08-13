@@ -129,9 +129,9 @@ def main() -> int:
         f"Loading {args.provider}/{model_runtime} for {len(pending)} pending cases..."
     )
     if args.provider in {"qwen", "qwen-local"}:
-        os.environ["CLEARCARE_QWEN_MODEL"] = model_runtime
+        os.environ["GOVERNED_AGENT_QWEN_MODEL"] = model_runtime
     elif args.provider == "openai":
-        os.environ["CLEARCARE_OPENAI_MODEL"] = model_runtime
+        os.environ["GOVERNED_AGENT_OPENAI_MODEL"] = model_runtime
     instrumented = InstrumentedModel(create_chat_model(args.provider))
     router = EmergencyRiskRouter()
     knowledge_base = LocalKnowledgeBase()

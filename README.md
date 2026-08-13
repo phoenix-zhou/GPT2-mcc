@@ -1,12 +1,16 @@
-# ClearCare Evidence Agent
+# Governed Agent Lab
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-A local-first, evidence-grounded health AI agent research project. ClearCare
-uses a bounded plan/tool/respond cycle, governed local sources, deterministic
-emergency routing, and multi-turn context. Qwen runs locally by default;
-OpenAI is an explicit per-request option. The inherited GPT-2 implementation
-is retained only as an archived educational baseline.
+A portfolio-oriented platform for building and evaluating bounded,
+evidence-grounded AI agents. It combines governed sources, explicit tool
+boundaries, provider-neutral evaluation, failure segmentation, and reusable
+Codex Skills. **ClearCare Health / 澄心循证健康智能体** is the first reference
+vertical and demonstrates how those controls behave in a high-stakes domain.
+
+The platform is domain-extensible; the committed product and evaluation claims
+remain health-specific until another vertical has its own governed corpus,
+frozen cases, and measured report.
 
 > [!WARNING]
 > This project is for research and education only. It does not provide medical
@@ -14,7 +18,15 @@ is retained only as an archived educational baseline.
 > clinicians. Do not enter real patient names, identifiers, contact details, or
 > other sensitive information.
 
-## Highlights
+## Platform highlights
+
+- Provider-neutral evaluation artifacts, scenario metrics, and failure taxonomy.
+- One bounded plan/tool/respond cycle with allow-listed actions and read-only tools.
+- Governed evidence records with provenance, freshness, review, and hash checks.
+- A reusable evidence-curation Skill and a roadmap for an evaluation Skill.
+- Local-first inference plus explicit, optional hosted-model comparison.
+
+## ClearCare Health reference vertical
 
 - Local Qwen is the default provider, with no per-token API charge.
 - OpenAI enhancement is disabled by default and requires both server approval
@@ -58,8 +70,8 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[inference]'
 
-export CLEARCARE_MODEL_PROVIDER="qwen-local"
-export CLEARCARE_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
+export GOVERNED_AGENT_MODEL_PROVIDER="qwen-local"
+export GOVERNED_AGENT_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
 
 flask --app app run
 ```
@@ -89,8 +101,8 @@ is read only from the environment and must never be committed to source code,
 python -m pip install -e '.[openai]'
 
 export OPENAI_API_KEY="your_api_key"
-export CLEARCARE_OPENAI_MODEL="gpt-5.6-luna"
-export CLEARCARE_CLOUD_ENHANCEMENT_ENABLED=true
+export GOVERNED_AGENT_OPENAI_MODEL="gpt-5.6-luna"
+export GOVERNED_AGENT_CLOUD_ENHANCEMENT_ENABLED=true
 
 flask --app app run
 ```
@@ -104,8 +116,8 @@ model calls.
 ## Legacy GPT-2 baseline
 
 ```bash
-export CLEARCARE_MODEL_PROVIDER="legacy-gpt2"
-export CLEARCARE_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
+export GOVERNED_AGENT_MODEL_PROVIDER="legacy-gpt2"
+export GOVERNED_AGENT_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
 python -m pip install -e '.[legacy-inference]'
 flask --app app run
 ```
@@ -116,10 +128,10 @@ Resources published by the original author:
 - [Model checkpoint on Baidu Netdisk](https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv), extraction code `2mrv`
 - [Original CSDN project article](https://blog.csdn.net/zhoupenghui168/article/details/162314485)
 
-`GPT2_MCC_*` variables remain accepted temporarily for local migration, but new
-configuration should use `CLEARCARE_*`.
+`CLEARCARE_*` and `GPT2_MCC_*` variables remain accepted for compatibility, but
+new platform configuration should use `GOVERNED_AGENT_*`.
 
-## Agent safety and governed evidence
+## Health-vertical safety and governed evidence
 
 `safety.py` conservatively routes strong signals such as severe breathing
 difficulty, stroke signs, uncontrolled bleeding, unconsciousness, and
@@ -188,6 +200,8 @@ bilingual [Evaluation v1 report and contract](docs/evaluation-v1.md).
 
 ## Product case and upgrade plan
 
+- [Brand architecture](docs/brand-architecture.md): platform/vertical boundary,
+  naming rules, compatibility policy, and repository migration sequence.
 - [Product case study](docs/product-case-study.md): problem, users, journey,
   product decisions, trade-offs, metrics, failure cases, and non-goals.
 - [Portfolio upgrade roadmap](docs/portfolio-upgrade-roadmap.md): dated,
@@ -221,9 +235,10 @@ tests/                          Automated tests
 
 ## Roadmap
 
-The reviewed local-Qwen Evaluation v1 baseline is complete, so the project has
-reached the planned brand-migration gate. Brand migration should be isolated in
-the next PR before the measured comparison of retrieval strategies. See the
+The reviewed local-Qwen baseline and first-stage platform brand migration are
+complete. The next measured increment compares retrieval strategies against
+the same frozen health dataset; it does not assume a vector database will win.
+See the
 [checkable portfolio roadmap](docs/portfolio-upgrade-roadmap.md) for priorities,
 acceptance criteria, and timeline.
 

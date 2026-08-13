@@ -1,9 +1,9 @@
-# ClearCare Portfolio Upgrade Roadmap
+# Governed Agent Lab Portfolio Upgrade Roadmap
 
-Last updated: 2026-08-11
+Last updated: 2026-08-12
 
-This roadmap turns ClearCare from a working health-chat demo into an
-evidence-backed product case for three related roles:
+This roadmap turns the ClearCare Health demo into the first measured vertical
+of Governed Agent Lab and an evidence-backed product case for three related roles:
 
 - **AI Product Manager:** problem framing, risk decisions, metrics, user
   journey, prioritization, and trade-offs;
@@ -23,8 +23,10 @@ which evidence supports each product decision.**
 
 ## Current foundation
 
-- [x] Establish the ClearCare Evidence Agent product identity and explicit
+- [x] Establish the ClearCare Health vertical identity and explicit
   non-diagnosis boundary.
+- [x] Migrate the repository identity to Governed Agent Lab while preserving
+  ClearCare Health as the measured reference vertical and compatibility layer.
 - [x] Use local Qwen by default and make OpenAI an explicit per-request option.
 - [x] Route strong emergency signals deterministically before model generation.
 - [x] Bound the agent to one allow-listed plan/tool/respond cycle and one
@@ -34,7 +36,7 @@ which evidence supports each product decision.**
 - [x] Govern evidence records with source metadata, review status, content
   hashes, and freshness rules.
 - [x] Ship the installable `curate-health-evidence` developer Skill.
-- [x] Pass the current automated suite (56 tests as of 2026-08-12).
+- [x] Pass the current automated suite (59 tests as of 2026-08-12).
 - [x] Publish an initial product case study at
   [`docs/product-case-study.md`](product-case-study.md).
 

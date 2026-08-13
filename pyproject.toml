@@ -3,9 +3,9 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "clearcare-evidence-agent"
+name = "governed-agent-lab"
 version = "0.1.0"
-description = "Local-first, evidence-grounded health AI agent research demo"
+description = "Governed, measurable agent platform with ClearCare Health as its first vertical"
 requires-python = ">=3.10"
 dependencies = [
     "bleach>=6.2,<7",

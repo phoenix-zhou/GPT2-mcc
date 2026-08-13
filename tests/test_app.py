@@ -11,13 +11,24 @@ def test_health_endpoint():
     assert response.get_json() == {"status": "ok"}
 
 
+def test_platform_flask_prefix_overrides_compatibility_prefixes(monkeypatch):
+    monkeypatch.setenv("GPT2_MCC_CLOUD_ENHANCEMENT_ENABLED", "true")
+    monkeypatch.setenv("CLEARCARE_CLOUD_ENHANCEMENT_ENABLED", "false")
+    monkeypatch.setenv("GOVERNED_AGENT_CLOUD_ENHANCEMENT_ENABLED", "true")
+
+    app = create_app(lambda text: text)
+
+    assert app.config["CLOUD_ENHANCEMENT_ENABLED"] is True
+
+
 def test_homepage_uses_professional_brand_and_assets():
     response = create_app(lambda text: text).test_client().get("/")
     html = response.get_data(as_text=True)
 
     assert response.status_code == 200
     assert "<title>澄心循证健康智能体</title>" in html
-    assert "ClearCare Evidence Agent" in html
+    assert "ClearCare Health" in html
+    assert "Governed Agent Lab" in html
     assert "/static/styles.css" in html
     assert "/static/app.js" in html
     assert "黑马" not in html

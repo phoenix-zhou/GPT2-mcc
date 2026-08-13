@@ -1,17 +1,28 @@
-# ClearCare Evidence Agent / 澄心循证健康智能体
+# Governed Agent Lab / 可控智能体实验平台
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-这是一个本地优先、以证据为基础的健康 AI Agent 研究项目。ClearCare 使用
-有界的“规划—工具—回答”循环、受控本地资料、确定性急症分流和多轮上下文。
-默认在本地运行 Qwen；OpenAI 只在用户逐次明确选择时使用。继承的 GPT‑2
-实现仅作为归档的教学对照基线。
+这是一个面向作品集的可控 AI Agent 构建与评测平台，核心包括受控资料、明确的
+工具边界、与 Provider 无关的评测、失败分层和可复用 Codex Skills。
+**ClearCare Health / 澄心循证健康智能体**是第一个垂直案例，用来展示这些控制
+如何应用在高风险健康信息场景。
+
+平台架构允许扩展到其他领域；在新的垂直领域拥有独立受控语料、冻结案例和实测
+报告之前，仓库中已经提交的产品与评测结论仍只适用于健康案例。
 
 > [!WARNING]
 > 本项目仅用于研究与教学，不提供医疗诊断、处方或治疗建议，不能替代有资质
 > 的医疗专业人员。不要输入真实患者姓名、证件号码、联系方式或其他敏感信息。
 
-## 主要能力
+## 平台主要能力
+
+- 与 Provider 无关的评测产物、场景指标和失败分类。
+- 单次有界“规划—工具—回答”循环、白名单动作和只读工具。
+- 带来源、时效性、审核状态与哈希校验的受控证据记录。
+- 可复用的资料治理 Skill，以及 Evaluation Skill 路线图。
+- 本地优先推理与明确选择的云端模型对比。
+
+## ClearCare Health 垂直案例
 
 - 默认使用本地 Qwen，不产生按 Token 计费的 API 调用。
 - OpenAI 云端增强默认关闭，必须由服务器允许，并由用户逐次明确选择。
@@ -50,8 +61,8 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[inference]'
 
-export CLEARCARE_MODEL_PROVIDER="qwen-local"
-export CLEARCARE_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
+export GOVERNED_AGENT_MODEL_PROVIDER="qwen-local"
+export GOVERNED_AGENT_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
 
 flask --app app run
 ```
@@ -77,8 +88,8 @@ OpenAI API 与 ChatGPT 订阅分开计费。密钥只通过环境变量读取，
 python -m pip install -e '.[openai]'
 
 export OPENAI_API_KEY="your_api_key"
-export CLEARCARE_OPENAI_MODEL="gpt-5.6-luna"
-export CLEARCARE_CLOUD_ENHANCEMENT_ENABLED=true
+export GOVERNED_AGENT_OPENAI_MODEL="gpt-5.6-luna"
+export GOVERNED_AGENT_CLOUD_ENHANCEMENT_ENABLED=true
 
 flask --app app run
 ```
@@ -90,8 +101,8 @@ OpenAI 请求设置 `store=False`。这不等同于完整的零数据保留承�
 ## 原始 GPT‑2 基线
 
 ```bash
-export CLEARCARE_MODEL_PROVIDER="legacy-gpt2"
-export CLEARCARE_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
+export GOVERNED_AGENT_MODEL_PROVIDER="legacy-gpt2"
+export GOVERNED_AGENT_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
 python -m pip install -e '.[legacy-inference]'
 flask --app app run
 ```
@@ -101,10 +112,10 @@ flask --app app run
 - [百度网盘模型权重](https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv)，提取码 `2mrv`
 - [原项目 CSDN 文章](https://blog.csdn.net/zhoupenghui168/article/details/162314485)
 
-迁移期间仍兼容原来的 `GPT2_MCC_*` 变量，但新增配置应统一使用
-`CLEARCARE_*`。
+迁移期间仍兼容健康案例的 `CLEARCARE_*` 和原始 `GPT2_MCC_*` 变量，但新增
+平台配置应统一使用 `GOVERNED_AGENT_*`。
 
-## 智能体安全与受控证据
+## 健康案例的安全与受控证据
 
 `safety.py` 对严重呼吸困难、卒中征象、无法控制的出血、意识丧失和立即自伤
 风险等强信号进行保守分流。它不是诊断模型，可能漏报或误报，不能作为医疗
@@ -164,6 +175,8 @@ Provider 错误为 0，API 成本为 0。这些是工程回归指标，不是临
 
 ## 产品案例与升级计划
 
+- [品牌架构（中英双语）](docs/brand-architecture.md)：平台与垂直案例边界、命名
+  规则、兼容策略和仓库迁移顺序。
 - [产品 Case Study（英文）](docs/product-case-study.md)：问题、用户、用户旅程、
   产品决策、权衡、指标、失败场景与非目标。
 - [作品集升级路线图（英文）](docs/portfolio-upgrade-roadmap.md)：包含评测、RAG
@@ -196,9 +209,9 @@ tests/                          自动化测试
 
 ## 后续路线
 
-本地 Qwen Evaluation v1 基线已经完成，项目已达到预定的品牌迁移门槛。下一
-个 PR 应单独完成品牌迁移，之后再在同一冻结评测集上比较多种检索方案。优先级、
-验收标准和时间线见
+本地 Qwen Evaluation v1 基线和第一阶段平台品牌迁移已经完成。下一步是在同一
+冻结健康评测集上比较多种检索方案，而不是预设向量数据库一定更好。优先级、验收
+标准和时间线见
 [可勾选作品集路线图](docs/portfolio-upgrade-roadmap.md)。
 
 ## 许可证

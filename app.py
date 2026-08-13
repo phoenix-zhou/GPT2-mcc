@@ -1,4 +1,4 @@
-"""Flask application entry point for the medical chatbot demo."""
+"""Flask entry point for the ClearCare Health reference vertical."""
 
 from __future__ import annotations
 
@@ -95,6 +95,7 @@ def create_app(
     )
     app.config.from_prefixed_env(prefix="GPT2_MCC")
     app.config.from_prefixed_env(prefix="CLEARCARE")
+    app.config.from_prefixed_env(prefix="GOVERNED_AGENT")
     app.jinja_env.filters["render_markdown"] = render_markdown
     app.extensions["predictor"] = predictor or _default_predictor
     app.extensions["cloud_predictor"] = (
@@ -224,11 +225,11 @@ def create_app(
 
         try:
             try:
-                from .agent_runtime import ClearCareEvidenceAgent
+                from .agent_runtime import GovernedEvidenceAgent
             except ImportError:
-                from agent_runtime import ClearCareEvidenceAgent
+                from agent_runtime import GovernedEvidenceAgent
 
-            agent = ClearCareEvidenceAgent(
+            agent = GovernedEvidenceAgent(
                 model_call=selected_predictor,
                 knowledge_search=current_app.extensions["knowledge_base"].search,
             )

@@ -1,7 +1,8 @@
 """Runtime and training configuration.
 
 Paths default to locations inside the repository and can be overridden with
-``CLEARCARE_*`` variables. The former prefix remains available during migration.
+``GOVERNED_AGENT_*`` variables. The health-vertical ``CLEARCARE_*`` and legacy
+``GPT2_MCC_*`` prefixes remain available during migration.
 """
 
 from __future__ import annotations
