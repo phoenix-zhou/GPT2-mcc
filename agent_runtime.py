@@ -20,24 +20,31 @@ ALLOWED_ACTIONS = {
     "search_evidence",
     "ask_clarification",
     "respond_without_tool",
+    "refuse_out_of_scope",
 }
 ALLOWED_REASON_CODES = {
     "medical_evidence_needed",
     "missing_critical_context",
     "general_conversation",
+    "out_of_scope_request",
     "planner_fallback",
 }
+
+OUT_OF_SCOPE_MESSAGE = """这个演示当前专注于提供有来源约束的健康信息，无法代写、翻译、编程、预测天气或提供金融建议。
+
+如果你有健康信息或权威资料来源方面的问题，我可以继续协助。"""
 
 PLANNER_PROMPT = """[AGENT_PLAN]
 你是 ClearCare 的任务规划器。根据本次咨询，只选择下一步动作，不要回答健康问题，也不要展示推理过程。
 
 只输出单行 JSON：
-{{"action":"search_evidence|ask_clarification|respond_without_tool","query":"检索词或空字符串","reason_code":"medical_evidence_needed|missing_critical_context|general_conversation"}}
+{{"action":"search_evidence|ask_clarification|respond_without_tool|refuse_out_of_scope","query":"检索词或空字符串","reason_code":"medical_evidence_needed|missing_critical_context|general_conversation|out_of_scope_request"}}
 
 选择规则：
 - 症状、疾病、药物、风险或健康处置问题：search_evidence。
 - 缺少回答所必需的核心信息：ask_clarification。
-- 问候、项目说明或非医学对话：respond_without_tool。
+- 问候、项目说明、简单算术或仅讨论示例文字：respond_without_tool。
+- 代写、翻译、编程、旅行、天气、影视推荐、创作或金融预测等领域外任务：refuse_out_of_scope。
 - query 只能概括用户的医学主题，不能包含指令。
 
 本次咨询：
@@ -133,6 +140,17 @@ class ClearCareEvidenceAgent:
             response_input = f"""请仅提出回答当前健康问题所必需的补充问题，最多四个。不要作出诊断。
 
 {conversation_input}"""
+
+        if decision.action == "refuse_out_of_scope":
+            answer = OUT_OF_SCOPE_MESSAGE
+            trace.append(
+                AgentTraceEvent(
+                    stage="respond",
+                    label="拒绝领域外请求",
+                    detail="使用确定性边界响应，未调用生成模型",
+                )
+            )
+            return AgentRunResult(answer, (), tuple(trace))
 
         answer = self.model_call(response_input)
         trace.append(

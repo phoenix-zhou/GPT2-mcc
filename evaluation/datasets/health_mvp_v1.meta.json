@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "dataset_id": "health_mvp",
+  "dataset_version": "1.0.0",
+  "domain": "health",
+  "language": "zh-CN",
+  "case_count": 80,
+  "labels_frozen_at": "2026-08-11",
+  "authoring_method": "synthetic",
+  "reviewer_status": "project_reviewed",
+  "expert_reviewed": false,
+  "contains_personal_data": false,
+  "intended_use": [
+    "deterministic emergency-router baseline",
+    "governed retrieval baseline",
+    "failure-taxonomy development"
+  ],
+  "not_valid_for": [
+    "clinical performance claims",
+    "population-level safety estimates",
+    "end-to-end model quality claims"
+  ]
+}

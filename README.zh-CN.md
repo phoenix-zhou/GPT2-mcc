@@ -147,12 +147,31 @@ pytest
 
 测试使用模拟 Provider，不会下载 Qwen，也不会调用付费 API。
 
+无需加载模型即可运行 80 条案例的确定性 Evaluation MVP：
+
+```bash
+python scripts/run_evaluation.py
+python scripts/review_evaluation_labels.py
+```
+
+当前组件基线在合成、项目内审核的数据上得到：急症召回率 1.000、急症误报率
+0.0909、Retrieval Recall@3 为 0.625。这些不是临床性能结论。方法、失败样例和
+限制见 [Evaluation MVP 文档](docs/evaluation-mvp.md)。
+Evaluation v1 进一步加入了与 Provider 无关、隐私安全的预测协议。已提交的完整
+本地 Qwen 基线得到：规划路由准确率 81.25%、确定性任务成功代理指标 72.5%，
+Provider 错误为 0，API 成本为 0。这些是工程回归指标，不是临床结论。详见双语
+[Evaluation v1 报告与协议](docs/evaluation-v1.md)。
+
 ## 产品案例与升级计划
 
 - [产品 Case Study（英文）](docs/product-case-study.md)：问题、用户、用户旅程、
   产品决策、权衡、指标、失败场景与非目标。
 - [作品集升级路线图（英文）](docs/portfolio-upgrade-roadmap.md)：包含评测、RAG
   实验、数据分析、Skills 与部署的日期、勾选状态和验收标准。
+- [Evaluation MVP（英文）](docs/evaluation-mvp.md)：数据集设计、基线结果、已发现
+  的失败与尚未测量的指标。
+- [Evaluation v1（中英双语）](docs/evaluation-v1.md)：模型预测协议、端到端代理
+  指标、标签审核门槛与隐私规则。
 
 ## 主要文件
 
@@ -166,7 +185,9 @@ knowledge.py                    本地检索与上下文构造
 knowledge/medical_guidance.json 版本化资料与来源
 knowledge/source_manifest.json  获准来源与复核政策
 scripts/validate_knowledge.py    独立的来源与完整性检查
+scripts/capture_predictions.py  支持断点续跑的模型评测捕获
 skills/curate-health-evidence/   可安装的证据治理 Codex Skill
+evaluation/                     冻结案例、模型预测与评测报告
 templates/index.html            Web 页面
 data_preprocess/                原 GPT‑2 数据处理代码
 train.py                        原 GPT‑2 训练入口
@@ -175,8 +196,9 @@ tests/                          自动化测试
 
 ## 后续路线
 
-下一里程碑是可复现的 Evaluation Harness，随后才是在同一冻结评测集上比较
-多种检索方案。优先级、验收标准和时间线见
+本地 Qwen Evaluation v1 基线已经完成，项目已达到预定的品牌迁移门槛。下一
+个 PR 应单独完成品牌迁移，之后再在同一冻结评测集上比较多种检索方案。优先级、
+验收标准和时间线见
 [可勾选作品集路线图](docs/portfolio-upgrade-roadmap.md)。
 
 ## 许可证

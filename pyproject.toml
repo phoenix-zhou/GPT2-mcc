@@ -36,6 +36,7 @@ dev = [
 testpaths = ["tests"]
 
 [tool.setuptools]
+packages = ["evaluation"]
 py-modules = [
     "app",
     "agent_runtime",

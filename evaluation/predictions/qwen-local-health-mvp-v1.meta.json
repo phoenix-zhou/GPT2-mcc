@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "run_id": "qwen-local-20260812T023805Z",
+  "provider": "qwen-local",
+  "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+  "dataset_id": "health_mvp",
+  "dataset_version": "1.0.0",
+  "prediction_count": 80,
+  "contains_personal_data": false,
+  "captured_at": "2026-08-12T02:54:00.297447+00:00",
+  "token_counting": "provider_tokenizer_chat_template",
+  "cost_basis": "local inference; API cost recorded as 0.0"
+}

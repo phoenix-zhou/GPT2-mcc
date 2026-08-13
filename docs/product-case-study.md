@@ -166,13 +166,18 @@ them.
 
 As of 2026-08-11:
 
-- 43 automated code and Skill tests pass.
+- 48 automated code, evaluation, and Skill tests pass.
 - The corpus validator accepts 3 records from 3 approved sources.
 - All 3 records are project-authored Chinese summaries marked as not reviewed
   by a clinician.
 - All 3 records have an evidence grade of `not_assessed`.
 - Retrieval is keyword/token scoring, not embedding or hybrid retrieval.
-- There is no complete end-to-end evaluation dataset or dashboard yet.
+- An 80-case synthetic, project-reviewed Evaluation MVP measures deterministic
+  safety routing and retrieval. It reports 1.000 emergency recall, 0.0909
+  emergency false-positive rate, and 0.6250 Retrieval Recall@3 on this dataset.
+  These are component-baseline results, not clinical performance claims.
+- Planner route accuracy, response groundedness, end-to-end task success, model
+  latency/cost, and dashboarding are not measured yet.
 - There has been no clinical validation, regulatory assessment, or production
   privacy/security review.
 

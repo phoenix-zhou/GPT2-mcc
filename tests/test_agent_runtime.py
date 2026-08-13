@@ -70,6 +70,30 @@ def test_agent_can_request_clarification_without_calling_tool():
     assert [event.stage for event in result.trace] == ["plan", "respond"]
 
 
+def test_agent_refuses_out_of_scope_without_a_second_model_call():
+    prompts = []
+
+    def model_call(prompt):
+        prompts.append(prompt)
+        return decision(
+            "refuse_out_of_scope",
+            reason_code="out_of_scope_request",
+        )
+
+    def unexpected_search(query):
+        raise AssertionError(f"unexpected tool call: {query}")
+
+    result = ClearCareEvidenceAgent(model_call, unexpected_search).run(
+        "帮我写一封求职邮件",
+        "帮我写一封求职邮件",
+    )
+
+    assert len(prompts) == 1
+    assert "专注于提供有来源约束的健康信息" in result.answer
+    assert result.sources == ()
+    assert [event.stage for event in result.trace] == ["plan", "respond"]
+
+
 def test_invalid_planner_output_falls_back_to_bounded_search():
     calls = []
     queries = []
