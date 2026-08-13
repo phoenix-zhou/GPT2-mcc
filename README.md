@@ -169,6 +169,14 @@ pytest
 
 Tests use fake providers. They do not download Qwen or make paid API calls.
 
+## Product case and upgrade plan
+
+- [Product case study](docs/product-case-study.md): problem, users, journey,
+  product decisions, trade-offs, metrics, failure cases, and non-goals.
+- [Portfolio upgrade roadmap](docs/portfolio-upgrade-roadmap.md): dated,
+  checkable milestones for evaluation, RAG experiments, analytics, Skills, and
+  deployment.
+
 ## Project layout
 
 ```text
@@ -190,11 +198,10 @@ tests/                          Automated tests
 
 ## Roadmap
 
-- Expand the knowledge base with clinician-reviewed content and update jobs.
-- Upgrade RAG with Chinese embeddings and a reranker.
-- Add streaming output and structured answers.
-- Build safety, factuality, citation-accuracy, latency, and cost evaluations.
-- Add containers, a production WSGI server, observability, and deployment docs.
+The next milestone is a reproducible evaluation harness, followed by a measured
+comparison of retrieval strategies. See the
+[checkable portfolio roadmap](docs/portfolio-upgrade-roadmap.md) for priorities,
+acceptance criteria, and timeline.
 
 ## License
 
