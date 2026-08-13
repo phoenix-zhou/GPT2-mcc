@@ -39,6 +39,7 @@ class PredictionRun:
     model: str
     dataset_id: str
     dataset_version: str
+    retrieval_strategy: str
     predictions: tuple[ProviderPrediction, ...]
 
     @property
@@ -175,11 +176,19 @@ def load_prediction_run(
             "prediction manifest must declare contains_personal_data=false"
         )
 
+    retrieval_strategy = manifest.get("retrieval_strategy", "keyword")
+    if not isinstance(retrieval_strategy, str) or not retrieval_strategy.strip():
+        raise EvaluationPredictionError(
+            "retrieval_strategy must be a non-empty string"
+        )
     return PredictionRun(
         run_id=_required_text(manifest, "run_id"),
         provider=_required_text(manifest, "provider"),
         model=_required_text(manifest, "model"),
         dataset_id=_required_text(manifest, "dataset_id"),
         dataset_version=_required_text(manifest, "dataset_version"),
+        # Manifests captured before the RAG V2 experiment used the production
+        # keyword retriever but did not record it explicitly.
+        retrieval_strategy=retrieval_strategy.strip(),
         predictions=tuple(predictions),
     )

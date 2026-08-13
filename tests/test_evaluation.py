@@ -145,6 +145,7 @@ def write_prediction_run(tmp_path, records, **manifest_overrides):
         "model": "fake-model",
         "dataset_id": "test-dataset",
         "dataset_version": "1.0.0",
+        "retrieval_strategy": "keyword",
         "prediction_count": len(records),
         "contains_personal_data": False,
     }
@@ -396,6 +397,7 @@ def test_prediction_capture_artifacts_are_resumable(tmp_path):
 
     assert partial == (parsed,)
     assert load_prediction_run(path).run_id == "run-1"
+    assert load_prediction_run(path).retrieval_strategy == "keyword"
 
 
 def test_evaluation_cli_writes_json_and_markdown_reports(tmp_path):

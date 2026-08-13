@@ -91,16 +91,20 @@ retrieval strategy.
 
 ## P1 — RAG V2 as a measured experiment
 
-- [ ] Preserve keyword retrieval as the baseline.
+- [x] Preserve keyword retrieval as the baseline.
 - [ ] Add document chunking with stable chunk IDs and parent-document metadata.
 - [ ] Implement a Chinese embedding retrieval candidate.
-- [ ] Implement BM25 or an equivalent lexical retrieval candidate.
+- [x] Implement BM25 or an equivalent lexical retrieval candidate.
 - [ ] Implement hybrid fusion and an optional reranker behind configuration.
 - [ ] Compare baseline, lexical, embedding, and hybrid strategies on the same
   frozen retrieval cases.
-- [ ] Report Recall@3, MRR, citation accuracy, latency, memory footprint, and
+- [x] Report Recall@3, MRR, citation accuracy, latency, memory footprint, and
   local hardware requirements.
-- [ ] Select a default strategy from evidence, not architectural fashion.
+- [x] Select a default strategy from evidence, not architectural fashion.
+
+Current evidence-based decision: BM25 passes the development candidate gate;
+keyword remains the production default pending an independent holdout. The
+embedding and hybrid comparison remains intentionally open.
 
 **Definition of done:** an experiment report explains whether RAG V2 improves
 retrieval and citation outcomes enough to justify its latency and operational

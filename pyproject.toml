@@ -48,5 +48,6 @@ py-modules = [
     "conversation",
     "settings",
     "knowledge",
+    "retrieval",
     "safety",
 ]

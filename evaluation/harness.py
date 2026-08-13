@@ -395,6 +395,7 @@ class EvaluationHarness:
                     "model": prediction_run.model,
                     "dataset_id": prediction_run.dataset_id,
                     "dataset_version": prediction_run.dataset_version,
+                    "retrieval_strategy": prediction_run.retrieval_strategy,
                 }
                 if prediction_run
                 else None

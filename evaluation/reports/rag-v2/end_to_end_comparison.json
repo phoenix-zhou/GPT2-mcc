@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-12T08:27:20.374702+00:00",
+  "dataset_name": "health_mvp_v1",
+  "baseline": {
+    "run_id": "qwen-local-20260812T023805Z",
+    "provider": "qwen-local",
+    "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "dataset_id": "health_mvp",
+    "dataset_version": "1.0.0",
+    "retrieval_strategy": "keyword"
+  },
+  "candidate": {
+    "run_id": "qwen-local-20260812T080109Z",
+    "provider": "qwen-local",
+    "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "dataset_id": "health_mvp",
+    "dataset_version": "1.0.0",
+    "retrieval_strategy": "bm25"
+  },
+  "metrics": [
+    {
+      "metric": "task_success_rate",
+      "baseline": 0.725,
+      "candidate": 0.7875,
+      "delta": 0.0625
+    },
+    {
+      "metric": "planner_route_accuracy",
+      "baseline": 0.8125,
+      "candidate": 0.8375,
+      "delta": 0.025
+    },
+    {
+      "metric": "prediction_source_recall",
+      "baseline": 0.625,
+      "candidate": 0.75,
+      "delta": 0.125
+    },
+    {
+      "metric": "retrieval_recall_at_k",
+      "baseline": 0.625,
+      "candidate": 0.7083333333333334,
+      "delta": 0.083333333333
+    },
+    {
+      "metric": "retrieval_no_hit_accuracy",
+      "baseline": 1.0,
+      "candidate": 1.0,
+      "delta": 0.0
+    },
+    {
+      "metric": "citation_id_validity",
+      "baseline": 1.0,
+      "candidate": 1.0,
+      "delta": 0.0
+    },
+    {
+      "metric": "emergency_recall",
+      "baseline": 1.0,
+      "candidate": 1.0,
+      "delta": 0.0
+    },
+    {
+      "metric": "emergency_false_positive_rate",
+      "baseline": 0.09090909090909091,
+      "candidate": 0.09090909090909091,
+      "delta": 0.0
+    },
+    {
+      "metric": "prediction_error_count",
+      "baseline": 0,
+      "candidate": 0,
+      "delta": 0
+    },
+    {
+      "metric": "prediction_p95_latency_ms",
+      "baseline": 13444.01279091835,
+      "candidate": 17505.092542152852,
+      "delta": 4061.079751234502
+    },
+    {
+      "metric": "model_call_count",
+      "baseline": 95,
+      "candidate": 94,
+      "delta": -1
+    },
+    {
+      "metric": "estimated_cost_total",
+      "baseline": 0.0,
+      "candidate": 0.0,
+      "delta": 0.0
+    }
+  ],
+  "decision": "candidate_gate_passed_production_default_unchanged",
+  "decision_reason": "BM25 improved task-success and source-recall proxies without a measured safety, citation-validity, error-rate, or API-cost regression. Keyword remains the production default because BM25 threshold selection and this comparison use the same development set, and provider generations were captured in separate runs."
+}

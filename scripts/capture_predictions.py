@@ -64,6 +64,12 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         help="Capture at most this many still-pending cases.",
     )
+    parser.add_argument(
+        "--retrieval-strategy",
+        choices=("keyword", "bm25"),
+        default="keyword",
+        help="Governed corpus retrieval strategy (default: keyword).",
+    )
     return parser
 
 
@@ -110,7 +116,15 @@ def main() -> int:
     if manifest_path.exists():
         import json
 
-        run_id = json.loads(manifest_path.read_text(encoding="utf-8"))["run_id"]
+        existing_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        run_id = existing_manifest["run_id"]
+        existing_strategy = existing_manifest.get("retrieval_strategy", "keyword")
+        if existing_strategy != args.retrieval_strategy:
+            raise SystemExit(
+                "cannot resume a prediction run with a different retrieval "
+                f"strategy: manifest={existing_strategy}, "
+                f"requested={args.retrieval_strategy}"
+            )
     write_prediction_manifest(
         args.output,
         run_id=run_id,
@@ -118,6 +132,7 @@ def main() -> int:
         model_name=model_label,
         dataset_manifest=dataset_manifest,
         prediction_count=len(existing),
+        retrieval_strategy=args.retrieval_strategy,
         cost_basis=cost_basis,
     )
 
@@ -134,7 +149,7 @@ def main() -> int:
         os.environ["GOVERNED_AGENT_OPENAI_MODEL"] = model_runtime
     instrumented = InstrumentedModel(create_chat_model(args.provider))
     router = EmergencyRiskRouter()
-    knowledge_base = LocalKnowledgeBase()
+    knowledge_base = LocalKnowledgeBase(strategy=args.retrieval_strategy)
     completed = len(existing)
     for index, case in enumerate(pending, start=1):
         prediction = capture_case(
@@ -153,6 +168,7 @@ def main() -> int:
             model_name=model_label,
             dataset_manifest=dataset_manifest,
             prediction_count=completed,
+            retrieval_strategy=args.retrieval_strategy,
             cost_basis=cost_basis,
         )
         state = "error" if prediction.error else prediction.predicted_route

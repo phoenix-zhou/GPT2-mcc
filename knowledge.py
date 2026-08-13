@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -83,6 +82,7 @@ class LocalKnowledgeBase:
         self,
         path: str | Path | None = None,
         manifest_path: str | Path | None = None,
+        strategy: str = "keyword",
     ) -> None:
         source_path = Path(path) if path else (
             Path(__file__).resolve().parent / "knowledge" / "medical_guidance.json"
@@ -108,22 +108,16 @@ class LocalKnowledgeBase:
         self.documents = tuple(
             _validated_document(item, known_sources) for item in items
         )
+        try:
+            from .retrieval import create_retriever
+        except ImportError:
+            from retrieval import create_retriever
+
+        self.retriever = create_retriever(strategy, self.documents)
+        self.retrieval_strategy = self.retriever.name
 
     def search(self, query: str, limit: int = 2) -> list[KnowledgeDocument]:
-        normalized = query.lower()
-        query_terms = set(re.findall(r"[a-z0-9]+|[\u4e00-\u9fff]{2,}", normalized))
-        scored: list[tuple[int, KnowledgeDocument]] = []
-        for document in self.documents:
-            score = sum(3 for keyword in document.keywords if keyword.lower() in normalized)
-            score += sum(
-                1
-                for term in query_terms
-                if term in document.title.lower() or term in document.content.lower()
-            )
-            if score:
-                scored.append((score, document))
-        scored.sort(key=lambda item: item[0], reverse=True)
-        return [document for _, document in scored[:limit]]
+        return self.retriever.search(query, limit=limit)
 
 
 def augment_with_context(

@@ -185,6 +185,8 @@ Provider 错误为 0，API 成本为 0。这些是工程回归指标，不是临
   的失败与尚未测量的指标。
 - [Evaluation v1（中英双语）](docs/evaluation-v1.md)：模型预测协议、端到端代理
   指标、标签审核门槛与隐私规则。
+- [RAG V2 实验（中英双语）](docs/rag-v2-experiment.md)：Keyword/BM25 对照、
+  本地 Qwen 端到端结果、失败分析和晋级决策。
 
 ## 主要文件
 
@@ -209,9 +211,11 @@ tests/                          自动化测试
 
 ## 后续路线
 
-本地 Qwen Evaluation v1 基线和第一阶段平台品牌迁移已经完成。下一步是在同一
-冻结健康评测集上比较多种检索方案，而不是预设向量数据库一定更好。优先级、验收
-标准和时间线见
+本地 Qwen Evaluation v1 基线、第一阶段品牌迁移，以及 Keyword/BM25 RAG V2
+实验已经完成。BM25 将任务成功代理指标从 72.5% 提升到 78.75%，但由于阈值和
+评估使用同一开发集，目前只晋级为候选方案，生产默认仍为 Keyword。Embedding 和
+Hybrid Retrieval 将继续作为需要实验证明的方案，而不是默认升级。优先级、验收标准
+和时间线见
 [可勾选作品集路线图](docs/portfolio-upgrade-roadmap.md)。
 
 ## 许可证

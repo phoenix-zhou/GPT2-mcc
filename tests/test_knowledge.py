@@ -8,6 +8,7 @@ from knowledge import (
     LocalKnowledgeBase,
     augment_with_context,
 )
+from retrieval import BM25Retriever, KeywordRetriever, lexical_tokens
 
 
 def governed_record(**overrides):
@@ -81,3 +82,29 @@ def test_production_knowledge_has_governance_metadata():
     assert all(document.document_id for document in knowledge_base.documents)
     assert all(document.last_reviewed_at for document in knowledge_base.documents)
     assert all(document.review_status for document in knowledge_base.documents)
+
+
+def test_production_default_preserves_keyword_baseline():
+    knowledge_base = LocalKnowledgeBase()
+
+    assert knowledge_base.retrieval_strategy == "keyword"
+    assert isinstance(knowledge_base.retriever, KeywordRetriever)
+
+
+def test_bm25_candidate_handles_lexical_paraphrase_without_false_allergy_hit():
+    knowledge_base = LocalKnowledgeBase(strategy="bm25")
+
+    heart_results = knowledge_base.search("持续的胸部压迫感伴随冷汗可能参考什么资料")
+    allergy_results = knowledge_base.search("想查权威的过敏性鼻炎日常管理资料")
+
+    assert heart_results[0].document_id == "nhs-heart-attack-signs-2026-08-review"
+    assert allergy_results == []
+
+
+def test_chinese_lexical_tokens_are_deterministic_and_remove_generic_terms():
+    tokens = lexical_tokens("权威的心理危机支持资料 FAST")
+
+    assert "心理" in tokens
+    assert "危机" in tokens
+    assert "fast" in tokens
+    assert "资料" not in tokens

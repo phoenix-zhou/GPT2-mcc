@@ -198,6 +198,14 @@ committed full local-Qwen baseline reached 81.25% planner-route accuracy and a
 cost. These are engineering regression metrics, not clinical claims. See the
 bilingual [Evaluation v1 report and contract](docs/evaluation-v1.md).
 
+RAG V2 now preserves that keyword baseline and adds a dependency-free Chinese
+BM25 candidate. On the same development set, the candidate improved isolated
+Recall@3 from 0.6250 to 0.7083 and the local-Qwen task-success proxy from 72.5%
+to 78.75%, while emergency recall and citation-ID validity remained 100%.
+Keyword remains the production default because threshold selection and
+evaluation used the same development set. See the bilingual
+[RAG V2 experiment](docs/rag-v2-experiment.md).
+
 ## Product case and upgrade plan
 
 - [Brand architecture](docs/brand-architecture.md): platform/vertical boundary,
@@ -211,6 +219,8 @@ bilingual [Evaluation v1 report and contract](docs/evaluation-v1.md).
   observed failures, and unmeasured metrics.
 - [Evaluation v1](docs/evaluation-v1.md): bilingual prediction contract,
   end-to-end proxy metrics, label-review gate, and privacy rules.
+- [RAG V2 experiment](docs/rag-v2-experiment.md): bilingual Keyword/BM25
+  comparison, end-to-end Qwen results, failure analysis, and promotion decision.
 
 ## Project layout
 
@@ -235,9 +245,11 @@ tests/                          Automated tests
 
 ## Roadmap
 
-The reviewed local-Qwen baseline and first-stage platform brand migration are
-complete. The next measured increment compares retrieval strategies against
-the same frozen health dataset; it does not assume a vector database will win.
+The reviewed local-Qwen baseline, first-stage brand migration, and measured
+Keyword/BM25 RAG V2 experiment are complete. BM25 is a development candidate;
+the production default remains Keyword until an independent holdout confirms
+the result. Embedding and hybrid retrieval remain measured experiments rather
+than assumed upgrades.
 See the
 [checkable portfolio roadmap](docs/portfolio-upgrade-roadmap.md) for priorities,
 acceptance criteria, and timeline.

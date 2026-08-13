@@ -147,6 +147,7 @@ def write_prediction_manifest(
     model_name: str,
     dataset_manifest: dict[str, Any],
     prediction_count: int,
+    retrieval_strategy: str = "keyword",
     cost_basis: str = "not reported by capture adapter",
 ) -> Path:
     """Atomically synchronize run metadata after each appended record."""
@@ -160,6 +161,7 @@ def write_prediction_manifest(
         "dataset_id": dataset_manifest["dataset_id"],
         "dataset_version": dataset_manifest["dataset_version"],
         "prediction_count": prediction_count,
+        "retrieval_strategy": retrieval_strategy,
         "contains_personal_data": False,
         "captured_at": datetime.now(UTC).isoformat(),
         "token_counting": "provider_tokenizer_chat_template",

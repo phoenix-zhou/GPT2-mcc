@@ -41,6 +41,14 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         help="Optional provider-neutral JSONL predictions with a .meta.json manifest.",
     )
+    parser.add_argument(
+        "--retrieval-strategy",
+        choices=("keyword", "bm25"),
+        help=(
+            "Component retriever. Defaults to the prediction manifest strategy "
+            "when predictions are supplied, otherwise keyword."
+        ),
+    )
     return parser
 
 
@@ -62,8 +70,13 @@ def main() -> int:
             raise SystemExit(
                 "prediction dataset_version does not match the evaluation dataset"
             )
+    retrieval_strategy = args.retrieval_strategy or (
+        prediction_run.retrieval_strategy if prediction_run else "keyword"
+    )
     report = EvaluationHarness(
-        EmergencyRiskRouter(), LocalKnowledgeBase(), args.retrieval_k
+        EmergencyRiskRouter(),
+        LocalKnowledgeBase(strategy=retrieval_strategy),
+        args.retrieval_k,
     ).run(cases, args.dataset.stem, prediction_run=prediction_run)
     json_path, markdown_path = report.write(args.output_dir)
     print(f"Evaluated {report.case_count} cases.")
@@ -72,6 +85,7 @@ def main() -> int:
             f"Loaded {len(prediction_run.predictions)} predictions from "
             f"{prediction_run.provider}/{prediction_run.model}."
         )
+    print(f"Component retrieval strategy: {retrieval_strategy}")
     print(f"JSON: {json_path}")
     print(f"Markdown: {markdown_path}")
     return 0
