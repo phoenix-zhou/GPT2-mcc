@@ -43,10 +43,10 @@ product constraints:
 | Bounded agent | One plan/tool/respond cycle with validated action/reason pairs and one read-only evidence tool |
 | Conversation | Bounded in-memory follow-up context and an explicit reset action |
 | Governed RAG | Versioned coverage contract, controlled topic clusters, approved-source registry, URL-host binding, review dates, corpus bounds, and SHA-256 integrity |
-| Evaluation | 80-case development set, provider-neutral capture, failure taxonomy, and Keyword/BM25 comparison |
+| Evaluation | 83-case development set, provider-neutral capture, failure taxonomy, and Keyword/BM25 comparison |
 | Model providers | Pinned local Qwen default and optional OpenAI; GPT-2 is excluded from the web runtime |
 | Web demo | Local/single-process Flask interface with trace, citations, CSRF, request limits, and security headers |
-| Clinical validation | Not completed; all nine project-authored summaries remain unverified by a clinician |
+| Clinical validation | Not completed; all twelve project-authored summaries remain unverified by a clinician |
 | Production deployment | Not supported; authentication, distributed controls, encrypted persistence, and compliance work are absent |
 
 ## User and agent flow
@@ -219,16 +219,16 @@ compliance certification. See [SECURITY.md](SECURITY.md).
 
 ## Governed evidence and data strategy
 
-The current corpus contains nine project-authored Chinese summaries linked to
-CDC, NHS, and WHO pages. They are explicitly **not
+The current corpus contains twelve project-authored Chinese summaries linked to
+CDC, NHS, WHO, and NHC pages. They are explicitly **not
 clinician-reviewed**. Runtime loading rejects unknown or impersonated sources,
 stale reviews, future dates, unsafe URLs, duplicate IDs, oversized records, and
 content/hash mismatches.
 
 The versioned [Corpus v1 coverage specification](docs/corpus-v1-coverage-spec.md)
 now defines 8 topic clusters and a 24-record target. The automated report shows
-the current 9/24 records and every remaining cluster gap. The gastrointestinal
-and respiratory clusters meet both their document and multi-source targets.
+the current 12/24 records and every remaining cluster gap. The gastrointestinal,
+respiratory, and fever/infection clusters meet both targets.
 The [Batch 2 audit](docs/corpus-v1-batch-2.md) records the respiratory-source
 decisions, label changes, and retrieval regression results.
 Paraphrases, hard
@@ -237,6 +237,9 @@ phenomena rather than evidence-document types. Adding more documents alone is
 not a reliability claim. The included
 [`curate-health-evidence`](skills/curate-health-evidence/) Skill automates
 deterministic governance checks; it does not perform clinical review.
+The bilingual [Chinese official-source discovery guide](docs/china-official-source-discovery.md)
+explains how NHC and NMPA portals are used without treating portal pages or
+regulatory approval as patient guidance.
 
 ## Legacy GPT-2 boundary
 

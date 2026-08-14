@@ -40,7 +40,7 @@ decision follows from the result.**
 - [x] Remove raw legacy datasets and generated artifacts from the current tree.
 - [x] Publish the product case study, security review, Evaluation MVP/v1, and
   Keyword/BM25 experiment.
-- [x] Pass 92 automated regression and security tests as of 2026-08-14.
+- [x] Pass 94 automated regression and security tests as of 2026-08-14.
 
 ## P0 — Corpus v1 before further retrieval architecture
 
@@ -60,12 +60,12 @@ Coverage design is now versioned in
 [`knowledge/coverage_plan.json`](../knowledge/coverage_plan.json) and explained
 in the bilingual
 [`Health Corpus v1 Coverage Specification`](corpus-v1-coverage-spec.md). The
-live report shows 9/24 records and a 15-record gap; this does not mark Corpus v1
+live report shows 12/24 records and a 12-record gap; this does not mark Corpus v1
 as frozen.
 
 ### 2. Governed corpus expansion
 
-- [ ] Expand from 9 summaries to roughly 20–30 governed documents because the
+- [ ] Expand from 12 summaries to roughly 20–30 governed documents because the
   current corpus is too small for a credible retrieval comparison.
 - [ ] Add stable document/chunk IDs, parent-document metadata, applicability,
   version, review owner/status, and content hashes.
@@ -107,9 +107,9 @@ corpus version. Document count alone is not a quality claim.
 but Keyword remains the default because the result has not passed a blind
 holdout.
 
-After Corpus v1 Batch 2, the nine-document component replay required retuning
-the BM25 development threshold from 3.0 to 4.0. At that threshold BM25 achieved
-65.4% Recall@3 versus Keyword's 61.5%, with both at 89.7% no-hit accuracy. This
+After Corpus v1 Batch 3, the twelve-document component replay required retuning
+the BM25 development threshold from 4.0 to 4.5. At that threshold BM25 achieved
+69.0% Recall@3 versus Keyword's 65.5%, with both at 89.7% no-hit accuracy. This
 does not complete the paired blind-holdout task or change the production default.
 
 ## P0 — Claim-level groundedness

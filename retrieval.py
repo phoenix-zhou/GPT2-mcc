@@ -11,7 +11,7 @@ from typing import Protocol, Sequence
 from knowledge import KnowledgeDocument
 
 
-DEFAULT_BM25_MINIMUM_SCORE = 4.0
+DEFAULT_BM25_MINIMUM_SCORE = 4.5
 
 
 class Retriever(Protocol):

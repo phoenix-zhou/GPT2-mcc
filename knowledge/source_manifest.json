@@ -33,6 +33,15 @@
       "source_type": "official_public_health_guidance",
       "update_method": "manual_review",
       "reuse_status": "Link and project-authored summary; source terms apply"
+    },
+    {
+      "source_id": "nhc",
+      "organization": "中华人民共和国国家卫生健康委员会",
+      "homepage": "https://www.nhc.gov.cn/",
+      "jurisdiction": "CN",
+      "source_type": "official_public_health_communication",
+      "update_method": "manual_review",
+      "reuse_status": "Link and project-authored summary; source terms apply"
     }
   ]
 }

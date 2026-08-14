@@ -134,7 +134,7 @@ def test_knowledge_loader_rejects_stale_review(tmp_path):
 def test_production_knowledge_has_governance_metadata():
     knowledge_base = LocalKnowledgeBase()
 
-    assert len(knowledge_base.documents) == 9
+    assert len(knowledge_base.documents) == 12
     assert all(document.document_id for document in knowledge_base.documents)
     assert all(document.last_reviewed_at for document in knowledge_base.documents)
     assert all(document.review_status for document in knowledge_base.documents)
@@ -184,6 +184,27 @@ def test_respiratory_batch_retrieves_distinct_intents_without_code_hits(strategy
         "咳嗽鼻塞发热要关注什么": "cdc-respiratory-illnesses-2026-08-review",
         "喘不过气而且嘴唇发青怎么办": "nhs-shortness-of-breath-2026-08-review",
         "五岁孩子咳嗽呼吸很快胸口凹进去": "who-child-pneumonia-2026-08-review",
+    }
+
+    for query, expected_document_id in queries.items():
+        returned_ids = {
+            document.document_id for document in knowledge_base.search(query, limit=3)
+        }
+        assert expected_document_id in returned_ids
+
+    assert knowledge_base.search("如何修复 Python 单元测试", limit=3) == []
+
+
+@pytest.mark.parametrize("strategy", ["keyword", "bm25"])
+def test_fever_infection_batch_retrieves_cn_triage_sepsis_and_prevention(strategy):
+    knowledge_base = LocalKnowledgeBase(strategy=strategy)
+    queries = {
+        "国家卫健委关于反复发热和咳嗽加重有哪些科普提示":
+            "nhc-fever-infection-warning-signs-2026-08-review",
+        "WHO 对感染恶化为脓毒症有哪些警示资料":
+            "who-sepsis-warning-signs-2026-08-review",
+        "CDC 关于什么时候洗手来预防感染有哪些建议":
+            "cdc-handwashing-infection-prevention-2026-08-review",
     }
 
     for query, expected_document_id in queries.items():

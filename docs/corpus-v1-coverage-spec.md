@@ -53,11 +53,11 @@ report compares the live corpus with that contract.
 | `cardiovascular_warning_signs` | Cardiovascular warning signs / 心血管危险信号 | 1 | 3 | 2 |
 | `gastrointestinal_symptoms` | Gastrointestinal symptoms / 胃肠道症状 | 3 | 3 | 0 |
 | `respiratory_symptoms` | Respiratory symptoms / 呼吸系统症状 | 3 | 3 | 0 |
-| `fever_and_infection` | Fever and infection / 发热与感染 | 0 | 3 | 3 |
+| `fever_and_infection` | Fever and infection / 发热与感染 | 3 | 3 | 0 |
 | `allergy_and_medication_safety` | Allergy and medication safety / 过敏与用药安全 | 0 | 3 | 3 |
 | `child_health` | Child health / 儿童健康 | 0 | 3 | 3 |
 | `mental_health_crisis` | Mental-health crisis / 心理健康危机 | 1 | 3 | 2 |
-| **Total** |  | **9** | **24** | **15** |
+| **Total** |  | **12** | **24** | **12** |
 
 The targets are portfolio experiment requirements, not medical completeness
 claims. A cluster is not “covered” merely because one record exists.
@@ -135,6 +135,6 @@ Until then, reports must show status `planning` and the remaining gaps.
 - 只有达到全部验收条件并记录语料哈希、冻结日期和审核状态后，才能将
   `health_corpus_v1` 从 `planning` 改为 `frozen`。
 
-当前共有 9 条记录；胃肠道和呼吸系统主题群均已有 NHS、CDC 和 WHO 三个来源并
-达到目标，其余记录覆盖神经系统危险信号、心血管危险信号和心理健康危机。距离
-24 条目标还差 15 条，因此本阶段的准确表述是“两个主题群达标、Corpus v1 仍在扩充中”。
+当前共有 12 条记录；胃肠道、呼吸系统、发热与感染三个主题群均达到文档和多来源
+目标。发热与感染主题首次引入国家卫生健康委具体页面，并由 CDC 与 WHO 补充感染
+预防和严重感染警示。距离 24 条目标还差 12 条，因此 Corpus v1 仍在扩充中。
