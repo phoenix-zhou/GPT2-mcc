@@ -60,7 +60,7 @@ time.
    incident response integration, or compliance program exists.
 2. **Safety remains incomplete.** Keyword/phrase routing has false-positive and
    false-negative risk and is not a medical device.
-3. **Evidence is thin.** The corpus contains three project-authored summaries
+3. **Evidence is thin.** The corpus contains six project-authored summaries
    that have not been reviewed by clinicians.
 4. **Evaluation is development-set evidence.** The cases are small,
    project-reviewed, and not independent; reported metrics may be optimistic.

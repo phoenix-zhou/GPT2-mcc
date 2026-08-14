@@ -40,7 +40,7 @@ decision follows from the result.**
 - [x] Remove raw legacy datasets and generated artifacts from the current tree.
 - [x] Publish the product case study, security review, Evaluation MVP/v1, and
   Keyword/BM25 experiment.
-- [x] Pass 88 automated regression and security tests as of 2026-08-14.
+- [x] Pass 90 automated regression and security tests as of 2026-08-14.
 
 ## P0 — Corpus v1 before further retrieval architecture
 
@@ -60,7 +60,7 @@ Coverage design is now versioned in
 [`knowledge/coverage_plan.json`](../knowledge/coverage_plan.json) and explained
 in the bilingual
 [`Health Corpus v1 Coverage Specification`](corpus-v1-coverage-spec.md). The
-live report shows 3/24 records and a 21-record gap; this does not mark Corpus v1
+live report shows 6/24 records and an 18-record gap; this does not mark Corpus v1
 as frozen.
 
 ### 2. Governed corpus expansion
@@ -106,6 +106,11 @@ corpus version. Document count alone is not a quality claim.
 **Current decision:** BM25 improved the development proxy from 72.5% to 78.75%,
 but Keyword remains the default because the result has not passed a blind
 holdout.
+
+After Corpus v1 Batch 1, the six-document component replay required retuning
+the BM25 development threshold from 2.0 to 3.0. At that threshold BM25 achieved
+72% Recall@3 versus Keyword's 64%, with both at 90% no-hit accuracy. This does
+not complete the paired blind-holdout task or change the production default.
 
 ## P0 — Claim-level groundedness
 

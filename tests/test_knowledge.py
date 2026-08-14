@@ -134,7 +134,7 @@ def test_knowledge_loader_rejects_stale_review(tmp_path):
 def test_production_knowledge_has_governance_metadata():
     knowledge_base = LocalKnowledgeBase()
 
-    assert len(knowledge_base.documents) == 3
+    assert len(knowledge_base.documents) == 6
     assert all(document.document_id for document in knowledge_base.documents)
     assert all(document.last_reviewed_at for document in knowledge_base.documents)
     assert all(document.review_status for document in knowledge_base.documents)
@@ -156,6 +156,23 @@ def test_bm25_candidate_handles_lexical_paraphrase_without_false_allergy_hit():
 
     assert heart_results[0].document_id == "nhs-heart-attack-signs-2026-08-review"
     assert allergy_results == []
+
+
+@pytest.mark.parametrize("strategy", ["keyword", "bm25"])
+def test_gastrointestinal_batch_retrieves_without_unrelated_hits(strategy):
+    knowledge_base = LocalKnowledgeBase(strategy=strategy)
+
+    relevant = knowledge_base.search(
+        "最近一直拉肚子和呕吐，尿量也变少了", limit=3
+    )
+    unrelated = knowledge_base.search("如何修复 Python 单元测试", limit=3)
+
+    assert len(relevant) >= 2
+    assert all(
+        document.topic_cluster == "gastrointestinal_symptoms"
+        for document in relevant
+    )
+    assert unrelated == []
 
 
 def test_chinese_lexical_tokens_are_deterministic_and_remove_generic_terms():

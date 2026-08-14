@@ -90,7 +90,7 @@ Planner, policy, or safety-router problems—not all RAG problems.
 
 ### Why embeddings and hybrid retrieval are deferred
 
-The corpus currently contains only three short records. Adding an embedding
+The development experiment used only three short records. Adding an embedding
 model and vector store now would add download size, memory, latency, and
 evaluation complexity without proving value over a strong lexical candidate.
 Chunking, Chinese embeddings, fusion, and reranking remain roadmap experiments
@@ -162,7 +162,7 @@ BM25 将来源召回失败从 9 个降到 6 个，将无关问题误命中从 3 
 剩余检索失败集中在卒中、心梗和危机支持的同义/改写表达。Agent 仍存在工具路由、
 澄清、范围控制和保守升级错误；这些并不全是 RAG 问题。
 
-当前语料只有 3 篇短文档，立即加入 Embedding 模型和向量数据库会增加下载、内存、
+该开发实验当时只有 3 篇短文档，立即加入 Embedding 模型和向量数据库会增加下载、内存、
 延迟与评估成本，却未必产生可验证收益。因此 Chunking、中文 Embedding、Hybrid
 Fusion 和 Reranker 保留到语料扩充并建立独立留出集之后。完整可复现命令见上方
 英文部分，报告位于 `evaluation/reports/rag-v2/`。

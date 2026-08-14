@@ -51,13 +51,13 @@ report compares the live corpus with that contract.
 |---|---|---:|---:|---:|
 | `neurological_warning_signs` | Neurological warning signs / 神经系统危险信号 | 1 | 3 | 2 |
 | `cardiovascular_warning_signs` | Cardiovascular warning signs / 心血管危险信号 | 1 | 3 | 2 |
-| `gastrointestinal_symptoms` | Gastrointestinal symptoms / 胃肠道症状 | 0 | 3 | 3 |
+| `gastrointestinal_symptoms` | Gastrointestinal symptoms / 胃肠道症状 | 3 | 3 | 0 |
 | `respiratory_symptoms` | Respiratory symptoms / 呼吸系统症状 | 0 | 3 | 3 |
 | `fever_and_infection` | Fever and infection / 发热与感染 | 0 | 3 | 3 |
 | `allergy_and_medication_safety` | Allergy and medication safety / 过敏与用药安全 | 0 | 3 | 3 |
 | `child_health` | Child health / 儿童健康 | 0 | 3 | 3 |
 | `mental_health_crisis` | Mental-health crisis / 心理健康危机 | 1 | 3 | 2 |
-| **Total** |  | **3** | **24** | **21** |
+| **Total** |  | **6** | **24** | **18** |
 
 The targets are portfolio experiment requirements, not medical completeness
 claims. A cluster is not “covered” merely because one record exists.
@@ -135,5 +135,6 @@ Until then, reports must show status `planning` and the remaining gaps.
 - 只有达到全部验收条件并记录语料哈希、冻结日期和审核状态后，才能将
   `health_corpus_v1` 从 `planning` 改为 `frozen`。
 
-当前只有 3 条记录，分别覆盖神经系统危险信号、心血管危险信号和心理健康危机，
-距离 24 条目标还差 21 条。因此本阶段的准确表述是“覆盖规范已建立、语料扩充待完成”。
+当前共有 6 条记录；胃肠道主题群已有 NHS、CDC 和 WHO 三个来源并达到目标，
+其余记录覆盖神经系统危险信号、心血管危险信号和心理健康危机。距离 24 条目标
+还差 18 条，因此本阶段的准确表述是“首个主题群达标、Corpus v1 仍在扩充中”。

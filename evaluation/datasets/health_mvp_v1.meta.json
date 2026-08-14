@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "dataset_id": "health_mvp",
-  "dataset_version": "1.0.0",
+  "dataset_version": "1.1.0",
   "domain": "health",
   "language": "zh-CN",
   "case_count": 80,
-  "labels_frozen_at": "2026-08-11",
+  "labels_frozen_at": "2026-08-14",
   "authoring_method": "synthetic",
   "reviewer_status": "project_reviewed",
   "expert_reviewed": false,

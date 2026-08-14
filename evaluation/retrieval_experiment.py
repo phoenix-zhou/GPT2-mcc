@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from knowledge import KnowledgeDocument
-from retrieval import Retriever, create_retriever
+from retrieval import DEFAULT_BM25_MINIMUM_SCORE, Retriever, create_retriever
 
 from .schema import EvaluationCase
 
@@ -120,7 +120,8 @@ class RetrievalExperimentReport:
             lines.extend(
                 [
                     "",
-                    "The committed BM25 candidate uses `minimum_score=2.0`, the "
+                    "The committed BM25 candidate uses "
+                    f"`minimum_score={DEFAULT_BM25_MINIMUM_SCORE:.1f}`, the "
                     "highest-recall tested point that does not reduce no-hit "
                     "accuracy relative to the keyword baseline. Because the same "
                     "MVP set selected this value, the result is a development "
@@ -328,7 +329,7 @@ def run_retrieval_experiment(
         bm25_threshold_sweep=tuple(threshold_sweep),
         recommendation=recommendation,
         limitations=(
-            "The corpus has only three short project-authored summaries.",
+            "The corpus has six short project-authored summaries across four topic clusters.",
             "Cases and labels are synthetic and pending qualified review.",
             "BM25 uses deterministic Chinese character n-grams, not a linguistic segmenter.",
             "Latency and index-size values describe this local run and tiny corpus.",

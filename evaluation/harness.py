@@ -365,7 +365,7 @@ class EvaluationHarness:
             "Cases are synthetic and project-reviewed, not clinically or domain-expert validated.",
             "Deterministic required-concept matching is a literal proxy, not semantic groundedness.",
             "Judge-based groundedness remains experimental and is not a safety gate.",
-            "The current evidence corpus contains three project-authored health summaries, so retrieval coverage is intentionally narrow.",
+            "The current evidence corpus contains six project-authored health summaries across four topic clusters, so retrieval coverage remains narrow.",
         ]
         if prediction_run is None:
             limitations.append(

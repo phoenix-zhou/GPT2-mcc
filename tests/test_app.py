@@ -91,7 +91,8 @@ def test_follow_up_includes_recent_conversation_context():
     assert first.status_code == 200
     assert second.status_code == 200
     answer_inputs = [text for text in model_inputs if not text.startswith("[AGENT_PLAN]")]
-    assert answer_inputs[0] == "[AGENT_RESPONSE]\n我有拉肚子"
+    assert "<user_question>\n我有拉肚子\n</user_question>" in answer_inputs[0]
+    assert "<governed_evidence>" in answer_inputs[0]
     assert "我有拉肚子" in answer_inputs[1]
     assert "第 2 次回答" in answer_inputs[1]
     assert "已经两天了，每天五次，没有发烧" in answer_inputs[1]

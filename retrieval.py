@@ -11,6 +11,9 @@ from typing import Protocol, Sequence
 from knowledge import KnowledgeDocument
 
 
+DEFAULT_BM25_MINIMUM_SCORE = 3.0
+
+
 class Retriever(Protocol):
     """Minimal interface shared by production and experiment retrievers."""
 
@@ -85,7 +88,7 @@ class BM25Retriever:
         *,
         k1: float = 1.5,
         b: float = 0.75,
-        minimum_score: float = 2.0,
+        minimum_score: float = DEFAULT_BM25_MINIMUM_SCORE,
     ) -> None:
         self.documents = tuple(documents)
         self.k1 = k1

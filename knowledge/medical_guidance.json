@@ -19,7 +19,15 @@
     "title": "CDC：识别卒中征象",
     "content": "突然出现单侧面部、手臂或腿部麻木或无力，突然说话或理解困难，突然视力、行走或平衡异常，以及原因不明的突发剧烈头痛，都可能是卒中征象。卒中需要立即联系急救服务。",
     "source_url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
-    "keywords": ["卒中", "中风", "面部下垂", "肢体无力", "说话不清", "平衡", "突发头痛"]
+    "keywords": [
+      "卒中",
+      "中风",
+      "面部下垂",
+      "肢体无力",
+      "说话不清",
+      "平衡",
+      "突发头痛"
+    ]
   },
   {
     "document_id": "nhs-heart-attack-signs-2026-08-review",
@@ -41,7 +49,15 @@
     "title": "NHS：心脏病发作的常见表现",
     "content": "心脏病发作可能表现为胸部压榨或紧缩样疼痛，疼痛可放射至手臂、颈部或下颌，也可能伴随呼吸短促、恶心、出汗或肤色异常。疑似情况需要紧急医疗处理。",
     "source_url": "https://www.nhs.uk/conditions/heart-attack/",
-    "keywords": ["心脏病", "心梗", "胸痛", "胸闷", "呼吸短促", "出汗", "恶心"]
+    "keywords": [
+      "心脏病",
+      "心梗",
+      "胸痛",
+      "胸闷",
+      "呼吸短促",
+      "出汗",
+      "恶心"
+    ]
   },
   {
     "document_id": "who-suicide-crisis-2026-08-review",
@@ -63,6 +79,114 @@
     "title": "WHO：自杀与自伤危机求助",
     "content": "自杀或自伤想法是严重情绪痛苦的信号。若存在立即伤害自己的危险，应联系急救服务或危机热线；不要让处于立即危险中的人独处，并寻求可信任的人和专业人员协助。",
     "source_url": "https://www.who.int/news-room/questions-and-answers/item/suicide",
-    "keywords": ["自杀", "自伤", "轻生", "活不下去", "绝望", "危机热线"]
+    "keywords": [
+      "自杀",
+      "自伤",
+      "轻生",
+      "活不下去",
+      "绝望",
+      "危机热线"
+    ]
+  },
+  {
+    "document_id": "nhs-diarrhoea-vomiting-2026-08-review",
+    "source_id": "nhs",
+    "issuer": "National Health Service",
+    "jurisdiction": "GB",
+    "language": "zh-CN",
+    "source_language": "en",
+    "published_at": null,
+    "last_reviewed_at": "2026-08-14",
+    "version": "page-reviewed-2023-12-21_project-review-2026-08-14",
+    "evidence_grade": "not_assessed",
+    "source_type": "official_patient_guidance",
+    "topic_cluster": "gastrointestinal_symptoms",
+    "applicable_population": "general_public_including_children_and_babies",
+    "review_status": "project_summary_unverified_by_clinician",
+    "license": "source-terms-apply",
+    "title": "NHS：腹泻、呕吐与需要升级求助的信号",
+    "content": "腹泻和呕吐在成人、儿童和婴儿中都很常见，常与胃肠道感染有关，多数可在数日内缓解；期间应注意补充液体，减少脱水风险。若持续无法保留液体、出现便血或呕血、已有明显脱水、腹泻或呕吐持续超过页面列出的时限，或伴随意识异常、突然剧烈腹痛、严重呼吸困难等表现，应及时寻求专业或紧急医疗帮助。页面中的 NHS 111 和 999 仅适用于英国，其他地区应联系当地医疗服务。",
+    "source_url": "https://www.nhs.uk/symptoms/diarrhoea-and-vomiting/",
+    "keywords": [
+      "腹泻",
+      "拉肚子",
+      "稀便",
+      "呕吐",
+      "吐了",
+      "脱水",
+      "尿量减少",
+      "便血",
+      "呕血",
+      "胃肠炎",
+      "肚子痛"
+    ],
+    "content_sha256": "7c665a78cde37495195a55b25d24773a1746df42302cd6aebadf133267b85db4"
+  },
+  {
+    "document_id": "cdc-norovirus-symptoms-2026-08-review",
+    "source_id": "cdc",
+    "issuer": "U.S. Centers for Disease Control and Prevention",
+    "jurisdiction": "US",
+    "language": "zh-CN",
+    "source_language": "en",
+    "published_at": "2024-04-24",
+    "last_reviewed_at": "2026-08-14",
+    "version": "page-dated-2024-04-24_project-review-2026-08-14",
+    "evidence_grade": "not_assessed",
+    "source_type": "official_public_health_guidance",
+    "topic_cluster": "gastrointestinal_symptoms",
+    "applicable_population": "general_public",
+    "review_status": "project_summary_unverified_by_clinician",
+    "license": "source-terms-apply",
+    "title": "CDC：诺如病毒常见表现与脱水风险",
+    "content": "诺如病毒可引起急性胃肠炎，常见表现包括腹泻、呕吐、恶心和腹痛，也可能伴有发热、头痛或身体酸痛。频繁呕吐或腹泻可能导致脱水，幼儿、老年人和患有其他疾病的人风险更高。尿量减少、口咽干燥、站立时头晕，以及儿童哭泣时少泪或无泪、异常嗜睡或烦躁，可能提示脱水；怀疑严重脱水时应联系医疗专业人员。",
+    "source_url": "https://www.cdc.gov/norovirus/about/index.html",
+    "keywords": [
+      "诺如病毒",
+      "胃肠炎",
+      "腹泻",
+      "拉肚子",
+      "呕吐",
+      "恶心",
+      "腹痛",
+      "脱水",
+      "尿量减少",
+      "口干",
+      "站立头晕"
+    ],
+    "content_sha256": "87877bf5832272d416a13b8c18fe0281b50d4a501ed67a82744d4419a8a7e3b1"
+  },
+  {
+    "document_id": "who-diarrhoeal-disease-2026-08-review",
+    "source_id": "who",
+    "issuer": "World Health Organization",
+    "jurisdiction": "INTL",
+    "language": "zh-CN",
+    "source_language": "en",
+    "published_at": "2024-03-07",
+    "last_reviewed_at": "2026-08-14",
+    "version": "fact-sheet-2024-03-07_project-review-2026-08-14",
+    "evidence_grade": "not_assessed",
+    "source_type": "official_public_health_guidance",
+    "topic_cluster": "gastrointestinal_symptoms",
+    "applicable_population": "general_public_with_child_health_emphasis",
+    "review_status": "project_summary_unverified_by_clinician",
+    "license": "source-terms-apply",
+    "title": "WHO：腹泻与脱水风险",
+    "content": "腹泻通常指每天出现三次或更多稀便、水样便，或排便次数明显多于个人平时；频繁排出成形便不属于这一概念。腹泻造成的主要严重威胁是水和电解质丢失所致的脱水，儿童、营养不良者或免疫功能受损者尤其需要关注。补充液体和电解质有助于应对丢失；若腹泻持续、出现便血或脱水征象，应咨询医疗专业人员。",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease",
+    "keywords": [
+      "腹泻",
+      "拉肚子",
+      "稀便",
+      "水样便",
+      "排便次数增加",
+      "脱水",
+      "电解质",
+      "便血",
+      "持续腹泻",
+      "儿童腹泻"
+    ],
+    "content_sha256": "1010cab38e0ea48a6ea95a5207a91906189774a03f33f1d435b94bdc31a25c11"
   }
 ]
