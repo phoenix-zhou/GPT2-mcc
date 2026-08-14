@@ -165,18 +165,20 @@ them.
 
 ## Current evidence and limitations
 
-As of 2026-08-12:
+As of 2026-08-14:
 
-- 59 automated code, evaluation, and Skill tests pass.
-- The corpus validator accepts 3 records from 3 approved sources.
-- All 3 records are project-authored Chinese summaries marked as not reviewed
+- 92 automated code, evaluation, security, and Skill tests pass.
+- The corpus validator accepts 9 records from 3 approved sources.
+- All 9 records are project-authored Chinese summaries marked as not reviewed
   by a clinician.
-- All 3 records have an evidence grade of `not_assessed`.
-- Retrieval is keyword/token scoring, not embedding or hybrid retrieval.
+- All 9 records have an evidence grade of `not_assessed`.
+- Production retrieval remains Keyword; a deterministic BM25 candidate is
+  measured separately and has not passed an independent holdout.
 - An 80-case synthetic, project-reviewed Evaluation MVP measures deterministic
-  safety routing and retrieval. It reports 1.000 emergency recall, 0.0909
-  emergency false-positive rate, and 0.6250 Retrieval Recall@3 on this dataset.
-  These are component-baseline results, not clinical performance claims.
+  safety routing and retrieval. The current nine-document component replay
+  reports Keyword Recall@3 of 0.6154 and BM25 Recall@3 of 0.6538 at equal
+  no-hit accuracy of 0.8966. These development-set results are not clinical
+  performance claims or independent holdout estimates.
 - A complete 80-case local-Qwen run measures 81.25% planner-route accuracy,
   72.5% deterministic task-success proxy, and 13.44-second P95 case latency
   with zero provider errors and zero API cost.

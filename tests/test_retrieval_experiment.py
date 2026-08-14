@@ -23,19 +23,19 @@ def test_retrieval_experiment_compares_same_frozen_cases():
     )
 
     assert report.candidate_count == 55
-    assert report.relevant_case_count == 25
-    assert report.no_hit_case_count == 30
+    assert report.relevant_case_count == 26
+    assert report.no_hit_case_count == 29
     results = {result.strategy: result for result in report.strategies}
-    assert results["keyword"].metrics["recall_at_k"] == 0.64
-    assert results["bm25"].metrics["recall_at_k"] == 0.72
+    assert results["keyword"].metrics["recall_at_k"] == 0.6153846153846154
+    assert results["bm25"].metrics["recall_at_k"] == 0.6538461538461539
     assert (
         results["bm25"].metrics["no_hit_accuracy"]
         >= results["keyword"].metrics["no_hit_accuracy"]
     )
     assert "Promote `bm25`" in report.recommendation
-    assert len(report.bm25_threshold_sweep) == 7
+    assert len(report.bm25_threshold_sweep) == 9
     assert "development-set threshold sweep" in report.to_markdown()
-    assert "`minimum_score=3.0`" in report.to_markdown()
+    assert "`minimum_score=4.0`" in report.to_markdown()
 
 
 def test_retrieval_experiment_cli_writes_json_and_markdown(tmp_path):

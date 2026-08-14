@@ -46,7 +46,7 @@ product constraints:
 | Evaluation | 80-case development set, provider-neutral capture, failure taxonomy, and Keyword/BM25 comparison |
 | Model providers | Pinned local Qwen default and optional OpenAI; GPT-2 is excluded from the web runtime |
 | Web demo | Local/single-process Flask interface with trace, citations, CSRF, request limits, and security headers |
-| Clinical validation | Not completed; all six project-authored summaries remain unverified by a clinician |
+| Clinical validation | Not completed; all nine project-authored summaries remain unverified by a clinician |
 | Production deployment | Not supported; authentication, distributed controls, encrypted persistence, and compliance work are absent |
 
 ## User and agent flow
@@ -219,7 +219,7 @@ compliance certification. See [SECURITY.md](SECURITY.md).
 
 ## Governed evidence and data strategy
 
-The current corpus contains six project-authored Chinese summaries linked to
+The current corpus contains nine project-authored Chinese summaries linked to
 CDC, NHS, and WHO pages. They are explicitly **not
 clinician-reviewed**. Runtime loading rejects unknown or impersonated sources,
 stale reviews, future dates, unsafe URLs, duplicate IDs, oversized records, and
@@ -227,8 +227,10 @@ content/hash mismatches.
 
 The versioned [Corpus v1 coverage specification](docs/corpus-v1-coverage-spec.md)
 now defines 8 topic clusters and a 24-record target. The automated report shows
-the current 6/24 records and every remaining cluster gap. The gastrointestinal
-cluster is the first to meet both its document and multi-source target.
+the current 9/24 records and every remaining cluster gap. The gastrointestinal
+and respiratory clusters meet both their document and multi-source targets.
+The [Batch 2 audit](docs/corpus-v1-batch-2.md) records the respiratory-source
+decisions, label changes, and retrieval regression results.
 Paraphrases, hard
 negatives, no-hit prompts, and jurisdiction differences are evaluation
 phenomena rather than evidence-document types. Adding more documents alone is
