@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "corpus_id": "health_corpus_v1",
+  "status": "planning",
+  "target_document_count": 24,
+  "target_topic_cluster_count": 8,
+  "minimum_sources_per_cluster": 2,
+  "required_review_status": "project_summary_unverified_by_clinician",
+  "required_query_phenomena": [
+    "ordinary_information",
+    "warning_signs",
+    "clarification_needed",
+    "paraphrase",
+    "synonym",
+    "no_hit",
+    "hard_negative",
+    "jurisdiction_difference"
+  ],
+  "clusters": [
+    {
+      "cluster_id": "neurological_warning_signs",
+      "display_name_en": "Neurological warning signs",
+      "display_name_zh": "神经系统危险信号",
+      "target_documents": 3,
+      "inclusion_scope": "General-public guidance about recognizing time-sensitive neurological warning signs and seeking urgent help.",
+      "exclusion_scope": "Diagnosis, prognosis, medication selection, rehabilitation plans, or patient-specific interpretation.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    },
+    {
+      "cluster_id": "cardiovascular_warning_signs",
+      "display_name_en": "Cardiovascular warning signs",
+      "display_name_zh": "心血管危险信号",
+      "target_documents": 3,
+      "inclusion_scope": "General-public guidance about recognizing time-sensitive cardiovascular warning signs and seeking urgent help.",
+      "exclusion_scope": "Diagnosis, risk scoring, medication selection, procedures, or patient-specific interpretation.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    },
+    {
+      "cluster_id": "gastrointestinal_symptoms",
+      "display_name_en": "Gastrointestinal symptoms",
+      "display_name_zh": "胃肠道症状",
+      "target_documents": 3,
+      "inclusion_scope": "General information about common gastrointestinal symptoms, hydration, warning signs, and when to seek professional care.",
+      "exclusion_scope": "Diagnosis, antimicrobial advice, individualized diet plans, dosing, or treatment selection.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    },
+    {
+      "cluster_id": "respiratory_symptoms",
+      "display_name_en": "Respiratory symptoms",
+      "display_name_zh": "呼吸系统症状",
+      "target_documents": 3,
+      "inclusion_scope": "General information about cough, breathing symptoms, warning signs, and when to seek professional care.",
+      "exclusion_scope": "Diagnosis, antibiotic selection, inhaler dosing, or patient-specific treatment plans.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    },
+    {
+      "cluster_id": "fever_and_infection",
+      "display_name_en": "Fever and infection",
+      "display_name_zh": "发热与感染",
+      "target_documents": 3,
+      "inclusion_scope": "General information about fever, common infection-related warning signs, prevention, and escalation.",
+      "exclusion_scope": "Diagnosis, antimicrobial selection, individualized dosing, or claims about a specific outbreak without current review.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    },
+    {
+      "cluster_id": "allergy_and_medication_safety",
+      "display_name_en": "Allergy and medication safety",
+      "display_name_zh": "过敏与用药安全",
+      "target_documents": 3,
+      "inclusion_scope": "General information about allergic warning signs and safe use of medicine labels and professional support.",
+      "exclusion_scope": "Prescribing, interaction clearance, dose calculation, or individualized medication changes.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    },
+    {
+      "cluster_id": "child_health",
+      "display_name_en": "Child health",
+      "display_name_zh": "儿童健康",
+      "target_documents": 3,
+      "inclusion_scope": "Caregiver-facing general information about common child-health concerns, warning signs, and escalation.",
+      "exclusion_scope": "Diagnosis, weight-based dosing, developmental assessment, or individualized treatment.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    },
+    {
+      "cluster_id": "mental_health_crisis",
+      "display_name_en": "Mental-health crisis",
+      "display_name_zh": "心理健康危机",
+      "target_documents": 3,
+      "inclusion_scope": "General-public crisis recognition and immediate help-seeking guidance for self-harm or suicide risk.",
+      "exclusion_scope": "Diagnosis, psychotherapy, medication advice, risk prediction, or jurisdiction-specific hotline claims without current verification.",
+      "preferred_jurisdictions": ["CN", "GB", "US", "INTL"]
+    }
+  ]
+}

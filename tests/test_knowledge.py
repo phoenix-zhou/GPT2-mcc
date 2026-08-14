@@ -26,6 +26,7 @@ def governed_record(**overrides):
         "version": "v1",
         "evidence_grade": "not_assessed",
         "source_type": "official_public_health_guidance",
+        "topic_cluster": "cardiovascular_warning_signs",
         "applicable_population": "general_public",
         "review_status": "project_summary_unverified_by_clinician",
         "license": "source-terms-apply",
@@ -97,6 +98,15 @@ def test_knowledge_loader_rejects_changed_content_without_hash_update(tmp_path):
         LocalKnowledgeBase(path, manifest_path)
 
 
+def test_knowledge_loader_requires_topic_cluster(tmp_path):
+    record = governed_record()
+    del record["topic_cluster"]
+    path, manifest_path = write_test_corpus(tmp_path, [record])
+
+    with pytest.raises(KnowledgeValidationError, match="topic_cluster"):
+        LocalKnowledgeBase(path, manifest_path)
+
+
 def test_knowledge_loader_rejects_source_id_impersonation(tmp_path):
     record = governed_record(source_url="https://cdc.gov.attacker.example/topic")
     path, manifest_path = write_test_corpus(tmp_path, [record])
@@ -128,6 +138,7 @@ def test_production_knowledge_has_governance_metadata():
     assert all(document.document_id for document in knowledge_base.documents)
     assert all(document.last_reviewed_at for document in knowledge_base.documents)
     assert all(document.review_status for document in knowledge_base.documents)
+    assert all(document.topic_cluster for document in knowledge_base.documents)
 
 
 def test_production_default_preserves_keyword_baseline():

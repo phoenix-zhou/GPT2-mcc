@@ -17,6 +17,7 @@ Use one JSON object per document in `knowledge/medical_guidance.json`.
 | `version` | Source version, publication identifier, or explicit review snapshot label. |
 | `evidence_grade` | Use the source's documented grade; otherwise `not_assessed`. |
 | `source_type` | Controlled descriptive type such as `official_patient_guidance`. |
+| `topic_cluster` | Controlled cluster ID declared in `knowledge/coverage_plan.json`. |
 | `applicable_population` | Population explicitly covered by the source. |
 | `review_status` | Default to `project_summary_unverified_by_clinician`; raise only with evidence. |
 | `license` | Exact reuse license or `source-terms-apply`; do not guess. |
@@ -41,6 +42,7 @@ Use one JSON object per document in `knowledge/medical_guidance.json`.
   "version": "web-current-2026-08-11",
   "evidence_grade": "not_assessed",
   "source_type": "official_patient_guidance",
+  "topic_cluster": "gastrointestinal_symptoms",
   "applicable_population": "general_public",
   "review_status": "project_summary_unverified_by_clinician",
   "license": "source-terms-apply",
@@ -51,4 +53,9 @@ Use one JSON object per document in `knowledge/medical_guidance.json`.
 }
 ```
 
-Do not add extra fields casually. Update the project loader, validator, references, and tests together when evolving the schema.
+The cluster must identify a real coverage gap; do not create a new cluster only
+to make a candidate fit. Paraphrases, no-hit prompts, and hard negatives belong
+in evaluation data rather than evidence records.
+
+Do not add extra fields casually. Update the project loader, validator,
+coverage plan, references, and tests together when evolving the schema.

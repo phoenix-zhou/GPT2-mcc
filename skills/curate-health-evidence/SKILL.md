@@ -12,7 +12,8 @@ Maintain a traceable health-information corpus without treating source authority
 - For adding or updating a document, read `references/knowledge-schema.md`, then follow `references/review-workflow.md`.
 - For approving a new source or auditing evidence quality, read `references/source-quality-rubric.md` and `references/review-workflow.md`.
 - For integrity or freshness checks, run `scripts/validate_corpus.py`.
-- For corpus inventory and gap analysis, run `scripts/coverage_report.py`.
+- For corpus inventory and gap analysis, inspect
+  `knowledge/coverage_plan.json`, then run `scripts/coverage_report.py`.
 
 ## Work safely
 
@@ -26,23 +27,25 @@ Maintain a traceable health-information corpus without treating source authority
 ## Add a governed document
 
 1. Confirm that `source_id` exists in `knowledge/source_manifest.json`. If it does not, assess the source with `references/source-quality-rubric.md` and add a manifest entry before continuing.
-2. Create a candidate JSON object following `references/knowledge-schema.md`. Omit `content_sha256`; the script calculates it.
-3. Resolve the absolute directory containing this `SKILL.md`; use its scripts whether the skill is installed or checked out in the project.
-4. Check without writing:
+2. Confirm the record closes a declared `topic_cluster` gap in
+   `knowledge/coverage_plan.json`.
+3. Create a candidate JSON object following `references/knowledge-schema.md`. Omit `content_sha256`; the script calculates it.
+4. Resolve the absolute directory containing this `SKILL.md`; use its scripts whether the skill is installed or checked out in the project.
+5. Check without writing:
 
    ```bash
    python "<skill-directory>/scripts/add_evidence.py" \
      --project . --candidate /path/to/candidate.json
    ```
 
-5. Review the normalized record printed by the script. Apply only when the user requested the change:
+6. Review the normalized record printed by the script. Apply only when the user requested the change:
 
    ```bash
    python "<skill-directory>/scripts/add_evidence.py" \
      --project . --candidate /path/to/candidate.json --apply
    ```
 
-6. Run corpus validation and the project test suite.
+7. Run corpus validation, the coverage report, and the project test suite.
 
 ## Audit a corpus
 

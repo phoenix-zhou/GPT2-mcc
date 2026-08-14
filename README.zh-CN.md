@@ -36,7 +36,7 @@ Agent 平台**。当前产品行为、资料库、安全策略和实测结论都
 | 安全分流 | 确定性强信号路由；可测量，但不是诊断分类器 |
 | 有界 Agent | 单次规划—工具—回答；校验动作/原因组合；最多一次只读证据工具 |
 | 多轮会话 | 有界内存上下文和明确的重置动作 |
-| Governed RAG | 获准来源注册、URL 域名绑定、复核日期、语料上限和 SHA-256 完整性 |
+| Governed RAG | 版本化覆盖合同、受控主题群、获准来源注册、URL 域名绑定、复核日期、语料上限和 SHA-256 完整性 |
 | Evaluation | 80 条开发集案例、Provider 无关预测捕获、失败分类和 Keyword/BM25 对照 |
 | 模型 | 固定 Revision 的本地 Qwen 默认、OpenAI 可选；GPT-2 不进入 Web Runtime |
 | Web Demo | 本地单进程 Flask 页面，包含 Trace、引用、CSRF、请求限制和安全响应头 |
@@ -195,9 +195,10 @@ flask --app app run
 **未经临床人员审核**。运行时会拒绝未知或冒充来源、过期复核、未来日期、不安全
 URL、重复 ID、超长内容和哈希不一致记录。
 
-下一版语料按照覆盖缺口建设，而不是机械追求数量：计划在 6–8 个主题群中形成约
-20–30 条受控文档，并覆盖 Paraphrase、Hard Negative、No-hit 和地区差异。增加
-文档本身不构成可靠性结论。
+版本化的 [Corpus v1 覆盖规范](docs/corpus-v1-coverage-spec.md)已经定义 8 个主题群和
+24 条记录目标；自动报告会显示当前 3/24 条记录以及每个剩余缺口。Paraphrase、
+Hard Negative、No-hit 和地区差异属于评测现象，不是证据文档类型。增加文档本身
+不构成可靠性结论。
 [`curate-health-evidence`](skills/curate-health-evidence/) Skill 可以自动执行确定性
 治理校验，但不能替代临床审核。
 
@@ -232,10 +233,12 @@ tests/                           自动化回归与安全测试
 - [Evaluation MVP](docs/evaluation-mvp.md) 与 [Evaluation v1](docs/evaluation-v1.md)
 - [RAG V2 实验](docs/rag-v2-experiment.md)
 - [安全与风险审计](docs/security-and-risk-review.md)
+- [Health Corpus v1 中英双语覆盖规范](docs/corpus-v1-coverage-spec.md)
 
 ## 下一阶段
 
-1. 定义 Coverage Requirement，并冻结 20–30 条受控文档的 Corpus v1。
+1. 按照已完成的 Coverage Contract 扩充受控语料，只有全部 24 条记录通过准入门槛
+   后才冻结 `health_corpus_v1`。
 2. 创建作者隔离的盲测 Holdout，使用相同 Planner Decision 做 Keyword/BM25 配对回放。
 3. 人工审核 20–30 个代表回答，标注 Citation Entailment、Claim Groundedness、
    Unsupported Claim Rate 和 Usefulness。

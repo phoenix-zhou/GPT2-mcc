@@ -7,7 +7,13 @@ import argparse
 import json
 from pathlib import Path
 
-from _corpus import content_hash, load_corpus, validate_payload, write_records
+from _corpus import (
+    content_hash,
+    load_corpus,
+    load_coverage_plan,
+    validate_payload,
+    write_records,
+)
 
 
 def main() -> int:
@@ -31,11 +37,14 @@ def main() -> int:
         candidate["content_sha256"] = calculated_hash
 
         records, manifest = load_corpus(args.project)
+        coverage_plan = load_coverage_plan(args.project)
         document_id = candidate.get("document_id")
         if any(record.get("document_id") == document_id for record in records):
             raise ValueError(f"document_id already exists: {document_id!r}")
         proposed = [*records, candidate]
-        result = validate_payload(proposed, manifest)
+        result = validate_payload(
+            proposed, manifest, coverage_plan=coverage_plan
+        )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"ERROR: {exc}")
         return 1

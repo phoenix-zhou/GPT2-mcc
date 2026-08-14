@@ -22,6 +22,7 @@ RECORD_FIELDS = {
     "version",
     "evidence_grade",
     "source_type",
+    "topic_cluster",
     "applicable_population",
     "review_status",
     "license",
@@ -42,6 +43,16 @@ SOURCE_FIELDS = {
     "reuse_status",
 }
 
+COVERAGE_CLUSTER_FIELDS = {
+    "cluster_id",
+    "display_name_en",
+    "display_name_zh",
+    "target_documents",
+    "inclusion_scope",
+    "exclusion_scope",
+    "preferred_jurisdictions",
+}
+
 
 @dataclass(frozen=True)
 class ValidationResult:
@@ -49,6 +60,7 @@ class ValidationResult:
     warnings: tuple[str, ...]
     records: tuple[dict, ...]
     manifest: dict
+    coverage_plan: dict | None = None
 
 
 def knowledge_paths(project: Path) -> tuple[Path, Path]:
@@ -57,6 +69,10 @@ def knowledge_paths(project: Path) -> tuple[Path, Path]:
         knowledge_dir / "medical_guidance.json",
         knowledge_dir / "source_manifest.json",
     )
+
+
+def coverage_plan_path(project: Path) -> Path:
+    return project.resolve() / "knowledge" / "coverage_plan.json"
 
 
 def load_corpus(project: Path) -> tuple[list[dict], dict]:
@@ -70,6 +86,14 @@ def load_corpus(project: Path) -> tuple[list[dict], dict]:
     if not isinstance(manifest, dict):
         raise ValueError("source_manifest.json must contain a JSON object")
     return records, manifest
+
+
+def load_coverage_plan(project: Path) -> dict:
+    with coverage_plan_path(project).open(encoding="utf-8") as file:
+        plan = json.load(file)
+    if not isinstance(plan, dict):
+        raise ValueError("coverage_plan.json must contain a JSON object")
+    return plan
 
 
 def content_hash(content: str) -> str:
@@ -103,11 +127,96 @@ def _iso_date(value, label: str, errors: list[str]) -> date | None:
 
 
 def validate_payload(
-    records: list[dict], manifest: dict, *, today: date | None = None
+    records: list[dict],
+    manifest: dict,
+    *,
+    coverage_plan: dict | None = None,
+    today: date | None = None,
 ) -> ValidationResult:
     today = today or date.today()
     errors: list[str] = []
     warnings: list[str] = []
+
+    known_clusters: set[str] | None = None
+    if coverage_plan is not None:
+        if coverage_plan.get("schema_version") != 1:
+            errors.append("coverage_plan: unsupported or missing schema_version")
+        if coverage_plan.get("status") not in {"planning", "frozen"}:
+            errors.append("coverage_plan: status must be 'planning' or 'frozen'")
+        for field in ("corpus_id", "required_review_status"):
+            if not isinstance(coverage_plan.get(field), str) or not coverage_plan[
+                field
+            ].strip():
+                errors.append(f"coverage_plan: {field} must be non-empty text")
+        for field in (
+            "target_document_count",
+            "target_topic_cluster_count",
+            "minimum_sources_per_cluster",
+        ):
+            if not isinstance(coverage_plan.get(field), int) or coverage_plan[field] <= 0:
+                errors.append(f"coverage_plan: {field} must be a positive integer")
+        clusters = coverage_plan.get("clusters", [])
+        if not isinstance(clusters, list):
+            errors.append("coverage_plan: clusters must be a list")
+            clusters = []
+        cluster_ids: list[str] = []
+        target_sum = 0
+        for index, cluster in enumerate(clusters):
+            label = f"coverage_plan.clusters[{index}]"
+            if not isinstance(cluster, dict):
+                errors.append(f"{label}: expected an object")
+                continue
+            missing = COVERAGE_CLUSTER_FIELDS - cluster.keys()
+            if missing:
+                errors.append(f"{label}: missing {', '.join(sorted(missing))}")
+            for field in (
+                "display_name_en",
+                "display_name_zh",
+                "inclusion_scope",
+                "exclusion_scope",
+            ):
+                if not isinstance(cluster.get(field), str) or not cluster.get(
+                    field, ""
+                ).strip():
+                    errors.append(f"{label}: {field} must be non-empty text")
+            cluster_id = cluster.get("cluster_id")
+            if not isinstance(cluster_id, str) or not cluster_id.strip():
+                errors.append(f"{label}: cluster_id must be non-empty text")
+            else:
+                cluster_ids.append(cluster_id)
+            target = cluster.get("target_documents")
+            if not isinstance(target, int) or target <= 0:
+                errors.append(f"{label}: target_documents must be a positive integer")
+            else:
+                target_sum += target
+            jurisdictions = cluster.get("preferred_jurisdictions")
+            if not isinstance(jurisdictions, list) or not jurisdictions or not all(
+                isinstance(value, str) and value.strip() for value in jurisdictions
+            ):
+                errors.append(
+                    f"{label}: preferred_jurisdictions must be a non-empty string list"
+                )
+        duplicates = sorted(
+            key for key, count in Counter(cluster_ids).items() if count > 1
+        )
+        if duplicates:
+            errors.append(f"coverage_plan: duplicate cluster_id values {duplicates}")
+        if coverage_plan.get("target_topic_cluster_count") != len(cluster_ids):
+            errors.append(
+                "coverage_plan: target_topic_cluster_count does not match clusters"
+            )
+        if coverage_plan.get("target_document_count") != target_sum:
+            errors.append(
+                "coverage_plan: target_document_count does not match cluster targets"
+            )
+        phenomena = coverage_plan.get("required_query_phenomena")
+        if not isinstance(phenomena, list) or not phenomena or not all(
+            isinstance(value, str) and value.strip() for value in phenomena
+        ):
+            errors.append(
+                "coverage_plan: required_query_phenomena must be a non-empty string list"
+            )
+        known_clusters = set(cluster_ids)
 
     if manifest.get("schema_version") != 1:
         errors.append("manifest: unsupported or missing schema_version")
@@ -195,6 +304,11 @@ def validate_payload(
             isinstance(keyword, str) and keyword.strip() for keyword in keywords
         ):
             errors.append(f"{label}: keywords must be a non-empty string list")
+        topic_cluster = record.get("topic_cluster")
+        if not isinstance(topic_cluster, str) or not topic_cluster.strip():
+            errors.append(f"{label}: topic_cluster must be non-empty text")
+        elif known_clusters is not None and topic_cluster not in known_clusters:
+            errors.append(f"{label}: unknown topic_cluster {topic_cluster!r}")
         reviewed = _iso_date(
             record.get("last_reviewed_at"),
             f"{label}.last_reviewed_at",
@@ -218,6 +332,14 @@ def validate_payload(
         )
         if required_status and record.get("review_status") != required_status:
             errors.append(f"{label}: review_status violates review policy")
+        if (
+            coverage_plan is not None
+            and record.get("review_status")
+            != coverage_plan.get("required_review_status")
+        ):
+            errors.append(
+                f"{label}: review_status violates coverage-plan policy"
+            )
 
     duplicate_documents = sorted(
         key for key, count in Counter(document_ids).items() if count > 1
@@ -225,14 +347,46 @@ def validate_payload(
     if duplicate_documents:
         errors.append(f"records: duplicate document_id values {duplicate_documents}")
 
+    if coverage_plan is not None and coverage_plan.get("status") == "frozen":
+        target_documents = coverage_plan.get("target_document_count")
+        if isinstance(target_documents, int) and len(records) != target_documents:
+            errors.append(
+                "coverage_plan: frozen corpus document count does not match target"
+            )
+        cluster_counts = Counter(record.get("topic_cluster") for record in records)
+        cluster_sources: dict[str, set[str]] = {}
+        for record in records:
+            cluster_sources.setdefault(record.get("topic_cluster"), set()).add(
+                record.get("source_id")
+            )
+        minimum_sources = coverage_plan.get("minimum_sources_per_cluster")
+        for cluster in coverage_plan.get("clusters", []):
+            if not isinstance(cluster, dict):
+                continue
+            cluster_id = cluster.get("cluster_id")
+            target = cluster.get("target_documents")
+            if isinstance(target, int) and cluster_counts[cluster_id] < target:
+                errors.append(
+                    f"coverage_plan: frozen cluster {cluster_id!r} is below target"
+                )
+            if (
+                isinstance(minimum_sources, int)
+                and len(cluster_sources.get(cluster_id, set())) < minimum_sources
+            ):
+                errors.append(
+                    f"coverage_plan: frozen cluster {cluster_id!r} is below "
+                    "the source minimum"
+                )
+
     return ValidationResult(
-        tuple(errors), tuple(warnings), tuple(records), manifest
+        tuple(errors), tuple(warnings), tuple(records), manifest, coverage_plan
     )
 
 
 def validate_project(project: Path) -> ValidationResult:
     records, manifest = load_corpus(project)
-    return validate_payload(records, manifest)
+    coverage_plan = load_coverage_plan(project)
+    return validate_payload(records, manifest, coverage_plan=coverage_plan)
 
 
 def write_records(project: Path, records: list[dict]) -> None:

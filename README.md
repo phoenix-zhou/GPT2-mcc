@@ -42,7 +42,7 @@ product constraints:
 | Safety routing | Deterministic strong-signal router; measurable but not a diagnostic classifier |
 | Bounded agent | One plan/tool/respond cycle with validated action/reason pairs and one read-only evidence tool |
 | Conversation | Bounded in-memory follow-up context and an explicit reset action |
-| Governed RAG | Approved-source registry, URL-host binding, review dates, corpus bounds, and SHA-256 integrity |
+| Governed RAG | Versioned coverage contract, controlled topic clusters, approved-source registry, URL-host binding, review dates, corpus bounds, and SHA-256 integrity |
 | Evaluation | 80-case development set, provider-neutral capture, failure taxonomy, and Keyword/BM25 comparison |
 | Model providers | Pinned local Qwen default and optional OpenAI; GPT-2 is excluded from the web runtime |
 | Web demo | Local/single-process Flask interface with trace, citations, CSRF, request limits, and security headers |
@@ -221,10 +221,12 @@ clinician-reviewed**. Runtime loading rejects unknown or impersonated sources,
 stale reviews, future dates, unsafe URLs, duplicate IDs, oversized records, and
 content/hash mismatches.
 
-The next corpus version will be coverage-driven rather than volume-driven:
-roughly 20–30 governed documents across 6–8 topic clusters, including
-paraphrases, hard negatives, no-hit cases, and jurisdiction differences.
-Adding more documents alone is not a reliability claim. The included
+The versioned [Corpus v1 coverage specification](docs/corpus-v1-coverage-spec.md)
+now defines 8 topic clusters and a 24-record target. The automated report shows
+the current 3/24 records and every remaining cluster gap. Paraphrases, hard
+negatives, no-hit prompts, and jurisdiction differences are evaluation
+phenomena rather than evidence-document types. Adding more documents alone is
+not a reliability claim. The included
 [`curate-health-evidence`](skills/curate-health-evidence/) Skill automates
 deterministic governance checks; it does not perform clinical review.
 
@@ -260,10 +262,12 @@ tests/                           Automated regression and security tests
 - [Evaluation MVP](docs/evaluation-mvp.md) and [Evaluation v1](docs/evaluation-v1.md)
 - [RAG V2 experiment](docs/rag-v2-experiment.md)
 - [Security and risk review](docs/security-and-risk-review.md)
+- [Health Corpus v1 coverage specification](docs/corpus-v1-coverage-spec.md)
 
 ## Next milestones
 
-1. Define coverage requirements and freeze a 20–30 document governed corpus.
+1. Expand the governed corpus against the completed coverage contract and
+   freeze `health_corpus_v1` only after all 24 records pass its acceptance gate.
 2. Create an author-separated blind holdout and run paired Keyword/BM25 replay
    with the same planner decisions.
 3. Human-review 20–30 sampled answers for citation entailment, claim

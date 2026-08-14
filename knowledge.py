@@ -31,6 +31,7 @@ class KnowledgeDocument:
     version: str = ""
     evidence_grade: str = "not_assessed"
     source_type: str = ""
+    topic_cluster: str = ""
     applicable_population: str = ""
     review_status: str = ""
     license: str = ""
@@ -40,7 +41,7 @@ class KnowledgeDocument:
 REQUIRED_FIELDS = {
     "document_id", "source_id", "issuer", "jurisdiction", "language",
     "source_language", "last_reviewed_at", "version", "evidence_grade",
-    "source_type", "applicable_population", "review_status", "license",
+    "source_type", "topic_cluster", "applicable_population", "review_status", "license",
     "content_sha256", "title", "content", "source_url", "keywords",
 }
 SOURCE_FIELDS = {
@@ -69,6 +70,7 @@ def _validated_document(
     item: dict,
     source_registry: dict[str, dict],
     review_policy: dict,
+    known_topic_clusters: set[str] | None = None,
 ) -> KnowledgeDocument:
     if not isinstance(item, dict):
         raise KnowledgeValidationError("Knowledge records must be JSON objects")
@@ -87,6 +89,13 @@ def _validated_document(
         )
     if len(item["title"]) > 300 or len(item["document_id"]) > 200:
         raise KnowledgeValidationError("Knowledge identifiers exceed safe limits")
+    if (
+        known_topic_clusters is not None
+        and item["topic_cluster"] not in known_topic_clusters
+    ):
+        raise KnowledgeValidationError(
+            f"Unknown topic_cluster {item['topic_cluster']!r}"
+        )
     source = source_registry.get(item["source_id"])
     if source is None:
         raise KnowledgeValidationError(
@@ -214,9 +223,32 @@ class LocalKnowledgeBase:
             raise KnowledgeValidationError(
                 "Knowledge document_id values must be unique"
             )
+        known_topic_clusters: set[str] | None = None
+        coverage_source = source_path.with_name("coverage_plan.json")
+        if coverage_source.exists():
+            with coverage_source.open(encoding="utf-8") as file:
+                coverage_plan = json.load(file)
+            clusters = coverage_plan.get("clusters", [])
+            if not isinstance(clusters, list) or not clusters:
+                raise KnowledgeValidationError(
+                    "Coverage plan must contain topic clusters"
+                )
+            known_topic_clusters = {
+                cluster.get("cluster_id")
+                for cluster in clusters
+                if isinstance(cluster, dict)
+                and isinstance(cluster.get("cluster_id"), str)
+                and cluster["cluster_id"].strip()
+            }
+            if len(known_topic_clusters) != len(clusters):
+                raise KnowledgeValidationError(
+                    "Coverage plan cluster IDs must be non-empty and unique"
+                )
         self.source_manifest = manifest
         self.documents = tuple(
-            _validated_document(item, source_registry, review_policy)
+            _validated_document(
+                item, source_registry, review_policy, known_topic_clusters
+            )
             for item in items
         )
         try:

@@ -40,21 +40,28 @@ decision follows from the result.**
 - [x] Remove raw legacy datasets and generated artifacts from the current tree.
 - [x] Publish the product case study, security review, Evaluation MVP/v1, and
   Keyword/BM25 experiment.
-- [x] Pass 84 automated regression and security tests as of 2026-08-14.
+- [x] Pass 88 automated regression and security tests as of 2026-08-14.
 
 ## P0 — Corpus v1 before further retrieval architecture
 
 ### 1. Coverage specification
 
-- [ ] Define 6–8 health-information topic clusters and explicit inclusion/
+- [x] Define 6–8 health-information topic clusters and explicit inclusion/
   exclusion boundaries.
-- [ ] Create a coverage matrix for ordinary information, warning signs,
+- [x] Create a coverage matrix for ordinary information, warning signs,
   clarification needs, paraphrases, synonyms, no-hit cases, hard negatives,
   and jurisdiction differences.
-- [ ] Define approved issuer/domain and reuse requirements before collecting
+- [x] Define approved issuer/domain and reuse requirements before collecting
   content.
-- [ ] Keep project-authored summaries separate from clinical review and
+- [x] Keep project-authored summaries separate from clinical review and
   evidence grading.
+
+Coverage design is now versioned in
+[`knowledge/coverage_plan.json`](../knowledge/coverage_plan.json) and explained
+in the bilingual
+[`Health Corpus v1 Coverage Specification`](corpus-v1-coverage-spec.md). The
+live report shows 3/24 records and a 21-record gap; this does not mark Corpus v1
+as frozen.
 
 ### 2. Governed corpus expansion
 
