@@ -85,7 +85,7 @@ def main() -> int:
         cost_basis = "local inference; API cost recorded as 0.0"
         estimated_cost = 0.0
     elif args.provider == "openai":
-        model_runtime = args.model or get_setting("OPENAI_MODEL", "gpt-5.6-luna")
+        model_runtime = args.model or get_setting("OPENAI_MODEL", "gpt-5.6-terra")
         cost_basis = "not reported by capture adapter"
         estimated_cost = None
     else:
@@ -145,6 +145,11 @@ def main() -> int:
     )
     if args.provider in {"qwen", "qwen-local"}:
         os.environ["GOVERNED_AGENT_QWEN_MODEL"] = model_runtime
+        if args.model is None:
+            os.environ.setdefault(
+                "GOVERNED_AGENT_QWEN_REVISION",
+                "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+            )
     elif args.provider == "openai":
         os.environ["GOVERNED_AGENT_OPENAI_MODEL"] = model_runtime
     instrumented = InstrumentedModel(create_chat_model(args.provider))

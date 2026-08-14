@@ -29,13 +29,19 @@ ALLOWED_REASON_CODES = {
     "out_of_scope_request",
     "planner_fallback",
 }
+ACTION_REASON_CODES = {
+    "search_evidence": {"medical_evidence_needed", "planner_fallback"},
+    "ask_clarification": {"missing_critical_context"},
+    "respond_without_tool": {"general_conversation"},
+    "refuse_out_of_scope": {"out_of_scope_request"},
+}
 
 OUT_OF_SCOPE_MESSAGE = """这个演示当前专注于提供有来源约束的健康信息，无法代写、翻译、编程、预测天气或提供金融建议。
 
 如果你有健康信息或权威资料来源方面的问题，我可以继续协助。"""
 
 PLANNER_PROMPT = """[AGENT_PLAN]
-你是 Governed Agent Lab 中 ClearCare Health 垂直案例的任务规划器。根据本次咨询，只选择下一步动作，不要回答健康问题，也不要展示推理过程。
+你是 ClearCare Health 的有界任务规划器。根据本次咨询，只选择下一步动作，不要回答健康问题，也不要展示推理过程。
 
 只输出单行 JSON：
 {{"action":"search_evidence|ask_clarification|respond_without_tool|refuse_out_of_scope","query":"检索词或空字符串","reason_code":"medical_evidence_needed|missing_critical_context|general_conversation|out_of_scope_request"}}
@@ -80,7 +86,11 @@ def parse_agent_decision(raw: str, fallback_query: str) -> AgentDecision:
             payload = json.loads(match.group(0))
             action = payload.get("action")
             reason_code = payload.get("reason_code")
-            if action in ALLOWED_ACTIONS and reason_code in ALLOWED_REASON_CODES:
+            if (
+                action in ALLOWED_ACTIONS
+                and reason_code in ALLOWED_REASON_CODES
+                and reason_code in ACTION_REASON_CODES[action]
+            ):
                 query = str(payload.get("query", ""))[:500].strip()
                 return AgentDecision(action, query, reason_code)
         except (TypeError, ValueError):
@@ -117,7 +127,7 @@ class GovernedEvidenceAgent:
         ]
 
         documents: list[Any] = []
-        response_input = conversation_input
+        response_input = f"[AGENT_RESPONSE]\n{conversation_input}"
         if decision.action == "search_evidence":
             planned_query = (
                 decision.query
@@ -137,7 +147,8 @@ class GovernedEvidenceAgent:
             )
             response_input = augment_with_context(conversation_input, documents)
         elif decision.action == "ask_clarification":
-            response_input = f"""请仅提出回答当前健康问题所必需的补充问题，最多四个。不要作出诊断。
+            response_input = f"""[AGENT_RESPONSE]
+请仅提出回答当前健康问题所必需的补充问题，最多四个。不要作出诊断。
 
 {conversation_input}"""
 

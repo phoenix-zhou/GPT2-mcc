@@ -48,7 +48,7 @@ class ParameterConfig:
         )
         self.pretrained_model = get_setting("PRETRAINED_MODEL", "")
         self.save_samples_path = get_setting(
-            "SAMPLES_PATH", str(project_root / "sample")
+            "SAMPLES_PATH", ""
         )
 
         self.ignore_index = -100

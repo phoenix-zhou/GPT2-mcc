@@ -1,222 +1,211 @@
-# Governed Agent Lab Portfolio Upgrade Roadmap
+# ClearCare Health Portfolio Upgrade Roadmap
 
-Last updated: 2026-08-12
+Last updated: 2026-08-14
 
-This roadmap turns the ClearCare Health demo into the first measured vertical
-of Governed Agent Lab and an evidence-backed product case for three related roles:
+ClearCare Health is a vertical, evidence-backed product case for three related
+roles:
 
-- **AI Product Manager:** problem framing, risk decisions, metrics, user
-  journey, prioritization, and trade-offs;
-- **Data Analyst:** evaluation design, metric definitions, experiment analysis,
+- **AI Product Manager:** problem framing, risk decisions, user journey,
+  prioritization, guardrail metrics, and trade-offs;
+- **Data Analyst:** evaluation design, metric definitions, paired experiments,
   dashboards, and failure segmentation;
-- **Applied AI / LLM Application Engineer:** bounded agent orchestration,
-  retrieval experiments, safety controls, observability, and reusable skills.
+- **Applied AI / LLM Application Engineer:** bounded orchestration, governed
+  RAG, provider integration, security controls, and reproducible evaluation.
 
-The goal is not to maximize feature count. The goal is to produce a coherent,
-measurable story: **why the system is constrained, how it is evaluated, and
-which evidence supports each product decision.**
+The goal is not to maximize feature count or present one vertical as a generic
+platform. The goal is to show a coherent evidence chain: **what user problem is
+bounded, what was built, how it was measured, where it fails, and which product
+decision follows from the result.**
 
 ## Status legend
 
-- [x] Implemented and verified in the repository
+- [x] Implemented and verified
 - [ ] Not yet complete
 
 ## Current foundation
 
-- [x] Establish the ClearCare Health vertical identity and explicit
-  non-diagnosis boundary.
-- [x] Migrate the repository identity to Governed Agent Lab while preserving
-  ClearCare Health as the measured reference vertical and compatibility layer.
+- [x] Establish ClearCare Health as the repository and product identity.
+- [x] Describe reusable runtime/evaluation code as internal domain-extensible
+  architecture, not a validated horizontal platform.
+- [x] Publish an explicit “implemented / inherited / removed” ownership boundary.
 - [x] Use local Qwen by default and make OpenAI an explicit per-request option.
 - [x] Route strong emergency signals deterministically before model generation.
 - [x] Bound the agent to one allow-listed plan/tool/respond cycle and one
   read-only tool call.
 - [x] Maintain bounded multi-turn context and a visible reset action.
 - [x] Separate generated answers, source links, and inspectable action traces.
-- [x] Govern evidence records with source metadata, review status, content
-  hashes, and freshness rules.
+- [x] Govern evidence records with source metadata, approved domains, review
+  status, content hashes, and freshness rules.
 - [x] Ship the installable `curate-health-evidence` developer Skill.
-- [x] Pass the current automated suite (59 tests as of 2026-08-12).
-- [x] Publish an initial product case study at
-  [`docs/product-case-study.md`](product-case-study.md).
+- [x] Remove raw legacy datasets and generated artifacts from the current tree.
+- [x] Publish the product case study, security review, Evaluation MVP/v1, and
+  Keyword/BM25 experiment.
+- [x] Pass 84 automated regression and security tests as of 2026-08-14.
 
-## P0 — Evaluation before architecture expansion
+## P0 — Corpus v1 before further retrieval architecture
 
-### 1. Evaluation dataset and harness
+### 1. Coverage specification
 
-- [x] Define a versioned, privacy-safe evaluation schema with case ID, intent,
-  expected route, required facts, prohibited claims, expected sources, and
-  reviewer status.
-- [x] Create an 80-case MVP covering emergency, routine health information,
-  insufficient context, out-of-scope, adversarial, and retrieval/citation
-  scenarios.
-- [ ] Expand to at least 150 cases only after reviewing the MVP labels and
-  failure taxonomy.
-- [x] Implement deterministic component checks for emergency routing, retrieval,
-  citation-ID validity, and in-process latency.
-- [x] Add a provider-neutral prediction contract and deterministic scoring for
-  planner routing, completion, prohibited claims, sources, model calls, tokens,
-  provider latency, and estimated cost.
-- [x] Capture and review a complete local-Qwen prediction run before setting
-  end-to-end regression thresholds.
-- [x] Run deterministic label-consistency review; keep all 80 cases marked as
-  pending qualified human review.
-- [ ] Add judge-based groundedness scoring as a separate, clearly labelled
-  metric; never use it as the only safety evaluator.
-- [x] Generate a reproducible Markdown and JSON evaluation report.
-- [ ] Add regression thresholds to CI for deterministic metrics.
+- [ ] Define 6–8 health-information topic clusters and explicit inclusion/
+  exclusion boundaries.
+- [ ] Create a coverage matrix for ordinary information, warning signs,
+  clarification needs, paraphrases, synonyms, no-hit cases, hard negatives,
+  and jurisdiction differences.
+- [ ] Define approved issuer/domain and reuse requirements before collecting
+  content.
+- [ ] Keep project-authored summaries separate from clinical review and
+  evidence grading.
 
-**Core metrics**
+### 2. Governed corpus expansion
 
-- Emergency recall and emergency false-positive rate
-- Clarification precision and task completion rate
-- Retrieval Recall@K / MRR
-- Citation validity and citation entailment
-- Groundedness / unsupported-claim rate
-- P50 and P95 latency
-- Model-call count and estimated cloud cost per completed consultation
+- [ ] Expand from 3 summaries to roughly 20–30 governed documents because the
+  current corpus is too small for a credible retrieval comparison.
+- [ ] Add stable document/chunk IDs, parent-document metadata, applicability,
+  version, review owner/status, and content hashes.
+- [ ] Run the evidence Skill, corpus validation, coverage report, duplicate
+  detection, and stale-review checks.
+- [ ] Freeze `health_corpus_v1` with a manifest hash and release date.
 
-**Definition of done:** one command runs the frozen dataset and produces a
-versioned report with results segmented by scenario, model provider, and
-retrieval strategy.
+**Definition of done:** each document fills a named coverage gap, passes
+governance validation, has traceable reuse metadata, and belongs to a frozen
+corpus version. Document count alone is not a quality claim.
 
-### 2. Failure taxonomy and release gates
+## P0 — Author-separated blind holdout
 
-- [x] Define failure categories: missed emergency, unnecessary escalation,
-  missing clarification, retrieval miss, unsupported claim, citation mismatch,
-  incomplete answer, unsafe instruction, and provider/runtime failure.
-- [ ] Set guardrail thresholds before running comparative experiments.
-- [ ] Document which failures block a release and which require human review.
-- [ ] Add a compact model card / evaluation limitations section.
+### 3. Evaluation protocol
 
-## P1 — RAG V2 as a measured experiment
+- [x] Define the versioned, privacy-safe development schema and 80-case MVP.
+- [x] Implement deterministic safety/retrieval checks and provider-neutral
+  prediction capture.
+- [x] Capture a complete local-Qwen development run and segmented report.
+- [ ] Pre-register retrieval promotion metrics and guardrail thresholds.
+- [ ] Ask a separate author/reviewer to create or review unseen cases; if that
+  is not possible, call the process “author-separated blind holdout,” not fully
+  independent evaluation.
+- [ ] Freeze holdout inputs, labels, reviewer status, hashes, and reveal policy
+  before the final comparison.
+- [ ] Prevent parameter changes after holdout reveal; any retuning requires a
+  new final test set.
 
-- [x] Preserve keyword retrieval as the baseline.
-- [ ] Add document chunking with stable chunk IDs and parent-document metadata.
-- [ ] Implement a Chinese embedding retrieval candidate.
-- [x] Implement BM25 or an equivalent lexical retrieval candidate.
-- [ ] Implement hybrid fusion and an optional reranker behind configuration.
-- [ ] Compare baseline, lexical, embedding, and hybrid strategies on the same
-  frozen retrieval cases.
-- [x] Report Recall@3, MRR, citation accuracy, latency, memory footprint, and
-  local hardware requirements.
-- [x] Select a default strategy from evidence, not architectural fashion.
+### 4. Paired Keyword/BM25 replay
 
-Current evidence-based decision: BM25 passes the development candidate gate;
-keyword remains the production default pending an independent holdout. The
-embedding and hybrid comparison remains intentionally open.
+- [ ] Tune BM25 only on the development set.
+- [ ] Store or freeze the same planner/retrieval queries for both strategies so
+  planner randomness cannot masquerade as a retrieval gain.
+- [ ] Compare Recall@3, MRR, no-hit accuracy, citation coverage, latency, and
+  failure segments on the blind holdout.
+- [ ] Promote BM25 only if it passes pre-registered quality and safety gates.
 
-**Definition of done:** an experiment report explains whether RAG V2 improves
-retrieval and citation outcomes enough to justify its latency and operational
-cost.
+**Current decision:** BM25 improved the development proxy from 72.5% to 78.75%,
+but Keyword remains the default because the result has not passed a blind
+holdout.
 
-## P1 — Product analytics and evaluation dashboard
+## P0 — Claim-level groundedness
 
-- [ ] Define privacy-safe events such as consultation started, route selected,
+### 5. Human-reviewed sample
+
+- [ ] Define an atomic claim annotation guide:
+  `supported / partially supported / unsupported / not verifiable`.
+- [ ] Sample 20–30 answers across safety routes, retrieval outcomes, providers,
+  and known failure cohorts.
+- [ ] Label citation entailment: does the cited material support the associated
+  claim?
+- [ ] Label claim groundedness and calculate unsupported-claim rate.
+- [ ] Label human usefulness separately from factual support.
+- [ ] Require zero unsupported safety-critical claims in the reviewed release
+  sample.
+
+### 6. Secondary LLM judge
+
+- [ ] Add an LLM judge only after the human rubric and anchor examples exist.
+- [ ] Measure agreement with human labels and report disagreements by failure
+  type.
+- [ ] Never use the judge as the sole medical-safety or release gate.
+
+**Definition of done:** the report distinguishes valid IDs, citation
+entailment, claim groundedness, unsupported-claim rate, and usefulness instead
+of collapsing them into one proxy.
+
+## P1 — Product analytics and dashboard
+
+- [ ] Define privacy-safe events: consultation started, route selected,
   clarification requested, source opened, answer completed, reset selected,
-  and provider error; do not log raw health text by default.
-- [ ] Define the North Star metric as **safe, evidence-supported task
-  completion**, with an operational proxy documented until user research is
-  available.
-- [ ] Build a local evaluation dashboard with scenario filters and comparisons
-  across model/retrieval versions.
-- [ ] Show guardrail metrics next to task-success metrics so aggregate quality
+  and provider error; never log raw health text by default.
+- [ ] Define the North Star as **safe, evidence-supported task completion** and
+  publish its operational proxy and limitations.
+- [ ] Build a local dashboard with scenario, model, retrieval, and failure
+  filters plus latency/cost slices.
+- [ ] Show guardrail metrics beside task-success metrics so aggregate quality
   cannot hide safety regressions.
-- [x] Add a short analysis notebook or report containing at least one segmented
-  failure analysis and one recommendation based on data.
 
-**Definition of done:** a reviewer can identify the largest failure segment and
-trace a product decision back to measured evidence.
+**Definition of done:** a recruiter can identify the largest failure cohort and
+trace a product decision back to measured evidence in under two minutes.
 
-## P1 — Demonstrate the existing Skill
+## P1 — Skills and recruiter demonstration
 
-- [ ] Add a repository-level before/after demo showing a candidate source,
-  metadata check, dry run, SHA-256 generation, corpus update, validation, and
-  coverage report.
-- [ ] Record terminal output or a short GIF/video without secrets or patient
-  data.
-- [ ] Explain how the developer Skill differs from the user-facing health
-  agent.
+- [ ] Add a before/after evidence Skill demo: candidate source, metadata check,
+  dry run, SHA-256, corpus update, validation, and coverage report.
+- [ ] Record sanitized terminal output or a short walkthrough.
+- [ ] Create `evaluate-health-agent` only after holdout and report contracts are
+  stable.
+- [ ] Make the evaluation Skill run a selected dataset, classify failures,
+  calculate metrics, compare with a baseline, and produce a release report.
 
-**Definition of done:** a recruiter can understand the Skill's input, actions,
-guardrails, and output without opening `SKILL.md`.
+We will not add a separate audit Skill until release auditing has distinct
+inputs, owners, or compliance gates.
 
-## P2 — Add one evaluation Skill
+## P2 — Demo and deployment
 
-- [ ] Create `evaluate-health-agent` only after the evaluation harness and
-  report format are stable.
-- [ ] Make the Skill run a selected dataset, classify failures, calculate
-  metrics, compare against a baseline, and produce the release report.
-- [ ] Include deterministic scripts for metric calculation and references for
-  the evaluation schema and release policy.
-- [ ] Validate and forward-test the Skill with realistic prompts.
+- [x] Provide a professional local web demo with multi-turn memory, source
+  links, safety routing, and an inspectable trace.
+- [ ] Add a development-only evaluation view; keep it separate from the
+  user-facing health experience.
+- [ ] Add an architecture diagram, screenshots, and a 60–90 second walkthrough.
+- [ ] Containerize with a production WSGI server only if public deployment is
+  still a portfolio goal.
+- [ ] Before public access, add authentication/access policy, distributed abuse
+  controls, redacted observability, retention policy, and synthetic prompts.
 
-We will **not** create a separate `audit-health-agent-release` Skill yet. At
-this stage it would largely duplicate the evaluation workflow. Split it out
-only when release auditing has distinct inputs, owners, or compliance gates.
+## P2 — Provenance and clean-room decision
 
-## P2 — Demo UI and deployment
-
-- [x] Provide a clear local web demo with question input, source links, safety
-  routing, multi-turn memory, and an inspectable agent trace.
-- [ ] Add a development-only evaluation view; do not expose internal evaluation
-  controls as patient-facing features.
-- [ ] Add structured response sections and streaming only if they improve
-  completion or perceived latency in testing.
-- [ ] Containerize the demo and use a production WSGI server.
-- [ ] Deploy a public portfolio demo using synthetic/example prompts, rate
-  limits, no raw-text analytics, an explicit retention policy, and prominent
-  non-medical-device disclosure.
-- [ ] Add screenshots and a 60–90 second walkthrough to the README.
-
-**Definition of done:** the public demo communicates the product decision and
-evaluation story in under two minutes and does not imply clinical validation.
-
-## P2 — Portfolio packaging
-
-- [ ] Add an architecture diagram covering the user agent, deterministic safety
-  router, governed retrieval, evidence Skill, evaluation harness, and dashboard.
-- [ ] Publish an evaluation report and RAG experiment report with reproducible
-  commands.
-- [ ] Add a concise “What I owned” section distinguishing inherited GPT-2 code
-  from new work.
-- [ ] Add English-first screenshots, demo links, and case-study links to the
-  README; retain the Chinese README.
-- [ ] Prepare three resume variants emphasizing AI PM, Data Analytics, and
-  Applied AI outcomes without changing the underlying facts.
+- [x] Identify inherited GPT-2 code and remove unneeded legacy data/artifacts.
+- [x] State that upstream has no declared open-source license and do not present
+  inherited work as original.
+- [ ] Request explicit permission from the upstream author, including the scope
+  of code allowed for modification and redistribution.
+- [ ] If permission is unavailable, build a clean-room ClearCare repository
+  from product/behavioral specifications without copying unlicensed code.
+- [ ] Add a license only to code/content that the repository owner has the
+  right to license.
 
 ## Six-week working timeline
 
 | Dates | Milestone | Deliverable / acceptance signal |
 |---|---|---|
-| Aug 11–13 | Baseline and product framing | Case study and this roadmap published; current tests and corpus audit recorded |
-| Aug 14–20 | Evaluation MVP | Schema, 80 reviewed cases, deterministic runner, first segmented report |
-| Aug 21–27 | RAG experiment | Keyword/BM25/embedding/hybrid comparison on frozen retrieval cases |
-| Aug 28–Sep 3 | Analytics layer | Metric dictionary, privacy-safe events, evaluation dashboard, failure analysis |
-| Sep 4–10 | Skills and release workflow | Evidence Skill demo plus validated `evaluate-health-agent` Skill |
-| Sep 11–17 | Portfolio demo | Deployment hardening, public demo, screenshots, walkthrough, architecture diagram |
-| Sep 18–20 | Resume packaging | Final case study, measured results, role-specific bullets, interview narrative |
+| Aug 14–20 | Brand, ownership, corpus design | Vertical-first README, ownership boundary, coverage specification |
+| Aug 21–Sep 3 | Governed corpus v1 | 20–30 reviewed records, coverage report, frozen manifest/hash |
+| Sep 4–10 | Blind holdout | Frozen unseen cases, preregistered gates, paired Keyword/BM25 replay |
+| Sep 11–17 | Groundedness | Human-reviewed claims, entailment and unsupported-claim report |
+| Sep 18–24 | Analytics | Evaluation dashboard and segmented product recommendation |
+| Sep 25–30 | Portfolio packaging | Skill demo, walkthrough, role-specific resume bullets, clean-room decision |
 
-## Product decisions we will preserve
+## Product decisions to preserve
 
-- Keep emergency routing deterministic because the cost of a generative routing
-  miss is unacceptable for a research health-information interface.
-- Keep agent autonomy bounded because additional loops and tools add failure
-  surfaces without a demonstrated user benefit here.
-- Keep source citations separate from model text so provenance remains
-  inspectable and links cannot be fabricated invisibly inside prose.
-- Keep local-first inference as the default for privacy, demo cost, and offline
-  reproducibility; measure its quality and latency instead of claiming it is
-  universally superior.
-- Keep project-authored summaries explicitly separate from clinical review and
-  evidence grading.
+- Keep emergency routing deterministic: generative variability is not justified
+  for the narrow strong-signal route.
+- Keep autonomy bounded: more loops and tools add failure surfaces without a
+  measured user benefit.
+- Keep citations separate from generated prose so provenance stays inspectable.
+- Keep local-first inference as the default for privacy, cost, and offline
+  reproducibility; measure it rather than calling it universally superior.
+- Keep project-authored summaries explicitly separate from clinical review.
 
-## Explicit non-goals for this portfolio phase
+## Explicit non-goals
 
-- Diagnosing users, selecting treatment, prescribing medication, or replacing
+- Diagnosing users, choosing treatment, prescribing medication, or replacing
   clinicians
 - Claiming medical-device status, clinical validation, or regulatory compliance
-- Collecting real patient data for the evaluation set
-- Adding autonomous write tools or multi-agent complexity without a measured
-  product need
-- Adding a vector database solely to make the architecture look more advanced
+- Collecting real patient data for training or evaluation
+- Adding Embedding, a vector database, autonomous write tools, multi-agent
+  complexity, or streaming solely to make the architecture look advanced
+- Claiming a horizontal platform before a second domain proves the abstractions

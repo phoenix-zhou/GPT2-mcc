@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import torch.nn.utils.rnn as rnn_utils  # 导入rnn_utils模块，用于处理可变长度序列的填充和排序
 from torch.utils.data import DataLoader  # 导入Dataset和DataLoader模块，用于加载和处理数据集
-import pickle  # 导入pickle模块，用于序列化和反序列化Python对象
 from data_preprocess.dataset import MyDataset
+from data_preprocess.safe_pickle import load_token_id_sequences
 
 # 获取当前文件的父目录（即项目根目录），并加入系统路径
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -21,11 +21,8 @@ def load_dataset(train_path, valid_path):
     :param valid_path: 验证数据集路径
     :return: 训练数据集和验证数据集
     """
-    with open(train_path, "rb") as f:
-        train_input_list = pickle.load(f)  # 使用 pickle.load 将训练集和验证集的 Token ID 列表加载到内存: 从文件中加载输入列表
-
-    with open(valid_path, "rb") as f:
-        valid_input_list = pickle.load(f)  # 从文件中加载输入列表
+    train_input_list = load_token_id_sequences(train_path)
+    valid_input_list = load_token_id_sequences(valid_path)
     # 划分训练集与验证集
     # print(len(train_input_list))  # 打印输入列表的长度
     # print(train_input_list[0])

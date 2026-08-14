@@ -3,7 +3,7 @@
 # 以便后续能无缝接入 DataLoader 进行批量加载
 from torch.utils.data import Dataset  # 导入Dataset模块，用于定义自定义数据集
 import torch  # 导入torch模块，用于处理张量和构建神经网络
-import pickle
+from data_preprocess.safe_pickle import load_token_id_sequences
 
 
 class MyDataset(Dataset):
@@ -45,8 +45,7 @@ class MyDataset(Dataset):
 
 
 if __name__ == '__main__':
-    with open('../data/medical_train.pkl', "rb") as f:
-        train_input_list = pickle.load(f)  # 从文件中加载输入列
+    train_input_list = load_token_id_sequences('../data/medical_train.pkl')
 
     # print(f'train_input_list-->{len(train_input_list)}')
     # print(f'train_input_list-->{type(train_input_list)}')

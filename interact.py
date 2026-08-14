@@ -2,8 +2,9 @@ import os
 from datetime import datetime
 from transformers import GPT2LMHeadModel
 from transformers import BertTokenizerFast
+import torch
 import torch.nn.functional as F
-from parameter_config import *
+from parameter_config import ParameterConfig
 
 PAD = '[PAD]'
 pad_id = 0
@@ -51,7 +52,11 @@ def main():
                                   sep_token="[SEP]",
                                   pad_token="[PAD]",
                                   cls_token="[CLS]")
-    model = GPT2LMHeadModel.from_pretrained('/www/py-data/LLM/Gpt2_Chatbot/save_model/epoch97')
+    model = GPT2LMHeadModel.from_pretrained(
+        pconf.inference_model_path,
+        local_files_only=True,
+        use_safetensors=True,
+    )
     model = model.to(device)
     model.eval()
     # 保存聊天记录的文件路径

@@ -1,5 +1,6 @@
 import hashlib
 import json
+from datetime import date
 
 import pytest
 
@@ -21,7 +22,7 @@ def governed_record(**overrides):
         "language": "zh-CN",
         "source_language": "en",
         "published_at": None,
-        "last_reviewed_at": "2026-08-09",
+        "last_reviewed_at": date.today().isoformat(),
         "version": "v1",
         "evidence_grade": "not_assessed",
         "source_type": "official_public_health_guidance",
@@ -38,16 +39,40 @@ def governed_record(**overrides):
     return record
 
 
-def test_search_returns_relevant_versioned_document(tmp_path):
+def governed_manifest():
+    return {
+        "schema_version": 1,
+        "review_policy": {
+            "review_interval_days": 180,
+            "required_review_status": "project_summary_unverified_by_clinician",
+        },
+        "sources": [
+            {
+                "source_id": "cdc",
+                "organization": "Test issuer",
+                "homepage": "https://example.test/",
+                "jurisdiction": "US",
+                "source_type": "official_public_health_guidance",
+                "update_method": "manual_review",
+                "reuse_status": "source terms apply",
+            }
+        ],
+    }
+
+
+def write_test_corpus(tmp_path, records):
     path = tmp_path / "knowledge.json"
-    path.write_text(
-        json.dumps(
-            [governed_record()],
-            ensure_ascii=False,
-        ),
-        encoding="utf-8",
+    manifest_path = tmp_path / "manifest.json"
+    path.write_text(json.dumps(records, ensure_ascii=False), encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(governed_manifest(), ensure_ascii=False), encoding="utf-8"
     )
-    knowledge_base = LocalKnowledgeBase(path)
+    return path, manifest_path
+
+
+def test_search_returns_relevant_versioned_document(tmp_path):
+    path, manifest_path = write_test_corpus(tmp_path, [governed_record()])
+    knowledge_base = LocalKnowledgeBase(path, manifest_path)
 
     documents = knowledge_base.search("胸痛怎么办")
 
@@ -56,23 +81,44 @@ def test_search_returns_relevant_versioned_document(tmp_path):
 
 
 def test_search_does_not_return_irrelevant_documents(tmp_path):
-    path = tmp_path / "knowledge.json"
-    path.write_text(
-        json.dumps([governed_record(content="内容", title="资料")], ensure_ascii=False),
-        encoding="utf-8",
+    path, manifest_path = write_test_corpus(
+        tmp_path, [governed_record(content="内容", title="资料")]
     )
 
-    assert LocalKnowledgeBase(path).search("皮肤护理") == []
+    assert LocalKnowledgeBase(path, manifest_path).search("皮肤护理") == []
 
 
 def test_knowledge_loader_rejects_changed_content_without_hash_update(tmp_path):
-    path = tmp_path / "knowledge.json"
     record = governed_record()
     record["content"] = "内容被修改"
-    path.write_text(json.dumps([record], ensure_ascii=False), encoding="utf-8")
+    path, manifest_path = write_test_corpus(tmp_path, [record])
 
     with pytest.raises(KnowledgeValidationError, match="hash mismatch"):
-        LocalKnowledgeBase(path)
+        LocalKnowledgeBase(path, manifest_path)
+
+
+def test_knowledge_loader_rejects_source_id_impersonation(tmp_path):
+    record = governed_record(source_url="https://cdc.gov.attacker.example/topic")
+    path, manifest_path = write_test_corpus(tmp_path, [record])
+
+    with pytest.raises(KnowledgeValidationError, match="not approved"):
+        LocalKnowledgeBase(path, manifest_path)
+
+
+def test_knowledge_loader_rejects_registry_metadata_mismatch(tmp_path):
+    record = governed_record(issuer="Impersonated issuer")
+    path, manifest_path = write_test_corpus(tmp_path, [record])
+
+    with pytest.raises(KnowledgeValidationError, match="issuer"):
+        LocalKnowledgeBase(path, manifest_path)
+
+
+def test_knowledge_loader_rejects_stale_review(tmp_path):
+    record = governed_record(last_reviewed_at="2020-01-01")
+    path, manifest_path = write_test_corpus(tmp_path, [record])
+
+    with pytest.raises(KnowledgeValidationError, match="stale"):
+        LocalKnowledgeBase(path, manifest_path)
 
 
 def test_production_knowledge_has_governance_metadata():

@@ -1,261 +1,285 @@
-# Governed Agent Lab
+# ClearCare Health
+
+**A safety-bounded, evidence-grounded healthcare information AI agent**
+
+Safety · Governed RAG · Agent Evaluation · Evidence Governance
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-A portfolio-oriented platform for building and evaluating bounded,
-evidence-grounded AI agents. It combines governed sources, explicit tool
-boundaries, provider-neutral evaluation, failure segmentation, and reusable
-Codex Skills. **ClearCare Health / 澄心循证健康智能体** is the first reference
-vertical and demonstrates how those controls behave in a high-stakes domain.
+ClearCare Health / 澄心循证健康智能体 is a vertical Applied AI product case:
+how can an LLM help a person organize a health question, surface important
+warning signs, and inspect general-information sources without presenting
+itself as a clinician?
 
-The platform is domain-extensible; the committed product and evaluation claims
-remain health-specific until another vertical has its own governed corpus,
-frozen cases, and measured report.
+The implementation contains reusable governed-agent components, but this
+repository does **not** claim to be a proven general-purpose agent platform.
+Its product behavior, evidence corpus, safety policy, and measured results are
+specific to the ClearCare health-information scenario.
 
 > [!WARNING]
-> This project is for research and education only. It does not provide medical
-> diagnosis, prescriptions, or treatment advice and must not replace qualified
-> clinicians. Do not enter real patient names, identifiers, contact details, or
-> other sensitive information.
+> This project is for research and education only. It does not diagnose,
+> prescribe, select treatment, or replace a clinician. Do not enter real
+> patient identifiers, contact details, or other sensitive information.
 
-## Platform highlights
+## Product thesis
 
-- Provider-neutral evaluation artifacts, scenario metrics, and failure taxonomy.
-- One bounded plan/tool/respond cycle with allow-listed actions and read-only tools.
-- Governed evidence records with provenance, freshness, review, and hash checks.
-- A reusable evidence-curation Skill and a roadmap for an evaluation Skill.
-- Local-first inference plus explicit, optional hosted-model comparison.
+General-purpose LLM health answers can sound more certain than their evidence,
+miss time-sensitive signals, fabricate or misuse citations, and treat missing
+context as permission to guess. ClearCare turns those risks into explicit
+product constraints:
 
-## ClearCare Health reference vertical
+- deterministic routing for strong emergency signals before model generation;
+- one allow-listed plan/tool/respond cycle and at most one read-only tool call;
+- governed sources with provenance, freshness, domain, review, and hash checks;
+- citations displayed separately from generated prose;
+- local Qwen by default and explicit per-request consent for optional OpenAI;
+- provider-neutral evaluation with visible limitations and failure segments.
 
-- Local Qwen is the default provider, with no per-token API charge.
-- OpenAI enhancement is disabled by default and requires both server approval
-  and explicit selection by the user for each request.
-- A model planner selects an allow-listed action: retrieve evidence, request
-  clarification, or respond without a tool.
-- Agent execution is bounded to one read-only tool call and emits an
-  inspectable action trace without exposing chain-of-thought.
-- Strong emergency signals are routed before any generative model is called.
-- Non-emergency questions can retrieve versioned local medical references,
-  with source links rendered separately from model output.
-- Follow-up messages automatically include the latest four dialogue turns;
-  the interface keeps up to six turns in bounded server memory.
-- Flask application factory, lazy model loading, health endpoint, input
-  validation, controlled error handling, Pytest tests, and GitHub Actions CI.
+## Current implementation
 
-## Request flow
+| Capability | Current state |
+|---|---|
+| Safety routing | Deterministic strong-signal router; measurable but not a diagnostic classifier |
+| Bounded agent | One plan/tool/respond cycle with validated action/reason pairs and one read-only evidence tool |
+| Conversation | Bounded in-memory follow-up context and an explicit reset action |
+| Governed RAG | Approved-source registry, URL-host binding, review dates, corpus bounds, and SHA-256 integrity |
+| Evaluation | 80-case development set, provider-neutral capture, failure taxonomy, and Keyword/BM25 comparison |
+| Model providers | Pinned local Qwen default and optional OpenAI; GPT-2 is excluded from the web runtime |
+| Web demo | Local/single-process Flask interface with trace, citations, CSRF, request limits, and security headers |
+| Clinical validation | Not completed; the three project-authored summaries are not clinician-reviewed |
+| Production deployment | Not supported; authentication, distributed controls, encrypted persistence, and compliance work are absent |
+
+## User and agent flow
 
 ```text
-Browser request
-  → Input validation
-  → Emergency-risk routing
-      ├─ High risk: fixed emergency guidance; no model call
-      └─ Non-emergency: bounded agent plan
-          ├─ Ask for essential clarification
-          ├─ Search the governed evidence tool
-          └─ Respond without a tool
-              → Local Qwen (default)
-              → OpenAI GPT (server-enabled and selected per request)
-  → Answer and reference links
-  → Inspectable action/tool trace
+User health-information question
+  → validate input and consent boundary
+  → deterministic emergency routing
+      ├─ strong signal: fixed emergency guidance; no model call
+      └─ non-emergency: bounded planner
+          ├─ ask for essential clarification
+          ├─ search governed evidence
+          └─ respond without a tool
+              → local Qwen by default
+              → optional OpenAI when enabled and selected
+  → answer + separate source links + inspectable action trace
+  → bounded follow-up context or explicit reset
 ```
 
-## Quick start with local Qwen
+The trace reports actions and result counts, never hidden chain-of-thought.
 
-Python 3.10 or newer is required. The first run downloads the selected model
-and requires enough RAM or VRAM for its weights.
+## Architecture: reusable, not over-claimed
+
+```text
+ClearCare Health
+├── Product policy
+│   ├── non-diagnosis boundary
+│   ├── emergency routing
+│   └── clarification and out-of-scope policy
+├── Governed agent architecture
+│   ├── bounded planner / tool / responder runtime
+│   ├── provider adapters
+│   ├── evidence validation and retrieval
+│   └── privacy and web guardrails
+├── Evaluation
+│   ├── frozen health cases and prediction contract
+│   ├── safety, retrieval, citation, latency, and cost metrics
+│   └── segmented failure reports
+└── Developer workflow
+    └── curate-health-evidence Codex Skill
+```
+
+The runtime and evaluation contracts are designed for reuse. They should be
+called *domain-extensible abstractions*, not a validated horizontal platform,
+until another product domain has its own policy, corpus, frozen evaluation,
+and human review.
+
+## Measured evidence and limitations
+
+The committed results are engineering regression measurements on a small,
+project-reviewed **health development set**. They are not independent
+benchmarks or clinical-performance claims.
+
+| Measurement | Keyword baseline | BM25 candidate |
+|---|---:|---:|
+| Local-Qwen task-success proxy | 72.5% | 78.75% |
+| Retrieval Recall@3 | 62.5% | 75.0% |
+| Emergency recall | 100% | 100% |
+| Citation-ID validity | 100% | 100% |
+
+BM25 remains a candidate because selection and measurement used the same
+development set. Citation-ID validity proves that a returned ID exists; it
+does not prove claim-level entailment or answer groundedness. Promotion now
+requires a broader governed corpus, an author-separated blind holdout, and
+human-reviewed groundedness results.
+
+See [Evaluation v1](docs/evaluation-v1.md),
+[RAG V2](docs/rag-v2-experiment.md), and the
+[Evaluation MVP](docs/evaluation-mvp.md).
+
+## What I owned, inherited, and removed
+
+### Implemented in the modernization
+
+- the professional Flask experience, bounded multi-turn memory, and explicit
+  cloud-consent flow;
+- local Qwen and optional OpenAI provider abstraction;
+- deterministic emergency routing and bounded agent orchestration;
+- governed evidence schema, source manifest, validation, and retrieval
+  experiments;
+- provider-neutral evaluation capture, metrics, failure analysis, and reports;
+- the evidence-curation Codex Skill, product case study, roadmap, and security
+  hardening.
+
+### Inherited starting point
+
+The project began from
+[`phoenix-zhou/GPT2-mcc`](https://github.com/phoenix-zhou/GPT2-mcc). Its legacy
+GPT-2 training/inference scripts, vocabulary, and model configuration are
+inherited work and are not presented as original contributions. The upstream
+repository does not declare an open-source license.
+
+### Removed or quarantined
+
+- raw legacy medical dialogue TXT/Pickle data with unresolved provenance and
+  de-identification quality;
+- tracked Python bytecode, duplicate templates/vocabulary, and scratch scripts;
+- unrestricted Pickle loading, raw conversation logging by default, and the
+  legacy GPT-2 web provider;
+- mutable default model and CI references.
+
+See the [security and risk review](docs/security-and-risk-review.md) for the
+full finding and residual-risk record.
+
+## Quick start
+
+Python 3.10+ is required. Deterministic tests and evaluation do not download a
+model or make paid API calls.
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e '.[inference]'
+python -m pip install -e '.[dev]'
 
+python scripts/validate_knowledge.py
+pytest
+python scripts/run_evaluation.py
+```
+
+### Run the local Qwen demo
+
+The MLX configuration targets Apple Silicon. The first run downloads the
+pinned quantized model and requires sufficient memory.
+
+```bash
+python -m pip install -e '.[inference]'
 export GOVERNED_AGENT_MODEL_PROVIDER="qwen-local"
 export GOVERNED_AGENT_QWEN_MODEL="mlx-community/Qwen3-4B-Instruct-2507-4bit"
-
+export GOVERNED_AGENT_QWEN_REVISION="50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b"
 flask --app app run
 ```
 
-Open <http://127.0.0.1:5000>.
+Open <http://127.0.0.1:5000>. In a follow-up, enter only the new information;
+the application supplies bounded recent context. Select **Start a new
+consultation** to clear it.
 
-## Follow-up conversations and memory
+### Optional OpenAI comparison
 
-After the first answer, enter only the new information—for example, “It has
-lasted two days, about five times a day, without fever.” You do not need to
-delete, copy, or repeat the earlier question. The model receives up to the
-latest four turns as context, while the page displays up to six turns.
-
-Conversation content is held only in the running Flask process. It is not
-written to the repository or a database, and it disappears when the server
-restarts or when **Start a new consultation** is selected. This simple design
-is suitable for the local demo; production deployment should use an encrypted,
-access-controlled server-side session store with an explicit retention policy.
-
-## Optional OpenAI enhancement
-
-OpenAI API usage is billed separately from ChatGPT subscriptions. The API key
-is read only from the environment and must never be committed to source code,
-`.env` files, or Git history.
+OpenAI API usage is billed separately from ChatGPT subscriptions. Cloud use is
+disabled until the server enables it and the user selects it for that request.
 
 ```bash
 python -m pip install -e '.[openai]'
-
 export OPENAI_API_KEY="your_api_key"
-export GOVERNED_AGENT_OPENAI_MODEL="gpt-5.6-luna"
+export GOVERNED_AGENT_OPENAI_MODEL="gpt-5.6-terra"
 export GOVERNED_AGENT_CLOUD_ENHANCEMENT_ENABLED=true
-
 flask --app app run
 ```
 
-OpenAI requests set `store=False`. This alone is not a complete zero-data-
-retention guarantee. Review account data controls, applicable regulations, and
-medical-data requirements before any production deployment. An agent turn can
-use one planning call and one answering call, so cloud usage may incur two
-model calls.
+Requests set `store=False`, but that alone is not a zero-data-retention or
+compliance guarantee. Never commit keys or submit sensitive health data.
 
-## Legacy GPT-2 baseline
+## Security and deployment boundary
 
-```bash
-export GOVERNED_AGENT_MODEL_PROVIDER="legacy-gpt2"
-export GOVERNED_AGENT_INFERENCE_MODEL_PATH="/path/to/gpt2/checkpoint"
-python -m pip install -e '.[legacy-inference]'
-flask --app app run
-```
+The local demo includes CSRF protection, a 16 KiB request limit,
+single-process rate limiting, secure cookie defaults, restrictive response
+headers, non-persistent conversations, evidence-source binding, bounded input
+and corpus sizes, pinned model provenance, and generic error persistence.
+Production mode fails closed without a durable 32+ character secret and secure
+cookies.
 
-The upstream repository does not commit the large `pytorch_model.bin` file.
-Resources published by the original author:
+These controls do **not** make the Flask development server internet-ready.
+There is no user authentication, authorization, distributed rate limiter,
+encrypted persistent session store, WAF, audit service, or healthcare
+compliance certification. See [SECURITY.md](SECURITY.md).
 
-- [Model checkpoint on Baidu Netdisk](https://pan.baidu.com/s/1CBWmrspoGenggJ2-GyOirA?pwd=2mrv), extraction code `2mrv`
-- [Original CSDN project article](https://blog.csdn.net/zhoupenghui168/article/details/162314485)
+## Governed evidence and data strategy
 
-`CLEARCARE_*` and `GPT2_MCC_*` variables remain accepted for compatibility, but
-new platform configuration should use `GOVERNED_AGENT_*`.
+The current corpus contains only three project-authored Chinese summaries
+linked to CDC, NHS, and WHO pages. They are explicitly **not
+clinician-reviewed**. Runtime loading rejects unknown or impersonated sources,
+stale reviews, future dates, unsafe URLs, duplicate IDs, oversized records, and
+content/hash mismatches.
 
-## Health-vertical safety and governed evidence
+The next corpus version will be coverage-driven rather than volume-driven:
+roughly 20–30 governed documents across 6–8 topic clusters, including
+paraphrases, hard negatives, no-hit cases, and jurisdiction differences.
+Adding more documents alone is not a reliability claim. The included
+[`curate-health-evidence`](skills/curate-health-evidence/) Skill automates
+deterministic governance checks; it does not perform clinical review.
 
-`safety.py` conservatively routes strong signals such as severe breathing
-difficulty, stroke signs, uncontrolled bleeding, unconsciousness, and
-immediate self-harm risk. It is not a diagnostic model, can produce false
-positives or false negatives, and must not be treated as a medical device.
+## Legacy GPT-2 boundary
 
-`agent_runtime.py` implements the allow-listed plan/tool/respond cycle. Planner
-output is parsed as JSON; invalid or unregistered actions fall back to a single
-read-only evidence search. Tool traces contain action names and result counts,
-not hidden reasoning.
+The original GPT-2 code remains only as an attributed historical CLI/training
+baseline. It is not a web provider or part of the current evaluation. Data
+loading rejects Pickle globals/classes and oversized structures; checkpoint
+loading is local-only and Safetensors-only. Raw legacy datasets are absent from
+the current tree. Git history and upstream snapshots may still retain them.
 
-`knowledge/medical_guidance.json` currently contains three project-authored
-Chinese summaries linked to CDC, NHS, and WHO pages. They are explicitly marked
-as not clinician-reviewed and must not be represented as validated clinical
-recommendations. Every record includes provenance, jurisdiction, review date,
-version, applicability, reuse status, and a SHA-256 content hash.
-`knowledge/source_manifest.json` defines the approved source registry and
-review policy. The application refuses missing metadata, unknown sources,
-non-HTTPS URLs, invalid dates, duplicate IDs, and changed content with a stale
-hash.
-
-## Installable Codex skill
-
-The repository includes `curate-health-evidence`, a reusable Codex skill for
-adding governed records, auditing provenance and freshness, and generating
-corpus coverage reports. It is deliberately a developer workflow, not a
-patient-advice skill.
-
-Ask Codex to install:
+## Repository map
 
 ```text
-Install the Codex skill from
-https://github.com/yuanzou0/clearcare-health-agent/tree/main/skills/curate-health-evidence
+app.py, web_security.py          Web orchestration and request controls
+agent_runtime.py                 Bounded plan/tool/respond runtime
+chat_models.py                   Qwen and OpenAI web providers
+conversation.py                 Bounded in-memory context
+safety.py                        ClearCare emergency routing
+knowledge.py, retrieval.py       Governed corpus validation and retrieval
+evaluation/, scripts/            Cases, capture, reports, and release checks
+skills/curate-health-evidence/   Developer-facing evidence Skill
+docs/                            Product, evaluation, RAG, brand, and risk records
+data_preprocess/, train.py       Attributed, quarantined GPT-2 legacy workflow
+tests/                           Automated regression and security tests
 ```
 
-On the next turn, invoke it with `$curate-health-evidence`. The source folder
-contains only `SKILL.md`, UI metadata, deterministic scripts, and references;
-the Flask application and model weights are not duplicated inside the skill.
+## Product documents
 
-## Development and tests
+- [Product case study](docs/product-case-study.md)
+- [Portfolio upgrade roadmap](docs/portfolio-upgrade-roadmap.md)
+- [Brand and ownership architecture](docs/brand-architecture.md)
+- [Evaluation MVP](docs/evaluation-mvp.md) and [Evaluation v1](docs/evaluation-v1.md)
+- [RAG V2 experiment](docs/rag-v2-experiment.md)
+- [Security and risk review](docs/security-and-risk-review.md)
 
-```bash
-python -m pip install -e '.[dev]'
-python scripts/validate_knowledge.py
-pytest
-```
+## Next milestones
 
-Tests use fake providers. They do not download Qwen or make paid API calls.
+1. Define coverage requirements and freeze a 20–30 document governed corpus.
+2. Create an author-separated blind holdout and run paired Keyword/BM25 replay
+   with the same planner decisions.
+3. Human-review 20–30 sampled answers for citation entailment, claim
+   groundedness, unsupported-claim rate, and usefulness.
+4. Use an LLM judge only as a calibrated secondary metric, never the sole
+   safety gate.
+5. Add a recruiter-readable evaluation dashboard and concise walkthrough.
 
-Run the deterministic 80-case Evaluation MVP without loading a model:
+Embedding, hybrid retrieval, additional tools, and broader autonomy remain
+deferred until these evidence gaps are closed.
 
-```bash
-python scripts/run_evaluation.py
-python scripts/review_evaluation_labels.py
-```
+## License and reuse warning
 
-The current component baseline reports 1.000 emergency recall, 0.0909
-emergency false-positive rate, and 0.625 Retrieval Recall@3 on synthetic,
-project-reviewed cases. These are not clinical-performance claims. See the
-[Evaluation MVP methodology and limitations](docs/evaluation-mvp.md).
-Evaluation v1 adds a provider-neutral, privacy-safe prediction contract. The
-committed full local-Qwen baseline reached 81.25% planner-route accuracy and a
-72.5% deterministic task-success proxy with zero provider errors and zero API
-cost. These are engineering regression metrics, not clinical claims. See the
-bilingual [Evaluation v1 report and contract](docs/evaluation-v1.md).
-
-RAG V2 now preserves that keyword baseline and adds a dependency-free Chinese
-BM25 candidate. On the same development set, the candidate improved isolated
-Recall@3 from 0.6250 to 0.7083 and the local-Qwen task-success proxy from 72.5%
-to 78.75%, while emergency recall and citation-ID validity remained 100%.
-Keyword remains the production default because threshold selection and
-evaluation used the same development set. See the bilingual
-[RAG V2 experiment](docs/rag-v2-experiment.md).
-
-## Product case and upgrade plan
-
-- [Brand architecture](docs/brand-architecture.md): platform/vertical boundary,
-  naming rules, compatibility policy, and repository migration sequence.
-- [Product case study](docs/product-case-study.md): problem, users, journey,
-  product decisions, trade-offs, metrics, failure cases, and non-goals.
-- [Portfolio upgrade roadmap](docs/portfolio-upgrade-roadmap.md): dated,
-  checkable milestones for evaluation, RAG experiments, analytics, Skills, and
-  deployment.
-- [Evaluation MVP](docs/evaluation-mvp.md): dataset design, baseline results,
-  observed failures, and unmeasured metrics.
-- [Evaluation v1](docs/evaluation-v1.md): bilingual prediction contract,
-  end-to-end proxy metrics, label-review gate, and privacy rules.
-- [RAG V2 experiment](docs/rag-v2-experiment.md): bilingual Keyword/BM25
-  comparison, end-to-end Qwen results, failure analysis, and promotion decision.
-
-## Project layout
-
-```text
-app.py                          Flask app and request orchestration
-agent_runtime.py                Bounded planner/tool/responder runtime
-chat_models.py                  Qwen, OpenAI, and GPT-2 providers
-conversation.py                 Bounded in-memory multi-turn context
-safety.py                       Emergency-risk routing
-knowledge.py                    Local retrieval and context construction
-knowledge/medical_guidance.json Versioned guidance with provenance
-knowledge/source_manifest.json  Approved sources and review policy
-scripts/validate_knowledge.py    Standalone provenance/integrity check
-scripts/capture_predictions.py  Resumable local/provider evaluation capture
-skills/curate-health-evidence/   Installable evidence-curation Codex skill
-evaluation/                     Frozen cases, predictions, and reports
-templates/index.html            Web interface
-data_preprocess/                Original GPT-2 preprocessing code
-train.py                        Original GPT-2 training entry point
-tests/                          Automated tests
-```
-
-## Roadmap
-
-The reviewed local-Qwen baseline, first-stage brand migration, and measured
-Keyword/BM25 RAG V2 experiment are complete. BM25 is a development candidate;
-the production default remains Keyword until an independent holdout confirms
-the result. Embedding and hybrid retrieval remain measured experiments rather
-than assumed upgrades.
-See the
-[checkable portfolio roadmap](docs/portfolio-upgrade-roadmap.md) for priorities,
-acceptance criteria, and timeline.
-
-## License
-
-The upstream project currently does not declare an open-source license. Do not
-assume the code or data may be redistributed or used commercially without
-explicit permission from the original author.
+The upstream project does not declare an open-source license, and the provenance
+and reuse rights of the removed legacy training data are unresolved. Do not
+assume inherited code or data may be redistributed or used commercially without
+explicit permission. This modernization does not cure that legal risk; a
+clean-room repository is the safest long-term portfolio path if permission
+cannot be obtained.

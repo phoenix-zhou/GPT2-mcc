@@ -366,6 +366,30 @@ def test_capture_case_uses_bounded_agent_and_counts_calls():
     assert prediction.estimated_cost == 0.0
 
 
+def test_capture_case_does_not_persist_raw_provider_error_details():
+    class Model:
+        def generate(self, _user_input):
+            raise RuntimeError("secret path and raw user content")
+
+    class Router:
+        def assess(self, _text):
+            return SafetyAssessment(False, None)
+
+    class KnowledgeBase:
+        def search(self, _query, limit=3):
+            return []
+
+    prediction = capture_case(
+        parse_case(valid_payload()),
+        model=InstrumentedModel(Model()),
+        safety_router=Router(),
+        knowledge_base=KnowledgeBase(),
+    )
+
+    assert prediction.error == "RuntimeError: provider/runtime failure"
+    assert "secret path" not in prediction.error
+
+
 def test_prediction_capture_artifacts_are_resumable(tmp_path):
     prediction = {
         "case_id": "case-001",

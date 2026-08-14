@@ -83,19 +83,38 @@ def create_app(
     safety_router=None,
     knowledge_base=None,
     conversation_store=None,
+    rate_limiter=None,
 ) -> Flask:
     """Create the web application, optionally injecting a test predictor."""
     app = Flask(__name__)
+    configured_secret = get_setting("SECRET_KEY")
     app.config.from_mapping(
-        SECRET_KEY=get_setting("SECRET_KEY") or secrets.token_hex(32),
+        SECRET_KEY=configured_secret or secrets.token_hex(32),
         MAX_INPUT_LENGTH=1000,
+        MAX_CONTENT_LENGTH=16 * 1024,
         CLOUD_ENHANCEMENT_ENABLED=False,
+        DEPLOYMENT_MODE="local",
+        MODEL_REQUESTS_PER_MINUTE=10,
+        RATE_LIMIT_WINDOW_SECONDS=60,
+        RATE_LIMIT_MAX_CLIENTS=1000,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_SECURE=False,
+        SESSION_COOKIE_NAME="governed_agent_session",
     )
     app.config.from_prefixed_env(prefix="GPT2_MCC")
     app.config.from_prefixed_env(prefix="CLEARCARE")
     app.config.from_prefixed_env(prefix="GOVERNED_AGENT")
+    if str(app.config["DEPLOYMENT_MODE"]).lower() == "production":
+        if not configured_secret or len(configured_secret) < 32:
+            raise RuntimeError(
+                "Production mode requires GOVERNED_AGENT_SECRET_KEY with at "
+                "least 32 characters"
+            )
+        if app.config["SESSION_COOKIE_SECURE"] is not True:
+            raise RuntimeError(
+                "Production mode requires GOVERNED_AGENT_SESSION_COOKIE_SECURE=true"
+            )
     app.jinja_env.filters["render_markdown"] = render_markdown
     app.extensions["predictor"] = predictor or _default_predictor
     app.extensions["cloud_predictor"] = (
@@ -125,6 +144,23 @@ def create_app(
 
         conversation_store = InMemoryConversationStore()
     app.extensions["conversation_store"] = conversation_store
+    if rate_limiter is None:
+        try:
+            from .web_security import InMemoryRateLimiter
+        except ImportError:
+            from web_security import InMemoryRateLimiter
+
+        rate_limiter = InMemoryRateLimiter(
+            max_requests=int(app.config["MODEL_REQUESTS_PER_MINUTE"]),
+            window_seconds=int(app.config["RATE_LIMIT_WINDOW_SECONDS"]),
+            max_clients=int(app.config["RATE_LIMIT_MAX_CLIENTS"]),
+        )
+    app.extensions["rate_limiter"] = rate_limiter
+
+    try:
+        from .web_security import get_or_create_csrf_token, is_valid_csrf_token
+    except ImportError:
+        from web_security import get_or_create_csrf_token, is_valid_csrf_token
 
     def get_conversation_id() -> str:
         conversation_id = session.get("conversation_id")
@@ -139,8 +175,47 @@ def create_app(
             "conversation": current_app.extensions["conversation_store"].get(
                 conversation_id
             ),
+            "csrf_token": get_or_create_csrf_token(session),
             **extra,
         }
+
+    @app.before_request
+    def protect_state_changing_requests():
+        if request.method == "POST" and not is_valid_csrf_token(
+            session, request.form.get("csrf_token")
+        ):
+            return render_template(
+                "index.html",
+                **page_context(error="请求验证失败，请刷新页面后重试。"),
+            ), 400
+
+    @app.after_request
+    def apply_security_headers(response):
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; base-uri 'self'; form-action 'self'; "
+            "frame-ancestors 'none'; object-src 'none'; "
+            "img-src 'self' data:; style-src 'self'; script-src 'self'"
+        )
+        response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+        response.headers["Permissions-Policy"] = (
+            "camera=(), microphone=(), geolocation=(), payment=()"
+        )
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        if request.is_secure:
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
+        return response
+
+    @app.errorhandler(413)
+    def request_too_large(_error):
+        return render_template(
+            "index.html",
+            **page_context(error="请求内容过大，请缩短后重试。"),
+        ), 413
 
     @app.get("/")
     def index():
@@ -151,6 +226,7 @@ def create_app(
         conversation_id = get_conversation_id()
         current_app.extensions["conversation_store"].clear(conversation_id)
         session["conversation_id"] = uuid.uuid4().hex
+        session.pop("_csrf_token", None)
         return redirect(url_for("index"))
 
     @app.post("/ask")
@@ -207,6 +283,22 @@ def create_app(
                 ),
             ), 403
 
+        # A conversation reset must not create a fresh abuse budget. The local
+        # demo intentionally keys by the direct peer address and does not trust
+        # client-supplied forwarding headers.
+        client_key = request.remote_addr or "unknown"
+        if not current_app.extensions["rate_limiter"].allow(client_key):
+            response = render_template(
+                "index.html",
+                **page_context(
+                    user_input=user_input,
+                    error="请求过于频繁，请稍后再试。",
+                ),
+            )
+            return response, 429, {"Retry-After": str(
+                current_app.config["RATE_LIMIT_WINDOW_SECONDS"]
+            )}
+
         retrieval_query = "\n".join(
             [turn.user for turn in history[-2:]] + [user_input]
         )
@@ -234,8 +326,10 @@ def create_app(
                 knowledge_search=current_app.extensions["knowledge_base"].search,
             )
             result = agent.run(model_input, retrieval_query)
-        except (FileNotFoundError, OSError, RuntimeError):
-            current_app.logger.exception("Model prediction failed")
+        except (FileNotFoundError, OSError, RuntimeError) as exc:
+            current_app.logger.error(
+                "Model prediction failed (%s)", type(exc).__name__
+            )
             return render_template(
                 "index.html",
                 **page_context(

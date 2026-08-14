@@ -108,3 +108,18 @@ def test_add_evidence_rejects_unknown_source(tmp_path):
 
     assert result.returncode == 1
     assert "unknown source_id" in result.stdout
+
+
+def test_add_evidence_rejects_approved_id_with_unapproved_host(tmp_path):
+    project = temporary_project(tmp_path)
+    record = candidate_record()
+    record["source_url"] = "https://www.cdc.gov.attacker.example/topic"
+    candidate = tmp_path / "candidate.json"
+    candidate.write_text(json.dumps(record, ensure_ascii=False), encoding="utf-8")
+
+    result = run_script(
+        "add_evidence.py", "--project", project, "--candidate", candidate
+    )
+
+    assert result.returncode == 1
+    assert "source_url host is not approved" in result.stdout

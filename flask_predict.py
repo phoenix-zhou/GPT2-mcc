@@ -16,7 +16,11 @@ tokenizer = BertTokenizer(vocab_file=pconf.vocab_path,
                               sep_token="[SEP]",
                               pad_token="[PAD]",
                               cls_token="[CLS]")
-model = GPT2LMHeadModel.from_pretrained(pconf.inference_model_path)
+model = GPT2LMHeadModel.from_pretrained(
+    pconf.inference_model_path,
+    local_files_only=True,
+    use_safetensors=True,
+)
 model = model.to(device)
 model.eval()
 

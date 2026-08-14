@@ -1,4 +1,4 @@
-# Governed Agent Lab Brand Architecture
+# ClearCare Health Brand and Ownership Architecture
 
 [English](#english) | [简体中文](#简体中文)
 
@@ -6,122 +6,133 @@
 
 ### Decision
 
-The repository-level identity is **Governed Agent Lab**. It describes the
-reusable system being built: bounded agent execution, governed evidence,
-provider-neutral evaluation, failure analysis, and developer Skills.
-
-**ClearCare Health / 澄心循证健康智能体** remains the first reference vertical.
-It owns the current web experience, emergency policy, health corpus, medical
-disclosures, and `health_mvp_v1` evaluation dataset.
+The repository and product identity is **ClearCare Health**.
 
 ```text
-Governed Agent Lab
-├── Agent runtime: bounded actions and read-only tools
-├── Evaluation: frozen cases, provider captures, metrics, failure taxonomy
-├── Evidence governance: provenance, freshness, review status, hashes
-├── Developer workflows: curation and evaluation Skills
-└── Reference verticals
-    └── ClearCare Health
-        ├── health-information web demo
-        ├── deterministic emergency router
-        ├── governed health corpus
-        └── health_mvp_v1 evaluation
+ClearCare Health — Governed Healthcare Information AI Agent
+Safety · Governed RAG · Agent Evaluation · Evidence Governance
 ```
 
-### Why a two-level brand
+The code keeps reusable governed-agent abstractions, but **Governed Agent Lab
+is no longer the repository headline or a product-level platform claim**. One
+implemented health vertical is not sufficient evidence for a horizontal
+platform. This decision improves recruiter comprehension and preserves
+portfolio separation from horizontal evaluation/infrastructure projects.
 
-A full replacement of ClearCare would discard a coherent high-stakes product
-case. Keeping ClearCare as the repository identity, however, would make the
-evaluation harness and Skills appear less transferable than they are. The
-two-level structure preserves measured health-domain work while making the
-platform capabilities legible for AI Product, Data Analytics, and Applied AI
-roles.
+### Product and architecture boundary
 
-### Claim boundary
+```text
+ClearCare Health
+├── Health product identity and user journey
+├── Domain policy
+│   ├── non-diagnosis boundary
+│   ├── emergency routing
+│   └── clarification and refusal policy
+├── Reusable governed-agent architecture
+│   ├── bounded runtime
+│   ├── provider adapters
+│   ├── governed evidence validation and retrieval
+│   └── provider-neutral evaluation contract
+└── Health-specific evidence and evaluation
+    ├── governed health corpus
+    └── health_mvp_v1
+```
 
-Platform components may be described as domain-extensible. They must not be
-described as proven across domains until another vertical has:
-
-1. an explicit user and product boundary;
-2. a governed, versioned evidence source;
-3. a frozen domain evaluation set;
-4. a captured provider run and segmented report; and
-5. domain-appropriate human review status.
-
-The current 72.5% task-success proxy and all safety/retrieval metrics apply only
-to `health_mvp_v1`. They are not platform-wide quality claims.
+Reusable components may be described as *domain-extensible abstractions*.
+They must not be described as a validated general platform until another
+product domain has its own user boundary, policy, governed corpus, frozen
+evaluation, provider run, and appropriate human review.
 
 ### Naming policy
 
-| Layer | Current name | Scope |
+| Layer | Name | Scope |
 |---|---|---|
-| Portfolio platform | Governed Agent Lab | runtime, evaluation, governance, Skills |
-| Reference product | ClearCare Health | health-information experience and policy |
-| Python distribution | `governed-agent-lab` | repository package metadata |
-| New environment prefix | `GOVERNED_AGENT_*` | platform configuration |
+| Repository and product | ClearCare Health | health-information experience, policy, corpus, and results |
+| Product descriptor | Governed Healthcare Information AI Agent | concise recruiter-facing category |
+| Internal runtime | `GovernedEvidenceAgent` | reusable bounded orchestration abstraction |
+| Python distribution | `clearcare-health-agent` | repository package metadata |
+| Configuration prefix | `GOVERNED_AGENT_*` | reusable technical configuration |
 | Compatibility prefixes | `CLEARCARE_*`, `GPT2_MCC_*` | existing local setups only |
-| Health dataset | `health_mvp_v1` | frozen health evaluation contract |
+| Evaluation dataset | `health_mvp_v1` | health-specific development contract |
 
-`GovernedEvidenceAgent` is the preferred runtime class.
-`ClearCareEvidenceAgent` remains an import alias during migration so existing
-integrations do not break silently.
+Keeping `GovernedEvidenceAgent` and `GOVERNED_AGENT_*` is intentional: internal
+abstraction does not require turning the product into a platform brand.
 
-### Repository migration sequence
+### Ownership boundary
 
-1. **Completed in this stage:** display identity, package metadata, preferred
-   class name, configuration prefix, documentation, and compatibility tests.
-2. Merge the stacked roadmap, evaluation, and brand PRs in order.
-3. Rename the GitHub repository only after those PRs merge; GitHub redirects
-   should not substitute for updating README and Skill installation URLs.
-4. Update the installed Skill source URL and run a clean-install smoke test.
-5. Retire compatibility names only in a documented major version, after a
-   deprecation window.
+**Implemented in the modernization:** professional web experience,
+multi-turn memory, Qwen/OpenAI providers, safety routing, bounded agent runtime,
+governed evidence, retrieval experiments, evaluation harness/reports, evidence
+Skill, product documentation, and security hardening.
 
-The GitHub repository is deliberately not renamed inside this code PR because
-doing so while stacked PRs are open would add review and URL risk without
-improving the product behavior.
+**Inherited:** the repository starting point and remaining GPT-2
+training/inference, vocabulary, and configuration material from
+[`phoenix-zhou/GPT2-mcc`](https://github.com/phoenix-zhou/GPT2-mcc). The
+upstream repository declares no open-source license; inherited work is not
+presented as original.
+
+**Removed or quarantined:** raw legacy medical datasets, Pickles, bytecode,
+duplicate/scratch assets, unsafe deserialization, default raw-chat logging,
+and the GPT-2 web provider.
+
+### Repository strategy
+
+The current GitHub repository name already reflects ClearCare, so no rename is
+needed. If explicit permission for inherited code cannot be obtained, the
+safest long-term portfolio path is a clean-room repository containing only
+newly implemented ClearCare code, governed content with verified reuse rights,
+and an attribution note that does not copy unlicensed source.
 
 ## 简体中文
 
 ### 决策
 
-仓库级品牌统一为 **Governed Agent Lab / 可控智能体实验平台**。它描述的是可复用
-系统：有界 Agent 执行、受控证据、与 Provider 无关的评测、失败分析和开发者
-Skills。
+仓库与产品品牌恢复为 **ClearCare Health / 澄心循证健康智能体**：
 
-**ClearCare Health / 澄心循证健康智能体**继续作为第一个参考垂直案例，负责当前
-网页体验、急症策略、健康资料库、医疗免责声明和 `health_mvp_v1` 评测集。
+```text
+ClearCare Health — 受控循证健康信息 AI Agent
+安全分流 · Governed RAG · Agent Evaluation · Evidence Governance
+```
 
-### 为什么使用双层品牌
+代码继续保留可复用的可治理 Agent 抽象，但 **Governed Agent Lab 不再作为仓库
+Headline，也不再构成横向平台产品声明**。只有一个已实现健康场景，不足以证明
+通用平台能力。这样能让招聘者更快理解产品，也能与横向评测/基础设施项目形成区分。
 
-彻底删除 ClearCare 会损失一个已经形成闭环的高风险产品案例；继续让 ClearCare
-代表整个仓库，又会让评测 Harness 与 Skills 看起来只能用于医疗。双层结构既保留
-实测的健康领域成果，也能清楚展示对 AI 产品、数据分析和 Applied AI 岗位有价值
-的可迁移能力。
+### 产品与架构边界
 
-### 声明边界
+ClearCare 负责健康产品身份、用户旅程、非诊断边界、急症分流、澄清策略、健康
+语料和 `health_mvp_v1` 结果。内部 Runtime、Provider Adapter、证据校验和评测
+协议可以称为“可扩展抽象”；在第二个产品领域拥有独立用户边界、策略、语料、冻结
+评测、Provider Run 和合适人工审核前，不能称为已经验证的通用平台。
 
-平台组件可以称为“可扩展到其他领域”，但在新垂直领域具备明确用户与边界、受控
-版本化证据、冻结评测集、模型预测报告和合适的人工审核状态之前，不能声称已经在
-多个领域得到验证。当前 72.5% 的任务成功代理指标和其他安全/检索指标只适用于
-`health_mvp_v1`，不是平台整体质量结论。
+### 命名规则
 
-### 命名与兼容
+- 仓库和产品：ClearCare Health / 澄心循证健康智能体
+- 产品描述：Governed Healthcare Information AI Agent
+- 内部 Runtime：`GovernedEvidenceAgent`
+- Python Distribution：`clearcare-health-agent`
+- 技术配置：`GOVERNED_AGENT_*`
+- 兼容配置：`CLEARCARE_*`、`GPT2_MCC_*`
+- 健康评测集：`health_mvp_v1`
 
-- 平台品牌：Governed Agent Lab / 可控智能体实验平台
-- 健康产品：ClearCare Health / 澄心循证健康智能体
-- Python Distribution：`governed-agent-lab`
-- 新环境变量：`GOVERNED_AGENT_*`
-- 兼容环境变量：`CLEARCARE_*`、`GPT2_MCC_*`
-- 首选运行时类：`GovernedEvidenceAgent`
-- 兼容类名：`ClearCareEvidenceAgent`
+保留内部 `GovernedEvidenceAgent` 与 `GOVERNED_AGENT_*` 是有意的：技术抽象可复用，
+并不要求把垂直产品包装成平台品牌。
 
-### 仓库迁移顺序
+### 所有权边界
 
-本阶段只迁移代码和文档中的品牌、包元数据、首选类名与环境变量，并用测试保证
-兼容。应先按顺序合并 Roadmap、Evaluation 和 Brand PR，再重命名 GitHub 仓库、
-更新 README 与 Skill 安装链接并完成干净安装测试。兼容命名只能在有明确弃用周期
-的主版本升级中移除。
+现代化新增内容包括专业 Web 体验、多轮记忆、Qwen/OpenAI Provider、安全分流、
+有界 Agent、受控证据、检索实验、Evaluation Harness/报告、证据 Skill、产品文档
+和安全加固。
 
-在堆叠 PR 仍打开时不直接重命名 GitHub 仓库，是为了避免额外的评审与 URL 风险；
-这不是品牌迁移遗漏，而是有意安排的发布顺序。
+继承内容来自 [`phoenix-zhou/GPT2-mcc`](https://github.com/phoenix-zhou/GPT2-mcc)，
+包括仓库起点与保留的 GPT-2 训练/推理、词表和配置。上游没有声明开源许可证，
+这些内容不会作为我的原创成果宣传。
+
+已移除或隔离历史原始医疗数据、Pickle、字节码、重复/草稿资源、不安全反序列化、
+默认原始聊天日志和 GPT-2 Web Provider。
+
+### 仓库策略
+
+当前 GitHub 仓库名已经体现 ClearCare，无需重命名。如果无法取得继承代码的明确
+许可，最稳妥的长期方案是建立 Clean-room 仓库：只包含全新实现的 ClearCare 代码、
+具有明确复用权的受控资料，以及不复制无许可源码的来源说明。

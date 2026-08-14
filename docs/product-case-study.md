@@ -1,12 +1,12 @@
-# ClearCare Health — Governed Agent Lab Product Case Study
+# ClearCare Health — Governed Healthcare AI Agent Product Case Study
 
 Status: working case study; current repository behavior is distinguished from
 planned validation work.
 
 ## Executive summary
 
-ClearCare Health is the first Governed Agent Lab reference vertical: a
-local-first, evidence-grounded health-information agent designed to explore a
+ClearCare Health is a vertical, local-first, evidence-grounded health-
+information agent designed to explore a
 product question: **how can an LLM help a person organize a health question
 without presenting itself as a clinician?**
 

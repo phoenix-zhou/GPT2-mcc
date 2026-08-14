@@ -76,6 +76,22 @@ def content_hash(content: str) -> str:
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
+def _https_host(value: str) -> str | None:
+    parsed = urlparse(value)
+    if (
+        parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.username
+        or parsed.password
+    ):
+        return None
+    return parsed.hostname.lower().rstrip(".")
+
+
+def _host_is_allowed(candidate: str, approved: str) -> bool:
+    return candidate == approved or candidate.endswith(f".{approved}")
+
+
 def _iso_date(value, label: str, errors: list[str]) -> date | None:
     if value is None:
         return None
@@ -101,6 +117,7 @@ def validate_payload(
         sources = []
 
     source_ids: list[str] = []
+    source_registry: dict[str, dict] = {}
     for index, source in enumerate(sources):
         label = f"manifest.sources[{index}]"
         if not isinstance(source, dict):
@@ -112,8 +129,10 @@ def validate_payload(
         source_id = source.get("source_id")
         if source_id:
             source_ids.append(source_id)
-        if urlparse(str(source.get("homepage", ""))).scheme != "https":
-            errors.append(f"{label}: homepage must use HTTPS")
+        if not _https_host(str(source.get("homepage", ""))):
+            errors.append(f"{label}: homepage must use absolute HTTPS without credentials")
+        if isinstance(source_id, str) and source_id:
+            source_registry[source_id] = source
 
     duplicate_sources = sorted(
         key for key, count in Counter(source_ids).items() if count > 1
@@ -142,10 +161,30 @@ def validate_payload(
         label = str(document_id or label)
         if document_id:
             document_ids.append(document_id)
-        if record.get("source_id") not in known_sources:
+        source = source_registry.get(record.get("source_id"))
+        if record.get("source_id") not in known_sources or source is None:
             errors.append(f"{label}: unknown source_id {record.get('source_id')!r}")
-        if urlparse(str(record.get("source_url", ""))).scheme != "https":
-            errors.append(f"{label}: source_url must use HTTPS")
+        source_host = _https_host(str(record.get("source_url", "")))
+        if not source_host:
+            errors.append(
+                f"{label}: source_url must use absolute HTTPS without credentials"
+            )
+        if source and source_host:
+            approved_host = _https_host(str(source.get("homepage", "")))
+            if approved_host and not _host_is_allowed(source_host, approved_host):
+                errors.append(
+                    f"{label}: source_url host is not approved for source_id"
+                )
+            metadata_pairs = {
+                "issuer": "organization",
+                "jurisdiction": "jurisdiction",
+                "source_type": "source_type",
+            }
+            for record_field, source_field in metadata_pairs.items():
+                if record.get(record_field) != source.get(source_field):
+                    errors.append(
+                        f"{label}: {record_field} does not match source registry"
+                    )
         content = record.get("content")
         if not isinstance(content, str) or not content.strip():
             errors.append(f"{label}: content must be non-empty text")
@@ -161,7 +200,11 @@ def validate_payload(
             f"{label}.last_reviewed_at",
             errors,
         )
-        _iso_date(record.get("published_at"), f"{label}.published_at", errors)
+        published = _iso_date(
+            record.get("published_at"), f"{label}.published_at", errors
+        )
+        if published and published > today:
+            errors.append(f"{label}: published_at is in the future")
         if reviewed:
             age = (today - reviewed).days
             if age < 0:
@@ -170,6 +213,11 @@ def validate_payload(
                 warnings.append(
                     f"{label}: review is stale ({age} days; limit {review_interval})"
                 )
+        required_status = manifest.get("review_policy", {}).get(
+            "required_review_status"
+        )
+        if required_status and record.get("review_status") != required_status:
+            errors.append(f"{label}: review_status violates review policy")
 
     duplicate_documents = sorted(
         key for key, count in Counter(document_ids).items() if count > 1

@@ -93,8 +93,8 @@ def capture_case(
             source_ids = tuple(
                 document.document_id for document in result.sources
             )
-    except Exception as exc:  # preserve provider/runtime failures as data
-        error = f"{type(exc).__name__}: {exc}"
+    except Exception as exc:  # preserve failure class without leaking raw details
+        error = f"{type(exc).__name__}: provider/runtime failure"
 
     return ProviderPrediction(
         case_id=case.case_id,

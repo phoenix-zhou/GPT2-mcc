@@ -8,5 +8,8 @@ dist/
 build/
 *.egg-info/
 sample/
+samples/
+data/*.pkl
+local_data/
 save_model/*/pytorch_model.bin
 save_model/*/model.safetensors

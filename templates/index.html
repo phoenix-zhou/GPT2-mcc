@@ -16,7 +16,7 @@
                 </span>
                 <span>
                     <strong>澄心循证健康智能体</strong>
-                    <small>ClearCare Health · Governed Agent Lab</small>
+                    <small>Safety · Governed RAG · Agent Evaluation</small>
                 </span>
             </a>
             <span class="privacy-badge"><span aria-hidden="true">●</span> 本地 Qwen 优先</span>
@@ -26,7 +26,7 @@
     <main class="container page-shell">
         <section class="hero" aria-labelledby="page-title">
             <div>
-                <p class="eyebrow">PRIVATE · LOCAL-FIRST · EVIDENCE-AWARE</p>
+                <p class="eyebrow">BOUNDED · LOCAL-FIRST · EVIDENCE-AWARE</p>
                 <h1 id="page-title">更清晰地理解健康问题</h1>
                 <p class="hero-copy">描述你的症状或健康疑问，并像聊天一样继续补充信息。助手会结合本次咨询的最近对话给出下一步建议。</p>
             </div>
@@ -45,6 +45,7 @@
                         <p class="retention-note">最近 6 轮暂存在当前服务内存中；重启服务或开始新咨询后清除。</p>
                     </div>
                     <form action="{{ url_for('reset_conversation') }}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <button class="secondary-button" type="submit">开始新咨询</button>
                     </form>
                 </div>
@@ -94,6 +95,7 @@
 
         <section class="consultation-card{% if conversation %} follow-up-card{% endif %}" aria-label="健康问题输入">
             <form id="consultation-form" action="{{ url_for('ask') }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <label class="field-label" for="user_input">{{ '继续补充或提问' if conversation else '请描述你的情况' }}</label>
                 {% if conversation %}
                     <p id="input-help" class="field-help memory-help"><span aria-hidden="true">✓</span> 无需删除或重复前面的内容。直接补充新的症状、时间或回答助手的问题即可。</p>
@@ -130,7 +132,7 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>ClearCare Health · A Governed Agent Lab reference vertical · 研究与教育用途</p>
+            <p>ClearCare Health · Governed Healthcare Information AI Agent · 研究与教育用途</p>
             <p>不要依据本工具延误或停止专业医疗服务。</p>
         </div>
     </footer>

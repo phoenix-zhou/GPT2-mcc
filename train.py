@@ -127,7 +127,7 @@ def train_epoch(model, train_dataloader, optimizer, scheduler, epoch, args):
         if not os.path.exists(model_path):
             os.mkdir(model_path)
         # 保存预训练模型的方式
-        model.save_pretrained(model_path)
+        model.save_pretrained(model_path, safe_serialization=True)
         print('epoch {} finished'.format(epoch + 1))
         epoch_finish_time = datetime.now()
         print('time for one epoch: {}'.format(epoch_finish_time - epoch_start_time))
@@ -242,7 +242,7 @@ num_training_steps：这个参数指定了总的训练步数或迭代次数。�
             model_path = os.path.join(args.save_model_path, 'min_ppl_model_bj'.format(epoch + 1))
             if not os.path.exists(model_path):
                 os.mkdir(model_path)
-            model.save_pretrained(model_path)
+            model.save_pretrained(model_path, safe_serialization=True)
 
 
 def main():
@@ -275,7 +275,11 @@ def main():
     #
     # 创建模型
     if params.pretrained_model:  # 加载预训练模型
-        model = GPT2LMHeadModel.from_pretrained(params.pretrained_model)
+        model = GPT2LMHeadModel.from_pretrained(
+            params.pretrained_model,
+            local_files_only=True,
+            use_safetensors=True,
+        )
     else:  # 初始化模型
         model_config = GPT2Config.from_json_file(params.config_json)
         # print(model_config)
