@@ -40,7 +40,7 @@ Agent 平台**。当前产品行为、资料库、安全策略和实测结论都
 | Evaluation | 80 条开发集案例、Provider 无关预测捕获、失败分类和 Keyword/BM25 对照 |
 | 模型 | 固定 Revision 的本地 Qwen 默认、OpenAI 可选；GPT-2 不进入 Web Runtime |
 | Web Demo | 本地单进程 Flask 页面，包含 Trace、引用、CSRF、请求限制和安全响应头 |
-| 临床验证 | 未完成；当前 6 条项目摘要均未经临床人员审核 |
+| 临床验证 | 未完成；当前 9 条项目摘要均未经临床人员审核 |
 | 生产部署 | 不支持；尚无认证授权、分布式控制、加密持久化和合规体系 |
 
 ## 用户与 Agent 流程
@@ -194,13 +194,14 @@ flask --app app run
 
 ## 受控证据与数据策略
 
-当前语料包含 6 条项目自行编写的中文摘要，链接 CDC、NHS 和 WHO，并明确标记为
+当前语料包含 9 条项目自行编写的中文摘要，链接 CDC、NHS 和 WHO，并明确标记为
 **未经临床人员审核**。运行时会拒绝未知或冒充来源、过期复核、未来日期、不安全
 URL、重复 ID、超长内容和哈希不一致记录。
 
 版本化的 [Corpus v1 覆盖规范](docs/corpus-v1-coverage-spec.md)已经定义 8 个主题群和
-24 条记录目标；自动报告会显示当前 6/24 条记录以及每个剩余缺口。胃肠道症状是
-首个同时达到文档数与多来源门槛的主题群。Paraphrase、Hard Negative、No-hit 和
+24 条记录目标；自动报告会显示当前 9/24 条记录以及每个剩余缺口。胃肠道症状和
+呼吸系统症状均已达到文档数与多来源门槛。[第二批审计记录](docs/corpus-v1-batch-2.md)
+说明了呼吸资料的筛选、标签变化和检索回归结果。Paraphrase、Hard Negative、No-hit 和
 地区差异属于评测现象，不是证据文档类型。增加文档本身
 不构成可靠性结论。
 [`curate-health-evidence`](skills/curate-health-evidence/) Skill 可以自动执行确定性

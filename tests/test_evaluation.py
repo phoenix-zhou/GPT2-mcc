@@ -60,7 +60,7 @@ def test_health_mvp_dataset_is_versioned_privacy_safe_and_has_80_cases():
     assert len(cases) == 80
     assert len({case.case_id for case in cases}) == 80
     assert all(not case.contains_personal_data for case in cases)
-    assert manifest["dataset_version"] == "1.1.0"
+    assert manifest["dataset_version"] == "1.2.0"
     assert manifest["expert_reviewed"] is False
     assert {case.scenario for case in cases} == {
         "emergency",
