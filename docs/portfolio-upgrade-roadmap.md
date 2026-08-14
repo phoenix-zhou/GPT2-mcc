@@ -22,6 +22,15 @@ decision follows from the result.**
 - [x] Implemented and verified
 - [ ] Not yet complete
 
+## Phase 0 — Current closeout
+
+- [x] Merge Corpus v1 Batch 3 into `main`.
+- [x] Synchronize the local `main` branch with `fork/main`.
+- [x] Re-run 94 tests plus corpus validation and coverage checks on merged
+  `main`.
+- [x] Reconcile current README, roadmap, and evaluation figures while
+  preserving versioned historical snapshots.
+
 ## Current foundation
 
 - [x] Establish ClearCare Health as the repository and product identity.
@@ -103,9 +112,9 @@ corpus version. Document count alone is not a quality claim.
   failure segments on the blind holdout.
 - [ ] Promote BM25 only if it passes pre-registered quality and safety gates.
 
-**Current decision:** BM25 improved the development proxy from 72.5% to 78.75%,
-but Keyword remains the default because the result has not passed a blind
-holdout.
+**Historical end-to-end result (dataset v1.0.0):** BM25 improved the development
+proxy from 72.5% to 78.75%, but Keyword remains the default because the result
+has not passed a blind holdout.
 
 After Corpus v1 Batch 3, the twelve-document component replay required retuning
 the BM25 development threshold from 4.0 to 4.5. At that threshold BM25 achieved

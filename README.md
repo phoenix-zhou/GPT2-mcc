@@ -98,8 +98,8 @@ and human review.
 
 The table below is the last completed end-to-end Qwen run, captured on dataset
 v1.0.0 and the earlier three-record corpus. It is a historical engineering
-regression result, not a current six-record estimate, independent benchmark, or
-clinical-performance claim.
+regression result, not a current twelve-record estimate, independent benchmark,
+or clinical-performance claim.
 
 | Measurement | Keyword baseline | BM25 candidate |
 |---|---:|---:|
@@ -116,10 +116,13 @@ human-reviewed groundedness results.
 
 See [Evaluation v1](docs/evaluation-v1.md),
 [RAG V2](docs/rag-v2-experiment.md), and the
-[Evaluation MVP](docs/evaluation-mvp.md). The current six-record, model-free
-component replay is recorded in
+[Evaluation MVP](docs/evaluation-mvp.md). The six-record Batch 1, model-free
+component replay is preserved as a historical milestone in
 [Corpus v1 Batch 1](docs/corpus-v1-batch-1.md): Keyword and BM25 achieved 64%
-and 72% Recall@3 respectively while both held 90% no-hit accuracy.
+and 72% Recall@3 respectively while both held 90% no-hit accuracy. The current
+twelve-record component replay is recorded in
+[Corpus v1 Batch 3](docs/corpus-v1-batch-3.md): Keyword and BM25 achieved 65.5%
+and 69.0% Recall@3 respectively while both held 89.7% no-hit accuracy.
 
 ## What I owned, inherited, and removed
 

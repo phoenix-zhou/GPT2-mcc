@@ -89,7 +89,7 @@ Runtime 和 Evaluation 协议按照可复用方向设计，但在第二个产品
 ## 实测结果与限制
 
 下表是最后一次完整的 Qwen 端到端结果，使用数据集 v1.0.0 和此前的三文档语料。
-它是历史工程回归结果，不代表当前六文档语料的性能，也不是独立 Benchmark 或
+它是历史工程回归结果，不代表当前十二文档语料的性能，也不是独立 Benchmark 或
 临床性能结论。
 
 | 指标 | Keyword 基线 | BM25 候选 |
@@ -105,9 +105,11 @@ ID 存在，不能证明 Claim-level Entailment 或回答 Groundedness。晋级�
 
 详见 [Evaluation v1](docs/evaluation-v1.md)、
 [RAG V2](docs/rag-v2-experiment.md) 与
-[Evaluation MVP](docs/evaluation-mvp.md)。当前六文档、无模型调用的组件回放记录在
-[Corpus v1 第一批审计](docs/corpus-v1-batch-1.md)：Keyword 与 BM25 的 Recall@3
-分别为 64% 和 72%，No-hit Accuracy 均为 90%。
+[Evaluation MVP](docs/evaluation-mvp.md)。第一批六文档、无模型调用的组件回放作为
+历史里程碑保存在 [Corpus v1 第一批审计](docs/corpus-v1-batch-1.md)：Keyword 与
+BM25 的 Recall@3 分别为 64% 和 72%，No-hit Accuracy 均为 90%。当前十二文档的
+组件回放记录在 [Corpus v1 第三批审计](docs/corpus-v1-batch-3.md)：Keyword 与
+BM25 的 Recall@3 分别为 65.5% 和 69.0%，No-hit Accuracy 均为 89.7%。
 
 ## 我的工作、继承内容与已移除内容
 
