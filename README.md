@@ -43,10 +43,10 @@ product constraints:
 | Bounded agent | One plan/tool/respond cycle with validated action/reason pairs and one read-only evidence tool |
 | Conversation | Bounded in-memory follow-up context and an explicit reset action |
 | Governed RAG | Versioned coverage contract, controlled topic clusters, approved-source registry, URL-host binding, review dates, corpus bounds, and SHA-256 integrity |
-| Evaluation | 83-case development set, provider-neutral capture, failure taxonomy, and Keyword/BM25 comparison |
+| Evaluation | 88-case development set, provider-neutral capture, failure taxonomy, and Keyword/BM25 comparison |
 | Model providers | Pinned local Qwen default and optional OpenAI; GPT-2 is excluded from the web runtime |
 | Web demo | Local/single-process Flask interface with trace, citations, CSRF, request limits, and security headers |
-| Clinical validation | Not completed; all twelve project-authored summaries remain unverified by a clinician |
+| Clinical validation | Not completed; all 17 project-authored summaries remain unverified by a clinician |
 | Production deployment | Not supported; authentication, distributed controls, encrypted persistence, and compliance work are absent |
 
 ## User and agent flow
@@ -98,7 +98,7 @@ and human review.
 
 The table below is the last completed end-to-end Qwen run, captured on dataset
 v1.0.0 and the earlier three-record corpus. It is a historical engineering
-regression result, not a current twelve-record estimate, independent benchmark,
+regression result, not a current 17-record estimate, independent benchmark,
 or clinical-performance claim.
 
 | Measurement | Keyword baseline | BM25 candidate |
@@ -120,9 +120,9 @@ See [Evaluation v1](docs/evaluation-v1.md),
 component replay is preserved as a historical milestone in
 [Corpus v1 Batch 1](docs/corpus-v1-batch-1.md): Keyword and BM25 achieved 64%
 and 72% Recall@3 respectively while both held 90% no-hit accuracy. The current
-twelve-record component replay is recorded in
-[Corpus v1 Batch 3](docs/corpus-v1-batch-3.md): Keyword and BM25 achieved 65.5%
-and 69.0% Recall@3 respectively while both held 89.7% no-hit accuracy.
+17-record component replay is recorded in
+[Corpus v1 Batch 4](docs/corpus-v1-batch-4.md): Keyword and BM25 both achieved
+73.5% Recall@3 and 89.7% no-hit accuracy after the BM25 threshold was retuned.
 
 ## What I owned, inherited, and removed
 
@@ -222,7 +222,7 @@ compliance certification. See [SECURITY.md](SECURITY.md).
 
 ## Governed evidence and data strategy
 
-The current corpus contains twelve project-authored Chinese summaries linked to
+The current corpus contains 17 project-authored Chinese summaries linked to
 CDC, NHS, WHO, and NHC pages. They are explicitly **not
 clinician-reviewed**. Runtime loading rejects unknown or impersonated sources,
 stale reviews, future dates, unsafe URLs, duplicate IDs, oversized records, and
@@ -230,9 +230,9 @@ content/hash mismatches.
 
 The versioned [Corpus v1 coverage specification](docs/corpus-v1-coverage-spec.md)
 now defines 8 topic clusters and a 24-record target. The automated report shows
-the current 12/24 records and every remaining cluster gap. The gastrointestinal,
-respiratory, and fever/infection clusters meet both targets.
-The [Batch 2 audit](docs/corpus-v1-batch-2.md) records the respiratory-source
+the current 17/24 records and every remaining cluster gap. The neurological,
+cardiovascular, gastrointestinal, respiratory, and fever/infection clusters meet
+both targets. The [Batch 4 audit](docs/corpus-v1-batch-4.md) records the source
 decisions, label changes, and retrieval regression results.
 Paraphrases, hard
 negatives, no-hit prompts, and jurisdiction differences are evaluation
@@ -277,7 +277,10 @@ tests/                           Automated regression and security tests
 - [RAG V2 experiment](docs/rag-v2-experiment.md)
 - [Security and risk review](docs/security-and-risk-review.md)
 - [Health Corpus v1 coverage specification](docs/corpus-v1-coverage-spec.md)
-- [Corpus v1 Batch 1 audit](docs/corpus-v1-batch-1.md)
+- Corpus v1 audits: [Batch 1](docs/corpus-v1-batch-1.md),
+  [Batch 2](docs/corpus-v1-batch-2.md),
+  [Batch 3](docs/corpus-v1-batch-3.md), and
+  [Batch 4](docs/corpus-v1-batch-4.md)
 
 ## Next milestones
 

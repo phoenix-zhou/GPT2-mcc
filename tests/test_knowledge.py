@@ -134,7 +134,7 @@ def test_knowledge_loader_rejects_stale_review(tmp_path):
 def test_production_knowledge_has_governance_metadata():
     knowledge_base = LocalKnowledgeBase()
 
-    assert len(knowledge_base.documents) == 12
+    assert len(knowledge_base.documents) == 17
     assert all(document.document_id for document in knowledge_base.documents)
     assert all(document.last_reviewed_at for document in knowledge_base.documents)
     assert all(document.review_status for document in knowledge_base.documents)
@@ -205,6 +205,31 @@ def test_fever_infection_batch_retrieves_cn_triage_sepsis_and_prevention(strateg
             "who-sepsis-warning-signs-2026-08-review",
         "CDC 关于什么时候洗手来预防感染有哪些建议":
             "cdc-handwashing-infection-prevention-2026-08-review",
+    }
+
+    for query, expected_document_id in queries.items():
+        returned_ids = {
+            document.document_id for document in knowledge_base.search(query, limit=3)
+        }
+        assert expected_document_id in returned_ids
+
+    assert knowledge_base.search("如何修复 Python 单元测试", limit=3) == []
+
+
+@pytest.mark.parametrize("strategy", ["keyword", "bm25"])
+def test_batch_4_retrieves_acute_warnings_and_amr_without_code_hits(strategy):
+    knowledge_base = LocalKnowledgeBase(strategy=strategy)
+    queries = {
+        "国家卫健委的中风120如何识别脑卒中":
+            "nhc-stroke-warning-signs-2026-08-review",
+        "WHO 对发热颈部僵硬和意识混乱有哪些脑膜炎警示资料":
+            "who-meningitis-warning-signs-2026-08-review",
+        "WHO 关于胸痛冷汗和下颌疼痛的心脏病发作资料":
+            "who-cardiovascular-warning-signs-2026-08-review",
+        "CDC 对反复胸部挤压感和异常疲劳有哪些心梗提示":
+            "cdc-heart-attack-warning-signs-2026-08-review",
+        "WHO 如何解释抗生素过度使用与耐药风险":
+            "who-antimicrobial-resistance-safety-2026-08-review",
     }
 
     for query, expected_document_id in queries.items():

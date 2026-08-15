@@ -1,0 +1,1832 @@
+{
+  "dataset_name": "health_mvp_v1",
+  "generated_at": "2026-08-14T12:53:23.509273+00:00",
+  "retrieval_k": 3,
+  "candidate_count": 63,
+  "relevant_case_count": 34,
+  "no_hit_case_count": 29,
+  "strategies": [
+    {
+      "strategy": "keyword",
+      "build_latency_ms": 0.000957999873207882,
+      "index_size_bytes": 0,
+      "metrics": {
+        "recall_at_k": 0.7352941176470589,
+        "mrr": 0.7352941176470589,
+        "no_hit_accuracy": 0.896551724137931,
+        "latency_p50_ms": 0.041375002183485776,
+        "latency_p95_ms": 0.08704199717612937,
+        "relevant_miss_count": 8,
+        "false_hit_count": 3
+      },
+      "case_results": [
+        {
+          "case_id": "routine-stroke-001",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "latency_ms": 1.1182080015714746
+        },
+        {
+          "case_id": "routine-stroke-002",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.04041599822812714
+        },
+        {
+          "case_id": "routine-stroke-003",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "latency_ms": 0.03691700112540275
+        },
+        {
+          "case_id": "routine-stroke-004",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.11154199819429778
+        },
+        {
+          "case_id": "routine-stroke-005",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "cdc-handwashing-infection-prevention-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.08175000039045699
+        },
+        {
+          "case_id": "routine-heart-001",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.038458001654362306
+        },
+        {
+          "case_id": "routine-heart-002",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review",
+            "cdc-norovirus-symptoms-2026-08-review"
+          ],
+          "latency_ms": 0.03783300053328276
+        },
+        {
+          "case_id": "routine-heart-003",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "respiratory_symptoms",
+            "informational",
+            "corpus_v1_batch_2"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "nhs-shortness-of-breath-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "nhs-shortness-of-breath-2026-08-review",
+            "nhc-fever-infection-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.055041997256921604
+        },
+        {
+          "case_id": "routine-heart-004",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.03808299879892729
+        },
+        {
+          "case_id": "routine-heart-005",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-heart-attack-warning-signs-2026-08-review",
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.0824999988253694
+        },
+        {
+          "case_id": "routine-crisis-001",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.0865420006448403
+        },
+        {
+          "case_id": "routine-crisis-002",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review",
+            "who-antimicrobial-resistance-safety-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.051833998440997675
+        },
+        {
+          "case_id": "routine-crisis-003",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.03670799924293533
+        },
+        {
+          "case_id": "routine-crisis-004",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.03533299968694337
+        },
+        {
+          "case_id": "routine-crisis-005",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.05287500243866816
+        },
+        {
+          "case_id": "routine-no-source-001",
+          "scenario": "routine_health",
+          "tags": [
+            "corpus_v1_batch_1",
+            "gastrointestinal_symptoms"
+          ],
+          "relevant_document_ids": [
+            "nhs-diarrhoea-vomiting-2026-08-review",
+            "who-diarrhoeal-disease-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-norovirus-symptoms-2026-08-review",
+            "nhs-diarrhoea-vomiting-2026-08-review",
+            "who-diarrhoeal-disease-2026-08-review"
+          ],
+          "latency_ms": 0.09191600111080334
+        },
+        {
+          "case_id": "routine-no-source-002",
+          "scenario": "routine_health",
+          "tags": [
+            "respiratory_symptoms",
+            "corpus_v1_batch_2"
+          ],
+          "relevant_document_ids": [
+            "cdc-respiratory-illnesses-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.07354199988185428
+        },
+        {
+          "case_id": "routine-no-source-003",
+          "scenario": "routine_health",
+          "tags": [
+            "coverage_gap"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.0408750020142179
+        },
+        {
+          "case_id": "routine-no-source-004",
+          "scenario": "routine_health",
+          "tags": [
+            "coverage_gap"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.07400000322377309
+        },
+        {
+          "case_id": "routine-no-source-005",
+          "scenario": "routine_health",
+          "tags": [
+            "coverage_gap"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03937499786843546
+        },
+        {
+          "case_id": "insufficient-001",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.0518749984621536
+        },
+        {
+          "case_id": "insufficient-002",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.041375002183485776
+        },
+        {
+          "case_id": "insufficient-003",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague",
+            "medication"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.07641699994564988
+        },
+        {
+          "case_id": "insufficient-004",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03737500082934275
+        },
+        {
+          "case_id": "insufficient-005",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03633400046965107
+        },
+        {
+          "case_id": "insufficient-006",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague",
+            "pediatric"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03595900125219487
+        },
+        {
+          "case_id": "insufficient-007",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03662499875645153
+        },
+        {
+          "case_id": "insufficient-008",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03487499998300336
+        },
+        {
+          "case_id": "insufficient-009",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03591700078686699
+        },
+        {
+          "case_id": "insufficient-010",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.035000000934815034
+        },
+        {
+          "case_id": "out-of-scope-001",
+          "scenario": "out_of_scope",
+          "tags": [
+            "writing"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03666700285975821
+        },
+        {
+          "case_id": "out-of-scope-002",
+          "scenario": "out_of_scope",
+          "tags": [
+            "weather"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.035000000934815034
+        },
+        {
+          "case_id": "out-of-scope-003",
+          "scenario": "out_of_scope",
+          "tags": [
+            "programming"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.07129200093913823
+        },
+        {
+          "case_id": "out-of-scope-004",
+          "scenario": "out_of_scope",
+          "tags": [
+            "recommendation"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.036375000490807
+        },
+        {
+          "case_id": "out-of-scope-005",
+          "scenario": "out_of_scope",
+          "tags": [
+            "math"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03591700078686699
+        },
+        {
+          "case_id": "out-of-scope-006",
+          "scenario": "out_of_scope",
+          "tags": [
+            "translation"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.07262500002980232
+        },
+        {
+          "case_id": "out-of-scope-007",
+          "scenario": "out_of_scope",
+          "tags": [
+            "travel"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03566699888324365
+        },
+        {
+          "case_id": "out-of-scope-008",
+          "scenario": "out_of_scope",
+          "tags": [
+            "finance"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03733300036401488
+        },
+        {
+          "case_id": "out-of-scope-009",
+          "scenario": "out_of_scope",
+          "tags": [
+            "creative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.036458000977290794
+        },
+        {
+          "case_id": "out-of-scope-010",
+          "scenario": "out_of_scope",
+          "tags": [
+            "programming"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03975000072387047
+        },
+        {
+          "case_id": "adversarial-006",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.08704199717612937
+        },
+        {
+          "case_id": "adversarial-007",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.06874999962747097
+        },
+        {
+          "case_id": "adversarial-008",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.06858400229248218
+        },
+        {
+          "case_id": "adversarial-009",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "latency_ms": 0.06920899977558292
+        },
+        {
+          "case_id": "adversarial-010",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.08579099812777713
+        },
+        {
+          "case_id": "retrieval-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "stroke"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.07895900125731714
+        },
+        {
+          "case_id": "retrieval-002",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "stroke"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.07987500066519715
+        },
+        {
+          "case_id": "retrieval-003",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "synonym",
+            "stroke"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.03808299879892729
+        },
+        {
+          "case_id": "retrieval-004",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "heart_attack"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-heart-attack-warning-signs-2026-08-review",
+            "cdc-respiratory-illnesses-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.038542002585018054
+        },
+        {
+          "case_id": "retrieval-005",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "synonym",
+            "heart_attack"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.03612500222516246
+        },
+        {
+          "case_id": "retrieval-006",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "heart_attack"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.05383299867389724
+        },
+        {
+          "case_id": "retrieval-007",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "crisis_support"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.05162500019650906
+        },
+        {
+          "case_id": "retrieval-008",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "crisis_support"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.03650000144261867
+        },
+        {
+          "case_id": "retrieval-009",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "crisis_support"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.03633400046965107
+        },
+        {
+          "case_id": "retrieval-010",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "coverage_gap",
+            "no_relevant_document"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03670899968710728
+        },
+        {
+          "case_id": "retrieval-fever-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "fever_and_infection",
+            "cn_source",
+            "corpus_v1_batch_3"
+          ],
+          "relevant_document_ids": [
+            "nhc-fever-infection-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhc-fever-infection-warning-signs-2026-08-review",
+            "cdc-respiratory-illnesses-2026-08-review",
+            "who-child-pneumonia-2026-08-review"
+          ],
+          "latency_ms": 0.038750000385334715
+        },
+        {
+          "case_id": "retrieval-sepsis-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "fever_and_infection",
+            "sepsis",
+            "corpus_v1_batch_3"
+          ],
+          "relevant_document_ids": [
+            "who-sepsis-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-sepsis-warning-signs-2026-08-review",
+            "who-antimicrobial-resistance-safety-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.04983399776392616
+        },
+        {
+          "case_id": "retrieval-handwashing-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "fever_and_infection",
+            "infection_prevention",
+            "corpus_v1_batch_3"
+          ],
+          "relevant_document_ids": [
+            "cdc-handwashing-infection-prevention-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-handwashing-infection-prevention-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review",
+            "cdc-norovirus-symptoms-2026-08-review"
+          ],
+          "latency_ms": 0.05116600004839711
+        },
+        {
+          "case_id": "retrieval-nhc-stroke-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "neurological_warning_signs",
+            "cn_source",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhc-stroke-warning-signs-2026-08-review",
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "latency_ms": 0.07108299905667081
+        },
+        {
+          "case_id": "retrieval-meningitis-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "neurological_warning_signs",
+            "meningitis",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "who-meningitis-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-meningitis-warning-signs-2026-08-review",
+            "who-sepsis-warning-signs-2026-08-review",
+            "cdc-respiratory-illnesses-2026-08-review"
+          ],
+          "latency_ms": 0.052083003538427874
+        },
+        {
+          "case_id": "retrieval-who-cvd-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "cardiovascular_warning_signs",
+            "heart_attack",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review",
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "latency_ms": 0.05162500019650906
+        },
+        {
+          "case_id": "retrieval-cdc-heart-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "cardiovascular_warning_signs",
+            "heart_attack",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-heart-attack-warning-signs-2026-08-review",
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.051334001909708604
+        },
+        {
+          "case_id": "retrieval-amr-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "allergy_and_medication_safety",
+            "antimicrobial_resistance",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "who-antimicrobial-resistance-safety-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-antimicrobial-resistance-safety-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "who-child-pneumonia-2026-08-review"
+          ],
+          "latency_ms": 0.04949999856762588
+        }
+      ]
+    },
+    {
+      "strategy": "bm25",
+      "build_latency_ms": 9.054541998921195,
+      "index_size_bytes": 148558,
+      "metrics": {
+        "recall_at_k": 0.7352941176470589,
+        "mrr": 0.75,
+        "no_hit_accuracy": 0.896551724137931,
+        "latency_p50_ms": 0.039167000068118796,
+        "latency_p95_ms": 0.060582999140024185,
+        "relevant_miss_count": 8,
+        "false_hit_count": 3
+      },
+      "case_results": [
+        {
+          "case_id": "routine-stroke-001",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "latency_ms": 0.07262500002980232
+        },
+        {
+          "case_id": "routine-stroke-002",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.04308300049160607
+        },
+        {
+          "case_id": "routine-stroke-003",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review",
+            "who-meningitis-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.045582997699966654
+        },
+        {
+          "case_id": "routine-stroke-004",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-fever-infection-warning-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.049957998271565884
+        },
+        {
+          "case_id": "routine-stroke-005",
+          "scenario": "routine_health",
+          "tags": [
+            "stroke",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "latency_ms": 0.03587500032153912
+        },
+        {
+          "case_id": "routine-heart-001",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-respiratory-illnesses-2026-08-review"
+          ],
+          "latency_ms": 0.04162500044913031
+        },
+        {
+          "case_id": "routine-heart-002",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "latency_ms": 0.041875002352753654
+        },
+        {
+          "case_id": "routine-heart-003",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "respiratory_symptoms",
+            "informational",
+            "corpus_v1_batch_2"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "nhs-shortness-of-breath-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "nhs-shortness-of-breath-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.0457499991171062
+        },
+        {
+          "case_id": "routine-heart-004",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.037707999581471086
+        },
+        {
+          "case_id": "routine-heart-005",
+          "scenario": "routine_health",
+          "tags": [
+            "heart_attack",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "cdc-norovirus-symptoms-2026-08-review",
+            "cdc-respiratory-illnesses-2026-08-review"
+          ],
+          "latency_ms": 0.046459001168841496
+        },
+        {
+          "case_id": "routine-crisis-001",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.042499999835854396
+        },
+        {
+          "case_id": "routine-crisis-002",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review",
+            "nhs-diarrhoea-vomiting-2026-08-review"
+          ],
+          "latency_ms": 0.0429579995397944
+        },
+        {
+          "case_id": "routine-crisis-003",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.040333001379622146
+        },
+        {
+          "case_id": "routine-crisis-004",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.036666999221779406
+        },
+        {
+          "case_id": "routine-crisis-005",
+          "scenario": "routine_health",
+          "tags": [
+            "crisis_support",
+            "informational"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.033541000448167324
+        },
+        {
+          "case_id": "routine-no-source-001",
+          "scenario": "routine_health",
+          "tags": [
+            "corpus_v1_batch_1",
+            "gastrointestinal_symptoms"
+          ],
+          "relevant_document_ids": [
+            "nhs-diarrhoea-vomiting-2026-08-review",
+            "who-diarrhoeal-disease-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.035207998735131696
+        },
+        {
+          "case_id": "routine-no-source-002",
+          "scenario": "routine_health",
+          "tags": [
+            "respiratory_symptoms",
+            "corpus_v1_batch_2"
+          ],
+          "relevant_document_ids": [
+            "cdc-respiratory-illnesses-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-diarrhoeal-disease-2026-08-review"
+          ],
+          "latency_ms": 0.031457999284612015
+        },
+        {
+          "case_id": "routine-no-source-003",
+          "scenario": "routine_health",
+          "tags": [
+            "coverage_gap"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03016600021510385
+        },
+        {
+          "case_id": "routine-no-source-004",
+          "scenario": "routine_health",
+          "tags": [
+            "coverage_gap"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.04262500078766607
+        },
+        {
+          "case_id": "routine-no-source-005",
+          "scenario": "routine_health",
+          "tags": [
+            "coverage_gap"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [
+            "cdc-respiratory-illnesses-2026-08-review"
+          ],
+          "latency_ms": 0.039167000068118796
+        },
+        {
+          "case_id": "insufficient-001",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.012417000107234344
+        },
+        {
+          "case_id": "insufficient-002",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.017541002307552844
+        },
+        {
+          "case_id": "insufficient-003",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague",
+            "medication"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.02154100002371706
+        },
+        {
+          "case_id": "insufficient-004",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.01412499841535464
+        },
+        {
+          "case_id": "insufficient-005",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.020957999367965385
+        },
+        {
+          "case_id": "insufficient-006",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague",
+            "pediatric"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.02216700158896856
+        },
+        {
+          "case_id": "insufficient-007",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.019874998542945832
+        },
+        {
+          "case_id": "insufficient-008",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.019084000086877495
+        },
+        {
+          "case_id": "insufficient-009",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.022208998416317627
+        },
+        {
+          "case_id": "insufficient-010",
+          "scenario": "insufficient_context",
+          "tags": [
+            "vague"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.01925000105984509
+        },
+        {
+          "case_id": "out-of-scope-001",
+          "scenario": "out_of_scope",
+          "tags": [
+            "writing"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.023958000383572653
+        },
+        {
+          "case_id": "out-of-scope-002",
+          "scenario": "out_of_scope",
+          "tags": [
+            "weather"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.022790998627897352
+        },
+        {
+          "case_id": "out-of-scope-003",
+          "scenario": "out_of_scope",
+          "tags": [
+            "programming"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.0210839971259702
+        },
+        {
+          "case_id": "out-of-scope-004",
+          "scenario": "out_of_scope",
+          "tags": [
+            "recommendation"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.026124998839804903
+        },
+        {
+          "case_id": "out-of-scope-005",
+          "scenario": "out_of_scope",
+          "tags": [
+            "math"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.016457997844554484
+        },
+        {
+          "case_id": "out-of-scope-006",
+          "scenario": "out_of_scope",
+          "tags": [
+            "translation"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.012874999811174348
+        },
+        {
+          "case_id": "out-of-scope-007",
+          "scenario": "out_of_scope",
+          "tags": [
+            "travel"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.025707999157020822
+        },
+        {
+          "case_id": "out-of-scope-008",
+          "scenario": "out_of_scope",
+          "tags": [
+            "finance"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.0313340024149511
+        },
+        {
+          "case_id": "out-of-scope-009",
+          "scenario": "out_of_scope",
+          "tags": [
+            "creative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.022624997654929757
+        },
+        {
+          "case_id": "out-of-scope-010",
+          "scenario": "out_of_scope",
+          "tags": [
+            "programming"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.02558299820520915
+        },
+        {
+          "case_id": "adversarial-006",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.048916997911874205
+        },
+        {
+          "case_id": "adversarial-007",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.04812499901163392
+        },
+        {
+          "case_id": "adversarial-008",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [
+            "cdc-handwashing-infection-prevention-2026-08-review"
+          ],
+          "latency_ms": 0.050417002057656646
+        },
+        {
+          "case_id": "adversarial-009",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.043416999687906355
+        },
+        {
+          "case_id": "adversarial-010",
+          "scenario": "adversarial",
+          "tags": [
+            "quoted_phrase",
+            "hard_negative"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.046624998503830284
+        },
+        {
+          "case_id": "retrieval-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "stroke"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.05408300057752058
+        },
+        {
+          "case_id": "retrieval-002",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "stroke"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.03912500324076973
+        },
+        {
+          "case_id": "retrieval-003",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "synonym",
+            "stroke"
+          ],
+          "relevant_document_ids": [
+            "cdc-stroke-signs-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.03524999920045957
+        },
+        {
+          "case_id": "retrieval-004",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "heart_attack"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-respiratory-illnesses-2026-08-review",
+            "nhs-heart-attack-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.05412500104284845
+        },
+        {
+          "case_id": "retrieval-005",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "synonym",
+            "heart_attack"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.05216699719312601
+        },
+        {
+          "case_id": "retrieval-006",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "heart_attack"
+          ],
+          "relevant_document_ids": [
+            "nhs-heart-attack-signs-2026-08-review",
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.034708002203842625
+        },
+        {
+          "case_id": "retrieval-007",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "crisis_support"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.04595900099957362
+        },
+        {
+          "case_id": "retrieval-008",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "crisis_support"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "latency_ms": 0.03920899689546786
+        },
+        {
+          "case_id": "retrieval-009",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "paraphrase",
+            "crisis_support"
+          ],
+          "relevant_document_ids": [
+            "who-suicide-crisis-2026-08-review"
+          ],
+          "returned_document_ids": [],
+          "latency_ms": 0.05091699858894572
+        },
+        {
+          "case_id": "retrieval-010",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "coverage_gap",
+            "no_relevant_document"
+          ],
+          "relevant_document_ids": [],
+          "returned_document_ids": [],
+          "latency_ms": 0.03779100006795488
+        },
+        {
+          "case_id": "retrieval-fever-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "fever_and_infection",
+            "cn_source",
+            "corpus_v1_batch_3"
+          ],
+          "relevant_document_ids": [
+            "nhc-fever-infection-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhc-fever-infection-warning-signs-2026-08-review",
+            "cdc-respiratory-illnesses-2026-08-review",
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.0662079983158037
+        },
+        {
+          "case_id": "retrieval-sepsis-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "fever_and_infection",
+            "sepsis",
+            "corpus_v1_batch_3"
+          ],
+          "relevant_document_ids": [
+            "who-sepsis-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-sepsis-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.048624999180901796
+        },
+        {
+          "case_id": "retrieval-handwashing-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "fever_and_infection",
+            "infection_prevention",
+            "corpus_v1_batch_3"
+          ],
+          "relevant_document_ids": [
+            "cdc-handwashing-infection-prevention-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-handwashing-infection-prevention-2026-08-review",
+            "nhs-diarrhoea-vomiting-2026-08-review"
+          ],
+          "latency_ms": 0.05129200144438073
+        },
+        {
+          "case_id": "retrieval-nhc-stroke-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "neurological_warning_signs",
+            "cn_source",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "nhc-stroke-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "nhc-stroke-warning-signs-2026-08-review",
+            "cdc-stroke-signs-2026-08-review"
+          ],
+          "latency_ms": 0.04312499731895514
+        },
+        {
+          "case_id": "retrieval-meningitis-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "neurological_warning_signs",
+            "meningitis",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "who-meningitis-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-meningitis-warning-signs-2026-08-review",
+            "who-sepsis-warning-signs-2026-08-review",
+            "nhs-shortness-of-breath-2026-08-review"
+          ],
+          "latency_ms": 0.0681669989717193
+        },
+        {
+          "case_id": "retrieval-who-cvd-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "cardiovascular_warning_signs",
+            "heart_attack",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "who-cardiovascular-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-cardiovascular-warning-signs-2026-08-review",
+            "nhs-heart-attack-signs-2026-08-review",
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "latency_ms": 0.060582999140024185
+        },
+        {
+          "case_id": "retrieval-cdc-heart-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "cardiovascular_warning_signs",
+            "heart_attack",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "cdc-heart-attack-warning-signs-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "cdc-heart-attack-warning-signs-2026-08-review",
+            "cdc-respiratory-illnesses-2026-08-review",
+            "nhs-heart-attack-signs-2026-08-review"
+          ],
+          "latency_ms": 0.05970900019747205
+        },
+        {
+          "case_id": "retrieval-amr-001",
+          "scenario": "retrieval_citation",
+          "tags": [
+            "allergy_and_medication_safety",
+            "antimicrobial_resistance",
+            "corpus_v1_batch_4"
+          ],
+          "relevant_document_ids": [
+            "who-antimicrobial-resistance-safety-2026-08-review"
+          ],
+          "returned_document_ids": [
+            "who-antimicrobial-resistance-safety-2026-08-review"
+          ],
+          "latency_ms": 0.04858299871557392
+        }
+      ]
+    }
+  ],
+  "bm25_threshold_sweep": [
+    {
+      "minimum_score": 0.8,
+      "recall_at_k": 0.8725490196078431,
+      "no_hit_accuracy": 0.5172413793103449
+    },
+    {
+      "minimum_score": 1.0,
+      "recall_at_k": 0.8725490196078431,
+      "no_hit_accuracy": 0.5172413793103449
+    },
+    {
+      "minimum_score": 1.2,
+      "recall_at_k": 0.8725490196078431,
+      "no_hit_accuracy": 0.5172413793103449
+    },
+    {
+      "minimum_score": 1.5,
+      "recall_at_k": 0.8725490196078431,
+      "no_hit_accuracy": 0.5172413793103449
+    },
+    {
+      "minimum_score": 2.0,
+      "recall_at_k": 0.8627450980392156,
+      "no_hit_accuracy": 0.5172413793103449
+    },
+    {
+      "minimum_score": 2.5,
+      "recall_at_k": 0.8333333333333333,
+      "no_hit_accuracy": 0.5517241379310345
+    },
+    {
+      "minimum_score": 3.0,
+      "recall_at_k": 0.8186274509803921,
+      "no_hit_accuracy": 0.6896551724137931
+    },
+    {
+      "minimum_score": 3.5,
+      "recall_at_k": 0.8039215686274509,
+      "no_hit_accuracy": 0.7931034482758621
+    },
+    {
+      "minimum_score": 4.0,
+      "recall_at_k": 0.8039215686274509,
+      "no_hit_accuracy": 0.7931034482758621
+    },
+    {
+      "minimum_score": 4.5,
+      "recall_at_k": 0.7745098039215685,
+      "no_hit_accuracy": 0.8275862068965517
+    },
+    {
+      "minimum_score": 5.0,
+      "recall_at_k": 0.7647058823529411,
+      "no_hit_accuracy": 0.8275862068965517
+    },
+    {
+      "minimum_score": 5.5,
+      "recall_at_k": 0.7352941176470589,
+      "no_hit_accuracy": 0.896551724137931
+    },
+    {
+      "minimum_score": 6.0,
+      "recall_at_k": 0.7352941176470589,
+      "no_hit_accuracy": 0.896551724137931
+    },
+    {
+      "minimum_score": 6.5,
+      "recall_at_k": 0.7058823529411765,
+      "no_hit_accuracy": 0.9310344827586207
+    },
+    {
+      "minimum_score": 7.0,
+      "recall_at_k": 0.7058823529411765,
+      "no_hit_accuracy": 0.9310344827586207
+    },
+    {
+      "minimum_score": 8.0,
+      "recall_at_k": 0.6470588235294118,
+      "no_hit_accuracy": 0.9310344827586207
+    }
+  ],
+  "recommendation": "Keep `keyword` as the production default. The candidates do not improve relevant-document recall without a no-hit trade-off.",
+  "limitations": [
+    "The corpus has 17 short project-authored summaries across 7 topic clusters.",
+    "Cases and labels are synthetic and pending qualified review.",
+    "BM25 uses deterministic Chinese character n-grams, not a linguistic segmenter.",
+    "Latency and index-size values describe this local run and tiny corpus.",
+    "This component experiment does not rerun Qwen or measure answer groundedness."
+  ]
+}

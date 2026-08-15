@@ -49,7 +49,7 @@ decision follows from the result.**
 - [x] Remove raw legacy datasets and generated artifacts from the current tree.
 - [x] Publish the product case study, security review, Evaluation MVP/v1, and
   Keyword/BM25 experiment.
-- [x] Pass 94 automated regression and security tests as of 2026-08-14.
+- [x] Pass 96 automated regression and security tests as of 2026-08-14.
 
 ## P0 — Corpus v1 before further retrieval architecture
 
@@ -69,12 +69,12 @@ Coverage design is now versioned in
 [`knowledge/coverage_plan.json`](../knowledge/coverage_plan.json) and explained
 in the bilingual
 [`Health Corpus v1 Coverage Specification`](corpus-v1-coverage-spec.md). The
-live report shows 12/24 records and a 12-record gap; this does not mark Corpus v1
+live report shows 17/24 records and a 7-record gap; this does not mark Corpus v1
 as frozen.
 
 ### 2. Governed corpus expansion
 
-- [ ] Expand from 12 summaries to roughly 20–30 governed documents because the
+- [ ] Expand from 17 summaries to roughly 20–30 governed documents because the
   current corpus is too small for a credible retrieval comparison.
 - [ ] Add stable document/chunk IDs, parent-document metadata, applicability,
   version, review owner/status, and content hashes.
@@ -116,9 +116,10 @@ corpus version. Document count alone is not a quality claim.
 proxy from 72.5% to 78.75%, but Keyword remains the default because the result
 has not passed a blind holdout.
 
-After Corpus v1 Batch 3, the twelve-document component replay required retuning
-the BM25 development threshold from 4.0 to 4.5. At that threshold BM25 achieved
-69.0% Recall@3 versus Keyword's 65.5%, with both at 89.7% no-hit accuracy. This
+After Corpus v1 Batch 4, the 17-document component replay required retuning the
+BM25 development threshold from 4.5 to 5.5. At that threshold both BM25 and
+Keyword achieved 73.5% Recall@3 and 89.7% no-hit accuracy. The previous 4.5
+threshold improved recall to 77.5% but reduced no-hit accuracy to 82.8%. This
 does not complete the paired blind-holdout task or change the production default.
 
 ## P0 — Claim-level groundedness

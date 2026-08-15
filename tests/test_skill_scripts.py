@@ -54,17 +54,20 @@ def test_skill_validator_and_coverage_report_run_on_project():
     coverage = run_script("coverage_report.py", "--project", PROJECT_ROOT)
 
     assert validation.returncode == 0
-    assert "Checked 12 documents from 4 approved sources" in validation.stdout
+    assert "Checked 17 documents from 4 approved sources" in validation.stdout
     assert coverage.returncode == 0
     assert "Corpus ID: health_corpus_v1" in coverage.stdout
     assert "Status: planning" in coverage.stdout
-    assert "Documents: 12 / 24" in coverage.stdout
-    assert "Remaining document gap: 12" in coverage.stdout
-    assert "Clusters at document target: 3 / 8" in coverage.stdout
-    assert "Clusters at source minimum: 3 / 8" in coverage.stdout
+    assert "Documents: 17 / 24" in coverage.stdout
+    assert "Remaining document gap: 7" in coverage.stdout
+    assert "Clusters at document target: 5 / 8" in coverage.stdout
+    assert "Clusters at source minimum: 5 / 8" in coverage.stdout
     assert "| gastrointestinal_symptoms | 3 | 3 | 0 | 3 |" in coverage.stdout
     assert "| respiratory_symptoms | 3 | 3 | 0 | 3 |" in coverage.stdout
     assert "| fever_and_infection | 3 | 3 | 0 | 3 |" in coverage.stdout
+    assert "| neurological_warning_signs | 3 | 3 | 0 | 3 |" in coverage.stdout
+    assert "| cardiovascular_warning_signs | 3 | 3 | 0 | 3 |" in coverage.stdout
+    assert "| allergy_and_medication_safety | 1 | 3 | 2 | 1 |" in coverage.stdout
     assert "project_summary_unverified_by_clinician" in coverage.stdout
 
 

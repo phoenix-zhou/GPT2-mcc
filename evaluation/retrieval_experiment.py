@@ -273,7 +273,8 @@ def run_retrieval_experiment(
         from retrieval import BM25Retriever
 
         for minimum_score in (
-            0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5
+            0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5,
+            5.0, 5.5, 6.0, 6.5, 7.0, 8.0,
         ):
             candidate = _evaluate_retriever(
                 BM25Retriever(documents, minimum_score=minimum_score),
@@ -331,7 +332,9 @@ def run_retrieval_experiment(
         bm25_threshold_sweep=tuple(threshold_sweep),
         recommendation=recommendation,
         limitations=(
-            "The corpus has twelve short project-authored summaries across six topic clusters.",
+            f"The corpus has {len(documents)} short project-authored summaries "
+            f"across {len({document.topic_cluster for document in documents})} "
+            "topic clusters.",
             "Cases and labels are synthetic and pending qualified review.",
             "BM25 uses deterministic Chinese character n-grams, not a linguistic segmenter.",
             "Latency and index-size values describe this local run and tiny corpus.",

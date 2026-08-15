@@ -37,10 +37,10 @@ Agent 平台**。当前产品行为、资料库、安全策略和实测结论都
 | 有界 Agent | 单次规划—工具—回答；校验动作/原因组合；最多一次只读证据工具 |
 | 多轮会话 | 有界内存上下文和明确的重置动作 |
 | Governed RAG | 版本化覆盖合同、受控主题群、获准来源注册、URL 域名绑定、复核日期、语料上限和 SHA-256 完整性 |
-| Evaluation | 83 条开发集案例、Provider 无关预测捕获、失败分类和 Keyword/BM25 对照 |
+| Evaluation | 88 条开发集案例、Provider 无关预测捕获、失败分类和 Keyword/BM25 对照 |
 | 模型 | 固定 Revision 的本地 Qwen 默认、OpenAI 可选；GPT-2 不进入 Web Runtime |
 | Web Demo | 本地单进程 Flask 页面，包含 Trace、引用、CSRF、请求限制和安全响应头 |
-| 临床验证 | 未完成；当前 12 条项目摘要均未经临床人员审核 |
+| 临床验证 | 未完成；当前 17 条项目摘要均未经临床人员审核 |
 | 生产部署 | 不支持；尚无认证授权、分布式控制、加密持久化和合规体系 |
 
 ## 用户与 Agent 流程
@@ -89,7 +89,7 @@ Runtime 和 Evaluation 协议按照可复用方向设计，但在第二个产品
 ## 实测结果与限制
 
 下表是最后一次完整的 Qwen 端到端结果，使用数据集 v1.0.0 和此前的三文档语料。
-它是历史工程回归结果，不代表当前十二文档语料的性能，也不是独立 Benchmark 或
+它是历史工程回归结果，不代表当前 17 文档语料的性能，也不是独立 Benchmark 或
 临床性能结论。
 
 | 指标 | Keyword 基线 | BM25 候选 |
@@ -107,9 +107,9 @@ ID 存在，不能证明 Claim-level Entailment 或回答 Groundedness。晋级�
 [RAG V2](docs/rag-v2-experiment.md) 与
 [Evaluation MVP](docs/evaluation-mvp.md)。第一批六文档、无模型调用的组件回放作为
 历史里程碑保存在 [Corpus v1 第一批审计](docs/corpus-v1-batch-1.md)：Keyword 与
-BM25 的 Recall@3 分别为 64% 和 72%，No-hit Accuracy 均为 90%。当前十二文档的
-组件回放记录在 [Corpus v1 第三批审计](docs/corpus-v1-batch-3.md)：Keyword 与
-BM25 的 Recall@3 分别为 65.5% 和 69.0%，No-hit Accuracy 均为 89.7%。
+BM25 的 Recall@3 分别为 64% 和 72%，No-hit Accuracy 均为 90%。当前 17 文档的
+组件回放记录在 [Corpus v1 第四批审计](docs/corpus-v1-batch-4.md)：重新校准 BM25
+阈值后，Keyword 与 BM25 的 Recall@3 均为 73.5%，No-hit Accuracy 均为 89.7%。
 
 ## 我的工作、继承内容与已移除内容
 
@@ -196,15 +196,16 @@ flask --app app run
 
 ## 受控证据与数据策略
 
-当前语料包含 12 条项目自行编写的中文摘要，链接 CDC、NHS、WHO 和国家卫生健康委，
+当前语料包含 17 条项目自行编写的中文摘要，链接 CDC、NHS、WHO 和国家卫生健康委，
 并明确标记为
 **未经临床人员审核**。运行时会拒绝未知或冒充来源、过期复核、未来日期、不安全
 URL、重复 ID、超长内容和哈希不一致记录。
 
 版本化的 [Corpus v1 覆盖规范](docs/corpus-v1-coverage-spec.md)已经定义 8 个主题群和
-24 条记录目标；自动报告会显示当前 12/24 条记录以及每个剩余缺口。胃肠道症状、
-呼吸系统症状和发热与感染均已达到文档数与多来源门槛。[第二批审计记录](docs/corpus-v1-batch-2.md)
-说明了呼吸资料的筛选、标签变化和检索回归结果。Paraphrase、Hard Negative、No-hit 和
+24 条记录目标；自动报告会显示当前 17/24 条记录以及每个剩余缺口。神经系统危险
+信号、心血管危险信号、胃肠道症状、呼吸系统症状和发热与感染均已达到文档数与
+多来源门槛。[第四批审计记录](docs/corpus-v1-batch-4.md)说明了来源筛选、标签变化和
+检索回归结果。Paraphrase、Hard Negative、No-hit 和
 地区差异属于评测现象，不是证据文档类型。增加文档本身
 不构成可靠性结论。
 [`curate-health-evidence`](skills/curate-health-evidence/) Skill 可以自动执行确定性
@@ -244,7 +245,10 @@ tests/                           自动化回归与安全测试
 - [RAG V2 实验](docs/rag-v2-experiment.md)
 - [安全与风险审计](docs/security-and-risk-review.md)
 - [Health Corpus v1 中英双语覆盖规范](docs/corpus-v1-coverage-spec.md)
-- [Corpus v1 第一批中英双语审计](docs/corpus-v1-batch-1.md)
+- Corpus v1 审计：[第一批](docs/corpus-v1-batch-1.md)、
+  [第二批](docs/corpus-v1-batch-2.md)、
+  [第三批](docs/corpus-v1-batch-3.md)与
+  [第四批](docs/corpus-v1-batch-4.md)
 
 ## 下一阶段
 
