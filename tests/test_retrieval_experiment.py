@@ -22,12 +22,12 @@ def test_retrieval_experiment_compares_same_frozen_cases():
         dataset_name="health_mvp_v1",
     )
 
-    assert report.candidate_count == 63
-    assert report.relevant_case_count == 34
+    assert report.candidate_count == 65
+    assert report.relevant_case_count == 36
     assert report.no_hit_case_count == 29
     results = {result.strategy: result for result in report.strategies}
-    assert results["keyword"].metrics["recall_at_k"] == 0.7352941176470589
-    assert results["bm25"].metrics["recall_at_k"] == 0.7352941176470589
+    assert results["keyword"].metrics["recall_at_k"] == 0.75
+    assert results["bm25"].metrics["recall_at_k"] == 0.75
     assert (
         results["bm25"].metrics["no_hit_accuracy"]
         >= results["keyword"].metrics["no_hit_accuracy"]
@@ -35,7 +35,7 @@ def test_retrieval_experiment_compares_same_frozen_cases():
     assert "Keep `keyword`" in report.recommendation
     assert len(report.bm25_threshold_sweep) == 16
     assert "development-set threshold sweep" in report.to_markdown()
-    assert "`minimum_score=5.5`" in report.to_markdown()
+    assert "`minimum_score=6.5`" in report.to_markdown()
 
 
 def test_retrieval_experiment_cli_writes_json_and_markdown(tmp_path):
@@ -54,6 +54,6 @@ def test_retrieval_experiment_cli_writes_json_and_markdown(tmp_path):
 
     payload = json.loads((tmp_path / "retrieval_experiment.json").read_text())
     markdown = (tmp_path / "retrieval_experiment.md").read_text()
-    assert payload["candidate_count"] == 63
+    assert payload["candidate_count"] == 65
     assert "Compared 2 strategies" in completed.stdout
     assert "BM25 development-set threshold sweep" in markdown

@@ -42,6 +42,15 @@
       "source_type": "official_public_health_communication",
       "update_method": "manual_review",
       "reuse_status": "Link and project-authored summary; source terms apply"
+    },
+    {
+      "source_id": "nmpa",
+      "organization": "国家药品监督管理局",
+      "homepage": "https://www.nmpa.gov.cn/",
+      "jurisdiction": "CN",
+      "source_type": "official_regulatory_safety_communication",
+      "update_method": "manual_review",
+      "reuse_status": "Link and project-authored summary; source terms apply"
     }
   ]
 }

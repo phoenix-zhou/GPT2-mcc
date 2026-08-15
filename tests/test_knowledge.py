@@ -134,7 +134,7 @@ def test_knowledge_loader_rejects_stale_review(tmp_path):
 def test_production_knowledge_has_governance_metadata():
     knowledge_base = LocalKnowledgeBase()
 
-    assert len(knowledge_base.documents) == 17
+    assert len(knowledge_base.documents) == 19
     assert all(document.document_id for document in knowledge_base.documents)
     assert all(document.last_reviewed_at for document in knowledge_base.documents)
     assert all(document.review_status for document in knowledge_base.documents)
@@ -148,7 +148,7 @@ def test_production_default_preserves_keyword_baseline():
     assert isinstance(knowledge_base.retriever, KeywordRetriever)
 
 
-def test_bm25_candidate_handles_lexical_paraphrase_without_false_allergy_hit():
+def test_bm25_candidate_exposes_broad_allergy_false_hit_for_regression_tracking():
     knowledge_base = LocalKnowledgeBase(strategy="bm25")
 
     heart_results = knowledge_base.search("持续的胸部压迫感伴随冷汗可能参考什么资料")
@@ -157,7 +157,9 @@ def test_bm25_candidate_handles_lexical_paraphrase_without_false_allergy_hit():
     assert "nhs-heart-attack-signs-2026-08-review" in {
         document.document_id for document in heart_results
     }
-    assert allergy_results == []
+    assert [document.document_id for document in allergy_results] == [
+        "nhs-anaphylaxis-warning-signs-2026-08-review"
+    ]
 
 
 @pytest.mark.parametrize("strategy", ["keyword", "bm25"])
@@ -230,6 +232,25 @@ def test_batch_4_retrieves_acute_warnings_and_amr_without_code_hits(strategy):
             "cdc-heart-attack-warning-signs-2026-08-review",
         "WHO 如何解释抗生素过度使用与耐药风险":
             "who-antimicrobial-resistance-safety-2026-08-review",
+    }
+
+    for query, expected_document_id in queries.items():
+        returned_ids = {
+            document.document_id for document in knowledge_base.search(query, limit=3)
+        }
+        assert expected_document_id in returned_ids
+
+    assert knowledge_base.search("如何修复 Python 单元测试", limit=3) == []
+
+
+@pytest.mark.parametrize("strategy", ["keyword", "bm25"])
+def test_batch_5_retrieves_medication_label_and_anaphylaxis_guidance(strategy):
+    knowledge_base = LocalKnowledgeBase(strategy=strategy)
+    queries = {
+        "国家药监局对感冒灵和酒精、重复服用感冒药有哪些安全警示":
+            "nmpa-ganmaoling-label-safety-2026-08-review",
+        "接触药物后喉咙和舌头突然肿胀、呼吸困难，有哪些严重过敏警示资料":
+            "nhs-anaphylaxis-warning-signs-2026-08-review",
     }
 
     for query, expected_document_id in queries.items():

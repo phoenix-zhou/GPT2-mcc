@@ -53,14 +53,14 @@ def valid_payload(**overrides):
     return payload
 
 
-def test_health_mvp_dataset_is_versioned_privacy_safe_and_has_88_cases():
+def test_health_mvp_dataset_is_versioned_privacy_safe_and_has_90_cases():
     cases = load_dataset(DATASET)
     manifest = validate_dataset_manifest(DATASET, cases)
 
-    assert len(cases) == 88
-    assert len({case.case_id for case in cases}) == 88
+    assert len(cases) == 90
+    assert len({case.case_id for case in cases}) == 90
     assert all(not case.contains_personal_data for case in cases)
-    assert manifest["dataset_version"] == "1.4.0"
+    assert manifest["dataset_version"] == "1.5.0"
     assert manifest["expert_reviewed"] is False
     assert {case.scenario for case in cases} == {
         "emergency",
@@ -316,7 +316,7 @@ def test_label_review_distinguishes_consistency_from_expert_validation():
     report = review_labels(cases)
 
     assert report.issue_count == 0
-    assert report.human_review_pending_count == 88
+    assert report.human_review_pending_count == 90
     assert "not label truth" in report.to_markdown("health_mvp_v1")
 
 
@@ -442,6 +442,6 @@ def test_evaluation_cli_writes_json_and_markdown_reports(tmp_path):
 
     payload = json.loads((tmp_path / "health_mvp_v1.json").read_text())
     markdown = (tmp_path / "health_mvp_v1.md").read_text()
-    assert payload["case_count"] == 88
-    assert "Evaluated 88 cases" in completed.stdout
+    assert payload["case_count"] == 90
+    assert "Evaluated 90 cases" in completed.stdout
     assert "deterministic component baseline" in markdown
